@@ -20,19 +20,26 @@ import com.facebook.login.LoginManager;
 import com.facebook.login.LoginResult;
 import com.facebook.login.widget.LoginButton;
 import com.google.android.gms.auth.api.Auth;
+import com.google.android.gms.auth.api.signin.GoogleSignInAccount;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
+import com.google.android.gms.auth.api.signin.GoogleSignInResult;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.SignInButton;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnCompleteListener;
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.Task;
 import com.google.firebase.auth.AuthCredential;
 import com.google.firebase.auth.AuthResult;
 import com.google.firebase.auth.FacebookAuthProvider;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.auth.FirebaseUser;
+import com.google.firebase.auth.GoogleAuthProvider;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.labs.tatu.runclub.R;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
 
@@ -57,6 +64,7 @@ public class LoginActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
         initViews();
 
@@ -124,6 +132,14 @@ public class LoginActivity extends AppCompatActivity {
 
 
     }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        FirebaseUser currentUser = mAuth.getCurrentUser();
+        mAuth.addAuthStateListener(mAuthStateListener);
+    }
+
     private void handleFacebookAccessToken(AccessToken token) {
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
@@ -137,7 +153,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.d(TAG, "signInWithCredential:success");
                             FirebaseUser user = mAuth.getCurrentUser();
 
-                            firebase_facebook_sign(user);
+                            firebase_sign(user);
                         } else {
                             // If sign in fails, display a message to the user.
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
@@ -151,8 +167,8 @@ public class LoginActivity extends AppCompatActivity {
                 });
     }
 
-    private void firebase_facebook_sign(FirebaseUser user) {
-        String name = user.getDisplayName();
+    private void firebase_sign(FirebaseUser user) {
+        final String name = user.getDisplayName();
         String email = user.getEmail();
         Uri photoUrl = user.getPhotoUrl();
         String user_id=user.getUid();
@@ -161,15 +177,89 @@ public class LoginActivity extends AppCompatActivity {
         DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
         ref.child("userName").setValue(name);
         ref.child("userEmail").setValue(email);
-        ref.child("userPhotoUrl").setValue(photoUrl);
+        ref.child("userPhotoUrl").setValue(photoUrl.toString());
         ref.child("userLevel").setValue("Tera Level");
 
-        StyleableToast st=new StyleableToast(getApplicationContext(),"Welcome "+name,Toast.LENGTH_SHORT);
-        st.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
-        st.setTextColor(Color.WHITE);
-        
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                StyleableToast st=new StyleableToast(getApplicationContext(),"Welcome "+name,Toast.LENGTH_SHORT);
+                st.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
+                st.setTextColor(Color.WHITE);
+                st.setIcon(R.drawable.ic_account_box_black_24dp);
+                st.show();
+                startActivity(new Intent(LoginActivity.this,MainActivity.class));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
 
 
+
+
+    }
+
+    //Google Sign In Method
+    private void signIn() {
+        Intent signInIntent = Auth.GoogleSignInApi.getSignInIntent(mGoogleApiClient);
+        startActivityForResult(signInIntent, RC_SIGN_IN);
+    }
+    //Google Firebase Auth
+    private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+        Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
+
+        AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
+        mAuth.signInWithCredential(credential)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        if (task.isSuccessful()) {
+                            // Sign in success, update UI with the signed-in user's information
+                            Log.d(TAG, "signInWithCredential:success");
+                            FirebaseUser user = mAuth.getCurrentUser();
+                            firebase_sign(user);
+
+                        } else {
+                            // If sign in fails, display a message to the user.
+                            Log.w(TAG, "signInWithCredential:failure", task.getException());
+                            Toast.makeText(LoginActivity.this, "Authentication failed. Please try again",
+                                    Toast.LENGTH_SHORT).show();
+
+
+                        }
+
+
+                    }
+                })
+                .addOnFailureListener(new OnFailureListener() {
+                    @Override
+                    public void onFailure(@NonNull Exception e) {
+                        e.printStackTrace();
+
+                    }
+                });
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        // Result returned from launching the Intent from GoogleSignInApi.getSignInIntent(...);
+        if (requestCode == RC_SIGN_IN) {
+            GoogleSignInResult result = Auth.GoogleSignInApi.getSignInResultFromIntent(data);
+            if (result.isSuccess()) {
+                // Google Sign In was successful, authenticate with Firebase
+                GoogleSignInAccount account = result.getSignInAccount();
+                firebaseAuthWithGoogle(account);
+            } else {
+                Toast.makeText(this, "Authentication went wrong", Toast.LENGTH_SHORT).show();
+            }
+        }
+        mCallbackManager.onActivityResult(requestCode, resultCode, data);
 
     }
 

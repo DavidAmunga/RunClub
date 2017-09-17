@@ -43,7 +43,7 @@ public class LocationsFragment extends Fragment {
     private DatabaseReference mDatabase;
     FirebaseRecyclerAdapter<Location,LocationViewHolder> firebaseRecyclerAdapter;
 
-    static boolean calledAlready = false;
+
 
 
 
@@ -53,11 +53,7 @@ public class LocationsFragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_locations_layout,container,false);
 
         //toolBarTitle.setText("Locations");
-        if (!calledAlready)
-        {
-            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
-            calledAlready = true;
-        }
+
         mDatabase= FirebaseDatabase.getInstance().getReference().child("Locations");
         mDatabase.keepSynced(true);
         mDatabase.runTransaction(new Transaction.Handler() {
@@ -182,4 +178,7 @@ public class LocationsFragment extends Fragment {
 
         }
     }
+
+
+
 }
