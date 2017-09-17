@@ -41,6 +41,7 @@ public class ChallengesFragment extends Fragment {
         mDatabase= FirebaseDatabase.getInstance().getReference().child("Challenges");
 
 
+
         mChallengeList=(RecyclerView)view.findViewById(R.id.challenge_list);
         //mChallengeList.setHasFixedSize(true);
         mChallengeList.setLayoutManager(new LinearLayoutManager(getActivity()));

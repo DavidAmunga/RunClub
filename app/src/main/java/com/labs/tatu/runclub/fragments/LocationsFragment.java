@@ -15,11 +15,19 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.MutableData;
+import com.google.firebase.database.Transaction;
 import com.labs.tatu.runclub.LocationRunActivity;
+import com.labs.tatu.runclub.MainActivity;
 import com.labs.tatu.runclub.R;
 import com.labs.tatu.runclub.model.Location;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.OkHttpDownloader;
 import com.squareup.picasso.Picasso;
 
 /**
@@ -35,6 +43,8 @@ public class LocationsFragment extends Fragment {
     private DatabaseReference mDatabase;
     FirebaseRecyclerAdapter<Location,LocationViewHolder> firebaseRecyclerAdapter;
 
+    static boolean calledAlready = false;
+
 
 
     @Nullable
@@ -43,8 +53,29 @@ public class LocationsFragment extends Fragment {
         View view=inflater.inflate(R.layout.fragment_locations_layout,container,false);
 
         //toolBarTitle.setText("Locations");
-
+        if (!calledAlready)
+        {
+            FirebaseDatabase.getInstance().setPersistenceEnabled(true);
+            calledAlready = true;
+        }
         mDatabase= FirebaseDatabase.getInstance().getReference().child("Locations");
+        mDatabase.keepSynced(true);
+        mDatabase.runTransaction(new Transaction.Handler() {
+            @Override
+            public Transaction.Result doTransaction(MutableData mutableData) {
+                if(mutableData.getValue() == null) {
+                    mutableData.setValue(1);
+                } else {
+                    mutableData.setValue((Long) mutableData.getValue() + 1);
+                }
+                return Transaction.success(mutableData); //we can also abort by calling Transaction.abort()
+            }
+
+            @Override
+            public void onComplete(DatabaseError databaseError, boolean b, DataSnapshot dataSnapshot) {
+
+            }
+        });
 
         mLocationsList=(RecyclerView)view.findViewById(R.id.location_list);
         //mLocationsList.setHasFixedSize(true);
@@ -70,6 +101,9 @@ public class LocationsFragment extends Fragment {
                 viewHolder.setLocationName(model.getLocationName());
                 viewHolder.setLocationImage(getContext(),model.getLocationPhotoUrl());
                 viewHolder.setLocationDistance(model.getLocationDistance());
+                Log.d(TAG, "Photo Url: "+model.getLocationPhotoUrl());
+                Log.d(TAG, "Location Name: "+model.getLocationName());
+                Log.d(TAG, "Location Distance: "+model.getLocationDistance());
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -124,10 +158,28 @@ public class LocationsFragment extends Fragment {
 
 
         }
-        public void setLocationImage(Context ctx,String image)
+        public void setLocationImage(final Context ctx,final String image)
         {
-            ImageView loc_image=(ImageView)mView.findViewById(R.id.loc_image);
-            Picasso.with(ctx).load(image).into(loc_image);
+            final ImageView loc_image=(ImageView)mView.findViewById(R.id.loc_image);
+
+
+            Picasso
+                    .with(ctx)
+                    .load(image)
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .into(loc_image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            Picasso.with(ctx).load(image).into(loc_image);
+                        }
+                    });
+
+
         }
     }
 }

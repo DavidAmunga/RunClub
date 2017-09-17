@@ -32,6 +32,8 @@ import com.mikepenz.materialdrawer.model.ProfileDrawerItem;
 import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
@@ -163,10 +165,24 @@ public class EventsActivity extends AppCompatActivity {
             eventAtt.setText(String.valueOf(att)+" ATTENDING");
         }
 
-        public void setEventsImage(Context ctx, String image)
+        public void setEventsImage(final Context ctx,final String image)
         {
-            ImageView events_image=(ImageView)itemView.findViewById(R.id.event_image);
-            Picasso.with(ctx).load(image).into(events_image);
+            final ImageView events_image=(ImageView)itemView.findViewById(R.id.event_image);
+            Picasso
+                    .with(ctx)
+                    .load(image)
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .into(events_image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            Picasso.with(ctx).load(image).into(events_image);
+                        }
+                    });
         }
     }
 
