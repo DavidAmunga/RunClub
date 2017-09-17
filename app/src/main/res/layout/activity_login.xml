@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.labs.tatu.runclub.LoginActivity">
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:src="@drawable/logo"
+        android:scaleType="fitXY"
+        android:id="@+id/login_image"
+        />
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/login_image">
+
+        <com.facebook.login.widget.LoginButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:id="@+id/btnFb"
+            android:textSize="20dp"
+            android:layout_marginTop="20dp"
+            android:layout_alignParentTop="true"
+            android:text="Login with Facebook"
+
+
+            />
+        
+        <com.google.android.gms.common.SignInButton
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:id="@+id/btnGG"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:layout_below="@id/btnFb"
+            android:layout_marginTop="20dp"
+            android:text="Login with Gmail"
+
+
+            />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:layout_below="@id/btnGG"
+            android:layout_marginTop="160dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:hint="Email or Username ......"
+            android:id="@+id/txt_email"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true" />
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:padding="20dp"
+            android:inputType="textPassword"
+            android:layout_marginTop="10dp"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:hint="Password ......"
+            android:id="@+id/txt_pass"
+            android:layout_below="@id/txt_email"
+            />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="30dp"
+            android:layout_marginTop="20dp"
+            android:layout_marginRight="30dp"
+            android:id="@+id/btnLogin"
+            android:layout_below="@+id/txt_pass"
+            android:background="@color/colorPrimary"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+
+            android:text="Login"
+
+
+            />
+
+    </RelativeLayout>
+
+</RelativeLayout>

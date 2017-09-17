@@ -4,7 +4,7 @@ android {
     compileSdkVersion 25
     buildToolsVersion "25.0.3"
     defaultConfig {
-        applicationId "com.labs.tatu.actionbar"
+        applicationId "com.labs.tatu.runclub"
         minSdkVersion 21
         targetSdkVersion 25
         versionCode 1
@@ -34,6 +34,7 @@ dependencies {
     }
 
 
+
     compile 'com.android.support:appcompat-v7:25.3.1'
     compile 'com.android.support.constraint:constraint-layout:1.0.2'
     compile 'com.android.support:design:25.3.1'
@@ -43,7 +44,6 @@ dependencies {
     compile 'com.google.maps.android:android-maps-utils:0.4.+'
     compile 'com.mcxiaoke.volley:library-aar:1.0.0'
     compile 'com.google.firebase:firebase-database:10.0.1'
-
     compile 'com.github.wdullaer:MaterialDateTimePicker:v3.0.0'
     compile 'com.github.jrvansuita:GaussianBlur:+'
     compile 'com.google.firebase:firebase-storage:10.0.1'
@@ -58,8 +58,12 @@ dependencies {
     compile 'gr.pantrif:easy-android-splash-screen:0.0.1'
     compile 'com.google.firebase:firebase-invites:10.0.1'
     compile 'com.tapadoo.android:alerter:1.0.4'
+    compile 'com.facebook.android:facebook-android-sdk:4.6.0'
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
+    compile 'com.muddzdev:styleabletoast:1.0.5'
     testCompile 'junit:junit:4.12'
 }
+
 
 
 
