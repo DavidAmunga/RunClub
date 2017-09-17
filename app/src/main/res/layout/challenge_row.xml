@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <android.support.constraint.ConstraintLayout
+            android:layout_width="match_parent"
+            android:id="@+id/challenger_details"
+            android:layout_height="wrap_content"
+            >
+            <ImageView
+                android:id="@+id/challenger_prof"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:src="@mipmap/ic_launcher_round"
+
+                />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="John Doe"
+                android:id="@+id/challenger_name"
+                tools:layout_editor_absoluteY="-3dp"
+                app:layout_constraintLeft_toRightOf="@+id/challenger_prof"
+                app:layout_constraintTop_toBottomOf="parent"
+                android:layout_marginLeft="0dp" />
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Tera Level"
+                android:textStyle="bold"
+                android:layout_below="@+id/challenger_name"
+                app:layout_constraintTop_toBottomOf="@+id/challenger_name"
+                app:layout_constraintLeft_toLeftOf="@id/challenger_name"
+
+                />
+        </android.support.constraint.ConstraintLayout>
+
+        <RelativeLayout
+            android:id="@+id/ch_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_below="@+id/challenger_details"
+            >
+
+            <ImageView
+                android:id="@+id/ch_image"
+                android:src="@mipmap/ic_launcher_round"
+                android:layout_width="match_parent"
+                android:scaleType="fitXY"
+                android:layout_height="100dp" />
+            <TextView
+                android:id="@+id/text_challenge"
+                android:text="You have been challenged to run"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:textColor="@android:color/white"
+                android:textAllCaps="true"
+                android:textSize="17sp"
+                android:layout_marginTop="20dp"
+                android:layout_centerHorizontal="true" />
+
+            <TextView
+                android:id="@+id/ch_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textColor="@android:color/white"
+                android:text="Ndakaini"
+                android:layout_marginTop="30dp"
+                android:textSize="30dp"
+                android:textStyle="bold"
+                android:layout_centerHorizontal="true"
+                android:layout_alignTop="@+id/text_challenge"
+                />
+
+            <Button
+                android:text="REJECT"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@id/ch_image"
+                android:layout_alignParentLeft="true"
+                android:layout_marginLeft="40dp"
+                android:background="@drawable/button_border"
+
+
+                />
+            <Button
+                android:text="START RUN"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_below="@id/ch_image"
+                android:background="#000000"
+                android:textColor="#ffffff"
+                android:layout_marginRight="40dp"
+                 />
+
+        </RelativeLayout>
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="horizontal"
+            android:layout_alignBottom="@+id/ch_1">
+
+
+        </LinearLayout>
+
+    </RelativeLayout>
+
+
+
+</android.support.v7.widget.CardView>

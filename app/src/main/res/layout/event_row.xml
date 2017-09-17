@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent" android:layout_height="wrap_content">
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+
+        >
+        <ImageView
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:id="@+id/event_image"
+            android:layout_marginRight="12dp"
+            android:src="@drawable/logo"
+            android:layout_marginLeft="5dp"
+            />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Ndakaini Marathon"
+            android:textStyle="bold"
+            android:textAllCaps="true"
+            android:textColor="#000"
+            android:id="@+id/event_name"
+            android:layout_centerVertical="true"
+            android:layout_toEndOf="@+id/event_image" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="SUNDAY 03,2017"
+            android:id="@+id/event_date"
+            android:layout_marginTop="16dp"
+            android:layout_alignParentTop="true"
+            android:layout_toEndOf="@+id/event_image" />
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="START AT 8 AM"
+            android:id="@+id/event_time"
+            android:layout_below="@+id/event_name"
+            android:layout_marginTop="50dp"
+
+            android:layout_toEndOf="@+id/event_image" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="87 ATTENDING"
+            android:textAllCaps="true"
+            android:id="@+id/event_attending"
+            android:layout_marginLeft="50dp"
+            android:textColor="#000"
+            android:layout_alignBaseline="@+id/event_time"
+            android:layout_alignBottom="@+id/event_time"
+            android:layout_toEndOf="@+id/event_time" />
+
+
+
+
+    </RelativeLayout>
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1dp"
+        android:background="@color/colorGray"
+        android:layout_marginTop="60dp"
+        android:layout_gravity="bottom"
+        />
+
+</android.support.v7.widget.CardView>

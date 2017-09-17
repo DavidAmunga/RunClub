@@ -1,0 +1,105 @@
+{
+  "project_info": {
+    "project_number": "64859663898",
+    "firebase_url": "https://runclub-e9566.firebaseio.com",
+    "project_id": "runclub-e9566",
+    "storage_bucket": "runclub-e9566.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:64859663898:android:cf04801955de99d3",
+        "android_client_info": {
+          "package_name": "com.labs.tatu.runclub"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "64859663898-65ae77t4igqof7rsdvmrt9655aggtfmg.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.labs.tatu.runclub",
+            "certificate_hash": "c48d432bf28f701153563bc226950375a57c3840"
+          }
+        },
+        {
+          "client_id": "64859663898-gom40gus0l529dqa64vj8tnd21g1lcub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMghYrv3TDlGl6SS0vnvz4Yr4KEiJYmXk"
+        },
+        {
+          "current_key": "AIzaSyAFhEkSXt4YiXMVN_X7ms15rzvBDoTObdg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "64859663898-gom40gus0l529dqa64vj8tnd21g1lcub.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:64859663898:android:74d0417bfb41a7fd",
+        "android_client_info": {
+          "package_name": "com.labs.tatu.actionbar"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "64859663898-vc48q9rhod1aelb4jnkfqug3l23ldkjc.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.labs.tatu.actionbar",
+            "certificate_hash": "c48d432bf28f701153563bc226950375a57c3840"
+          }
+        },
+        {
+          "client_id": "64859663898-gom40gus0l529dqa64vj8tnd21g1lcub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMghYrv3TDlGl6SS0vnvz4Yr4KEiJYmXk"
+        },
+        {
+          "current_key": "AIzaSyAFhEkSXt4YiXMVN_X7ms15rzvBDoTObdg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "64859663898-gom40gus0l529dqa64vj8tnd21g1lcub.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

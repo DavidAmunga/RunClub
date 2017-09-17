@@ -1,0 +1,285 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context="com.labs.tatu.runclub.SingleEventActivity">
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#ffffff"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Event"
+            android:textSize="30sp"
+            android:textColor="#000"
+            android:layout_gravity="center"
+            android:id="@+id/toolbar_title" />
+    </android.support.v7.widget.Toolbar>
+
+
+
+
+    <ImageView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:scaleType="fitXY"
+        android:backgroundTint="#000"
+        android:background="#000"
+        android:backgroundTintMode="src_over"
+        android:id="@+id/bgEventImage"
+        android:layout_below="@id/toolbar"
+        />
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_above="@id/bottomNavView_Bar"
+        android:layout_below="@id/toolbar"
+        android:scrollbarStyle="insideOverlay">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:id="@+id/txt_event_name"
+                android:layout_width="wrap_content"
+
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true"
+                android:layout_marginTop="20dp"
+                android:text="NDAKAINI MARATHON"
+                android:textColor="@color/white"
+
+                android:textSize="28sp"
+                android:textStyle="bold" />
+
+            <ImageView
+                android:id="@+id/ic_loc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentTop="true"
+                android:layout_below="@+id/txt_event_name"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="70dp"
+                android:src="@drawable/ic_action_location"
+                android:text="Event Location"
+                android:textSize="17sp"
+
+                />
+
+
+            <TextView
+                android:id="@+id/txt_event_loc"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/ic_loc"
+                android:layout_marginLeft="30dp"
+                android:layout_marginStart="12dp"
+                android:layout_toEndOf="@+id/ic_loc"
+                android:text="Event Location"
+                android:textColor="@android:color/white"
+                android:textSize="17sp" />
+
+            <View
+                android:id="@+id/view1"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_above="@+id/txt_title"
+                android:layout_below="@id/txt_event_loc"
+                android:layout_margin="20dp"
+                android:background="#ffffff" />
+
+            <TextView
+                android:id="@+id/lbl_event_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view1"
+                android:layout_marginLeft="30dp"
+                android:text="Event Type"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_event_type"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lbl_event_type"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
+                android:text="Event Type"
+                android:textColor="@android:color/white"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/lbl_entry_fee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view1"
+                android:layout_marginLeft="260dp"
+                android:text="Entry Fee"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_entry_fee"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lbl_event_type"
+                android:layout_marginLeft="260dp"
+                android:layout_marginTop="10dp"
+                android:text="Event Fee"
+                android:textColor="@android:color/white"
+                android:textSize="17sp" />
+
+
+            <View
+                android:id="@+id/view3"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_above="@+id/txt_title"
+                android:layout_below="@id/lbl_event_type"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="40dp"
+                android:background="#ffffff" />
+
+
+            <TextView
+                android:id="@+id/lbl_event_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view3"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
+                android:text="Event Date"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_event_date"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lbl_event_date"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
+                android:text="Event Date"
+                android:textColor="@android:color/white"
+                android:textSize="17sp" />
+
+            <TextView
+                android:id="@+id/lbl_event_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view3"
+                android:layout_marginLeft="260dp"
+                android:layout_marginTop="10dp"
+                android:text="Event Time"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_event_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lbl_event_date"
+                android:layout_marginLeft="260dp"
+                android:layout_marginTop="10dp"
+                android:text="Event Time"
+                android:textColor="@android:color/white"
+                android:textSize="17sp" />
+
+            <View
+                android:id="@+id/view4"
+                android:layout_width="match_parent"
+                android:layout_height="3dp"
+                android:layout_above="@+id/txt_title"
+                android:layout_below="@id/view3"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="80dp"
+                android:background="#ffffff" />
+
+            <TextView
+                android:id="@+id/lbl_event_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/view4"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
+                android:text="Event Details"
+                android:textColor="@android:color/white"
+                android:textSize="17sp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/txt_event_details"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/lbl_event_details"
+                android:layout_gravity="center_vertical|start"
+                android:layout_marginLeft="30dp"
+                android:layout_marginTop="10dp"
+                android:gravity="center"
+                android:text="@string/lorem"
+                android:textColor="@android:color/white"
+                android:textSize="17sp" />
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </RelativeLayout>
+
+            <Button
+                android:id="@+id/btnNotInterested"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignBaseline="@+id/btnInterested"
+                android:layout_alignBottom="@+id/btnInterested"
+                android:layout_alignStart="@+id/view4"
+                android:layout_marginTop="31dp"
+                android:background="@drawable/button_border_white"
+                android:padding="10dp"
+                android:text="not INTERESTED"
+                android:textColor="@android:color/white" />
+
+            <Button
+                android:id="@+id/btnInterested"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_below="@+id/txt_event_details"
+                android:layout_alignEnd="@+id/view4"
+                android:background="@color/white"
+                android:layout_marginTop="20dp"
+                android:padding="10dp"
+                android:text="INTERESTED"
+                android:textColor="@android:color/black" />
+        </RelativeLayout>
+
+    </ScrollView>
+
+
+    <android.support.design.widget.BottomNavigationView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/bottomNavView_Bar"
+        android:background="@drawable/gray_border_top"
+        app:menu="@menu/bottom_nav_menu"
+        android:layout_alignParentBottom="true"
+        />
+
+</RelativeLayout>

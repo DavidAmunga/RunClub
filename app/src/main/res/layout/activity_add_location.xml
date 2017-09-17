@@ -1,0 +1,128 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+
+<ScrollView
+xmlns:app="http://schemas.android.com/apk/res-auto"
+xmlns:tools="http://schemas.android.com/tools"
+xmlns:android="http://schemas.android.com/apk/res/android"
+android:layout_width="match_parent"
+android:layout_height="match_parent"
+tools:context="com.labs.tatu.runclub.AddLocationActivity"
+    >
+    <RelativeLayout xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context="com.labs.tatu.runclub.AddLocationActivity">
+
+        <ImageButton
+            android:id="@+id/add_loc_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_alignParentStart="true"
+            android:layout_marginBottom="313dp"
+            android:background="#00ffffff"
+            android:layout_alignParentTop="true"
+            android:layout_centerHorizontal="true"
+            android:scaleType="centerCrop"
+            app:srcCompat="@mipmap/add_btn" />
+
+        <EditText
+            android:id="@+id/add_loc_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/input"
+            android:padding="10dp"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:layout_alignTop="@+id/add_loc_image"
+            android:ems="10"
+            android:hint="Enter Location Name...."
+            android:inputType="textPersonName"
+
+
+            android:layout_marginTop="284dp" />
+
+        <EditText
+            android:id="@+id/add_loc_goal"
+            android:layout_width="match_parent"
+            android:padding="10dp"
+            android:layout_height="wrap_content"
+
+            android:background="@drawable/input"
+            android:layout_marginLeft="20dp"
+            android:layout_marginRight="20dp"
+            android:ems="10"
+            android:inputType="textMultiLine"
+            android:hint="Enter Location Goal ....."
+            android:layout_below="@+id/add_loc_name"
+            android:layout_centerHorizontal="true"
+            android:layout_marginTop="20dp" />
+
+        <Button
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Plot Location"
+            android:id="@+id/plot_loc"
+            android:padding="20dp"
+            android:layout_marginTop="20dp"
+            android:textColor="@android:color/white"
+            android:layout_centerHorizontal="true"
+            android:layout_below="@+id/add_loc_goal"
+            android:background="@color/colorPrimary"
+            />
+
+        <TextView
+            android:id="@+id/start_loc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Start: 0.0"
+            android:textSize="20sp"
+            android:layout_marginTop="20dp"
+            android:layout_below="@id/plot_loc"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/black"
+            />
+        <TextView
+            android:id="@+id/end_loc"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="End: 0.0"
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/start_loc"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/black"
+            />
+        <TextView
+            android:id="@+id/add_loc_distance"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Distance"
+            android:textSize="20sp"
+            android:layout_marginTop="10dp"
+            android:layout_below="@id/end_loc"
+            android:layout_centerHorizontal="true"
+            android:textColor="@android:color/black"
+            />
+
+
+        <Button
+            android:id="@+id/btn_add_loc"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ADD LOCATION"
+            android:background="@color/colorPrimary"
+            android:textColor="@android:color/white"
+            android:layout_below="@id/add_loc_distance"
+            android:layout_centerHorizontal="true"
+
+            />
+    </RelativeLayout>
+
+
+</ScrollView>
