@@ -1,9 +1,119 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:diagonal="http://schemas.android.com/apk/res-auto"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.labs.tatu.runclub.ProfileActivity">
+    tools:context="com.labs.tatu.runclub.ProfileActivity"
 
-</android.support.constraint.ConstraintLayout>
+    >
+
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Alpha Beta"
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true"
+        android:layout_marginTop="35dp"
+        android:textSize="30sp"
+        android:id="@+id/txtUserName"
+        android:textColor="#000"
+        />
+
+
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/txtUserImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="40dp"
+        android:layout_marginTop="80dp"
+        android:elevation="15dp"
+        android:layout_centerHorizontal="true"
+        android:background="@drawable/circle"
+        android:src="@drawable/ic_account_circle"/>
+    <TextView
+        android:id="@+id/txtUserEmail"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="alpha@beta@gmail.com"
+        android:layout_marginTop="21dp"
+        android:textSize="15sp"
+        android:textColor="#000"
+        android:layout_below="@+id/txtUserImage"
+        android:layout_centerHorizontal="true" />
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:weightSum="4"
+        android:layout_marginTop="230dp"
+        android:id="@+id/linearLayout">
+
+
+        <EditText
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/txt_phoneNo"
+            android:text="07xxxxxxxx"
+            android:layout_marginLeft="30dp"
+            android:layout_marginRight="30dp"
+            android:padding="20dp"
+
+            />
+
+
+
+    </LinearLayout>
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:textColor="#000"
+        android:textSize="20sp"
+        android:id="@+id/lbl_bio"
+        android:text="Bio"
+        android:layout_below="@+id/linearLayout"
+        android:layout_alignStart="@+id/txt_bio"
+        android:layout_marginStart="17dp"
+        android:layout_marginTop="14dp" />
+
+
+    <EditText
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="320dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_marginBottom="40dp"
+        android:textColor="#717171"
+        android:padding="20dp"
+        android:inputType="textMultiLine"
+
+        android:id="@+id/txt_bio"
+        android:maxLength="80"
+        android:text="@string/lorem"/>
+    <Button
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:id="@+id/btnMyRunActivity"
+        android:textSize="20sp"
+        android:text="MY RUN ACTIVITY"
+
+        android:layout_centerHorizontal="true"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorPrimary"
+        android:textColor="@color/white"
+        android:padding="20dp"
+
+        />
+
+
+
+
+</RelativeLayout>

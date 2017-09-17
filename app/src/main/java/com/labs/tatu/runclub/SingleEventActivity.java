@@ -16,6 +16,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -76,6 +77,11 @@ public class SingleEventActivity extends AppCompatActivity {
                                 DatabaseReference eventAttending=snapshot.getRef().child("eventAttending");
                                 eventAttending.setValue(String.valueOf(attending+1));
 
+//                                Add Event to User Events
+                                String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                DatabaseReference userRef=FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userEvents");
+                                userRef.child(txt_event_name.getText().toString().trim()).setValue("Going");
+
 
                                 Sneaker.with(SingleEventActivity.this)
                                         .setTitle("Gear on for "+snapshot.child("eventName").getValue(), R.color.white)
@@ -104,7 +110,53 @@ public class SingleEventActivity extends AppCompatActivity {
         btn_notInterested.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //Null
+                mDatabase.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            if(snapshot.child("eventName").getValue().equals(txt_event_name.getText().toString().trim()))
+                            {
+//                                Get Snapshot value
+                                Log.d(TAG, "onInterested: Success");
+                                int count=1;
+                                int attending=Integer.parseInt(snapshot.child("eventAttending").getValue().toString());
+
+
+                                DatabaseReference eventAttending=snapshot.getRef().child("eventAttending");
+                                eventAttending.setValue(String.valueOf(attending-1));
+
+                                String eventName=snapshot.child("eventName").getValue().toString();
+                                String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userEvents").child(eventName);
+                                ref.setValue(null);
+//
+
+
+
+
+                                Sneaker.with(SingleEventActivity.this)
+                                        .setTitle("Try "+snapshot.child("eventName").getValue()+"next time!", R.color.white)
+                                        .setMessage("You could always join the Event another time", R.color.white)
+                                        .setDuration(4000) // Time duration to show
+                                        .autoHide(true) // Auto hide Sneaker view
+                                        .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
+                                        .setIcon(R.drawable.ic_directions_run, R.color.white, false)
+                                        .setOnSneakerClickListener(new Sneaker.OnSneakerClickListener() {
+                                            @Override
+                                            public void onSneakerClick(View view) {
+
+                                            }
+                                        }) // Click listener for Sneaker
+                                        .sneak(android.R.color.black); // Sneak with background color
+
+                            }
+                        }
+                    }
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+                    }
+                });
+
             }
         });
 
@@ -151,6 +203,8 @@ public class SingleEventActivity extends AppCompatActivity {
 
 
     }
+
+
 
     private void initViews() {
         txt_event_date=(TextView)findViewById(R.id.txt_event_date);

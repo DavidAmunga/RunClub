@@ -56,6 +56,8 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.4.0'
     compile 'com.yarolegovich:lovely-dialog:1.0.7'
     compile 'gr.pantrif:easy-android-splash-screen:0.0.1'
+    compile 'com.github.florent37:diagonallayout:1.0.7'
+    compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'com.google.firebase:firebase-invites:10.0.1'
     compile 'com.tapadoo.android:alerter:1.0.4'
     compile 'com.facebook.android:facebook-android-sdk:4.6.0'
