@@ -25,7 +25,7 @@ import com.squareup.picasso.Picasso;
 
 public class ChallengesFragment extends Fragment {
 
-    private static final String TAG = "QuickStartFragment";
+    private static final String TAG = "Challenges Fragment";
 
     private RecyclerView mChallengeList;
 

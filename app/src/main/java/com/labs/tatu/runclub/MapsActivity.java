@@ -50,7 +50,7 @@ public class MapsActivity extends FragmentActivity implements
         GoogleMap.OnMarkerDragListener,
         GoogleMap.OnMapLongClickListener,
         View.OnClickListener {
-    private static final String TAG = "MapsActivity";
+    private static final String TAG = "MapsActivitys";
 
 
 
