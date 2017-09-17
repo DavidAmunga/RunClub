@@ -7,15 +7,36 @@
     android:layout_height="match_parent"
     android:background="#ECEFF1">
 
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/toolbar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="#ffffff"
+        app:layout_scrollFlags="scroll|enterAlways"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
+
+        >
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="Workout"
+            android:textSize="30sp"
+            android:textColor="#000"
+            android:layout_gravity="center"
+            android:id="@+id/toolbar_title" />
+    </android.support.v7.widget.Toolbar>
+
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text=""
+        android:text="ASDASDASDAS"
         android:textStyle="bold"
         android:id="@+id/txt_loc_name"
         android:textSize="30sp"
         android:textColor="#000"
         android:layout_centerHorizontal="true"
+        android:layout_below="@id/toolbar"
+
         android:layout_margin="30dp"
         />
 
@@ -81,8 +102,7 @@
           android:layout_width="wrap_content"
           android:layout_height="wrap_content"
           android:id="@+id/btnStart"
-          android:layout_marginStart="15dp"
-          android:layout_marginBottom="17dp"
+          android:layout_marginStart="16dp"
           android:layout_above="@+id/timerText"
           android:layout_alignParentStart="true" />
 

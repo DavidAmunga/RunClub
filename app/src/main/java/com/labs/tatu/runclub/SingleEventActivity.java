@@ -40,6 +40,8 @@ public class SingleEventActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
 
+    private boolean isInterested=true;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -66,8 +68,9 @@ public class SingleEventActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            if(snapshot.child("eventName").getValue().equals(txt_event_name.getText().toString().trim()))
+                            if(snapshot.child("eventName").getValue().equals(txt_event_name.getText().toString().trim()) && isInterested==true)
                             {
+
 //                                Get Snapshot value
                                 Log.d(TAG, "onInterested: Success");
                                 int count=1;
@@ -98,6 +101,8 @@ public class SingleEventActivity extends AppCompatActivity {
                                          }) // Click listener for Sneaker
                                     .sneak(android.R.color.black); // Sneak with background color
 
+                                isInterested=false;
+
                             }
                         }
                     }
@@ -114,7 +119,7 @@ public class SingleEventActivity extends AppCompatActivity {
                     @Override
                     public void onDataChange(DataSnapshot dataSnapshot) {
                         for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                            if(snapshot.child("eventName").getValue().equals(txt_event_name.getText().toString().trim()))
+                            if(snapshot.child("eventName").getValue().equals(txt_event_name.getText().toString().trim()) && isInterested==false)
                             {
 //                                Get Snapshot value
                                 Log.d(TAG, "onInterested: Success");
@@ -149,6 +154,7 @@ public class SingleEventActivity extends AppCompatActivity {
                                         }) // Click listener for Sneaker
                                         .sneak(android.R.color.black); // Sneak with background color
 
+                                isInterested=true;
                             }
                         }
                     }
@@ -185,7 +191,7 @@ public class SingleEventActivity extends AppCompatActivity {
                         txt_event_date.setText(convertDate(snapshot.child("eventDate").getValue().toString()));
                         txt_event_loc.setText(snapshot.child("eventLocation").getValue().toString());
                         txt_event_time.setText(snapshot.child("eventTime").getValue().toString());
-                    //    txt_event_type.setText(snapshot.child("eventType").getValue().toString());
+                        txt_event_type.setText(snapshot.child("eventType").getValue().toString());
 
                     }
 

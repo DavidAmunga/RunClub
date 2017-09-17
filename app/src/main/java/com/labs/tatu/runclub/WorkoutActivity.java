@@ -7,6 +7,7 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,6 +23,8 @@ public class WorkoutActivity extends AppCompatActivity {
     TextView textView,txt_loc_name;
 
     private Button start, pause, reset;
+
+    private Toolbar toolbar;
 
     long MillisecondTime, StartTime, TimeBuff, UpdateTime = 0L;
 
@@ -39,6 +42,14 @@ public class WorkoutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setTitle("");
+
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
 
@@ -104,9 +115,6 @@ public class WorkoutActivity extends AppCompatActivity {
 
                     isStart=false;
                 }
-
-
-
 
 
 

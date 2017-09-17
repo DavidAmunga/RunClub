@@ -29,12 +29,12 @@
                 android:layout_height="wrap_content"
                 android:textColor="@android:color/white"
                 android:text="Ndakaini"
-                android:textSize="30dp"
+                android:textSize="35dp"
                 android:textStyle="bold"
 
-                android:layout_marginStart="10dp"
-                android:layout_centerVertical="true"
-                android:layout_alignParentStart="true" />
+                android:layout_marginTop="19dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
             <TextView
                 android:id="@+id/loc_distance"
                 android:layout_width="wrap_content"
@@ -42,23 +42,23 @@
                 android:textColor="@android:color/white"
                 android:text="2 KM"
                 android:layout_marginLeft="20dp"
-                android:layout_marginTop="30dp"
                 android:textSize="30dp"
-                android:layout_toRightOf="@id/loc_title"
-                android:textStyle="bold"
-                android:layout_centerHorizontal="true"
 
+
+                android:layout_below="@+id/loc_title"
+                android:layout_centerHorizontal="true"
+                android:layout_marginBottom="20dp"
                 />
 
             <ImageButton
                 android:id="@+id/chosen_loc"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_alignTop="@+id/loc_distance"
-                android:layout_marginEnd="26dp"
+                android:layout_marginEnd="30dp"
                 android:background="@android:color/transparent"
-                android:src="@drawable/ic_action_chev_right" />
+                android:src="@drawable/ic_action_chev_right"
+                android:layout_centerVertical="true"
+                android:layout_alignParentEnd="true" />
 
 
         </RelativeLayout>

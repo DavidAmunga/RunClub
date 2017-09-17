@@ -142,6 +142,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
                     newEvent.child("eventAttending").setValue(add_attending);
                     newEvent.child("eventLocation").setValue(add_loc);
                     newEvent.child("eventDate").setValue(add_date);
+                    newEvent.child("eventType").setValue(add_type);
                     newEvent.child("eventTime").setValue(add_time);
                     newEvent.child("eventImage").setValue(downloadUrl.toString());
 

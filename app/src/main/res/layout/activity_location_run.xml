@@ -6,221 +6,212 @@
     tools:context=".LocationRunActivity">
 
 
-
-    <ScrollView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:scrollbarStyle="insideOverlay"
-        android:layout_above="@id/relLayoutBottomBar"
-        >
+        android:layout_height="match_parent">
 
-        <RelativeLayout
+
+        <ScrollView
+            android:id="@+id/scrollView2"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
 
+            >
 
-            <android.support.v7.widget.Toolbar
-                android:id="@+id/toolbar"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_alignParentTop="true"
-                android:background="#ffffff"
-                app:layout_scrollFlags="scroll|enterAlways"
-                app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+                android:layout_height="wrap_content">
 
 
-            <LinearLayout
-                android:id="@+id/top_details"
-                android:layout_width="match_parent"
-                android:layout_height="?attr/actionBarSize"
-                android:layout_below="@+id/toolbar"
-                android:gravity="top"
-                android:orientation="vertical">
-
-                <RelativeLayout
+                <android.support.v7.widget.Toolbar
+                    android:id="@+id/toolbar"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:background="#fff"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_alignParentTop="true"
+                    android:background="#ffffff"
+                    app:layout_scrollFlags="scroll|enterAlways"
+                    app:popupTheme="@style/ThemeOverlay.AppCompat.Light" />
+
+
+                <LinearLayout
+                    android:id="@+id/top_details"
+                    android:layout_width="match_parent"
+                    android:layout_height="?attr/actionBarSize"
+                    android:layout_below="@+id/toolbar"
+                    android:gravity="top"
                     android:orientation="vertical">
 
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="2dp"
-                        android:layout_above="@+id/txt_title"
-                        android:layout_marginBottom="10dp"
-                        android:background="#c0c0c0" />
-
-
-                    <TextView
-                        android:id="@+id/lbl_title"
-                        android:layout_width="wrap_content"
+                    <RelativeLayout
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:text="TITLE: " />
+                        android:background="#fff"
+                        android:orientation="vertical">
 
-                    <TextView
-                        android:id="@+id/txt_title"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginStart="5dp"
-                        android:layout_toEndOf="@+id/lbl_title"
-                        android:text="NDAKA"
-                        android:textColor="#000" />
-
-                    <TextView
-                        android:id="@+id/lbl_distance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_marginStart="18dp"
-                        android:layout_toEndOf="@+id/txt_title"
-                        android:text="DISTANCE: " />
-
-                    <TextView
-                        android:id="@+id/txt_distance"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentTop="true"
-                        android:layout_marginStart="5dp"
-                        android:layout_toEndOf="@+id/lbl_distance"
-                        android:text="2KM"
-                        android:textColor="#000" />
-
-                    <View
-                        android:layout_width="fill_parent"
-                        android:layout_height="2dp"
-                        android:layout_below="@id/txt_title"
-                        android:layout_marginTop="10dp"
-                        android:background="#c0c0c0" />
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="2dp"
+                            android:layout_above="@+id/txt_title"
+                            android:layout_marginBottom="10dp"
+                            android:background="#c0c0c0" />
 
 
-                </RelativeLayout>
-            </LinearLayout>
+                        <TextView
+                            android:id="@+id/lbl_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="TITLE: " />
+
+                        <TextView
+                            android:id="@+id/txt_title"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@+id/lbl_title"
+                            android:text="NDAKA"
+                            android:textColor="#000" />
+
+                        <TextView
+                            android:id="@+id/lbl_distance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_marginStart="18dp"
+                            android:layout_toEndOf="@+id/txt_title"
+                            android:text="DISTANCE: " />
+
+                        <TextView
+                            android:id="@+id/txt_distance"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentTop="true"
+                            android:layout_marginStart="5dp"
+                            android:layout_toEndOf="@+id/lbl_distance"
+                            android:text="2KM"
+                            android:textColor="#000" />
+
+                        <View
+                            android:layout_width="fill_parent"
+                            android:layout_height="2dp"
+                            android:layout_below="@id/txt_title"
+                            android:layout_marginTop="10dp"
+                            android:background="#c0c0c0" />
 
 
-            <fragment xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:map="http://schemas.android.com/apk/res-auto"
-                xmlns:tools="http://schemas.android.com/tools"
-                android:id="@+id/loc_map"
-                android:name="com.google.android.gms.maps.SupportMapFragment"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_alignParentStart="true"
-                android:layout_below="@+id/toolbar"
-                android:layout_marginTop="30dp"
-                tools:context="com.labs.tatu.runclub.LocationRunActivity" />
+                    </RelativeLayout>
+                </LinearLayout>
 
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/loc_map"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="13dp"
-                android:text="CHALLENGE A FRIEND"
-                android:textColor="#000"
-                android:textSize="20sp" />
-
-            <TextView
-                android:id="@+id/run_text1"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/loc_map"
-                android:layout_centerHorizontal="true"
+                <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+                    xmlns:map="http://schemas.android.com/apk/res-auto"
+                    xmlns:tools="http://schemas.android.com/tools"
+                    android:id="@+id/loc_map"
+                    android:name="com.google.android.gms.maps.SupportMapFragment"
+                    android:layout_width="match_parent"
+                    android:layout_height="200dp"
+                    android:layout_alignParentStart="true"
+                    android:layout_below="@+id/toolbar"
+                    android:layout_marginTop="30dp"
+                    tools:context="com.labs.tatu.runclub.LocationRunActivity" />
 
 
-                android:layout_marginLeft="25dp"
-                android:layout_marginRight="25dp"
-                android:layout_marginTop="36dp"
-                android:text="Running alone could be boring sometimes, Invite Friends and enjoy a run together"
-                android:textAlignment="center"
-                android:textSize="20sp" />
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/loc_map"
+                    android:layout_centerHorizontal="true"
+                    android:layout_marginTop="13dp"
+                    android:text="CHALLENGE A FRIEND"
+                    android:textColor="#000"
+                    android:textSize="20sp" />
 
-            <View
-                android:id="@+id/view"
-                android:layout_width="fill_parent"
-                android:layout_height="2dp"
-                android:layout_below="@id/run_text1"
-                android:layout_marginTop="16dp"
-                android:background="#c0c0c0" />
+                <TextView
+                    android:id="@+id/run_text1"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/loc_map"
+                    android:layout_centerHorizontal="true"
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Location Goal"
-                android:textSize="20dp"
-                android:id="@+id/txt_goal"
-                android:textColor="#000"
-                android:textStyle="bold"
-                android:layout_margin="20dp"
-                android:layout_below="@+id/view"
-                />
 
-            <android.support.constraint.ConstraintLayout
-                android:id="@+id/btnGroup1"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_below="@+id/txt_goal"
-                android:layout_marginTop="30dp"
+                    android:layout_marginLeft="25dp"
+                    android:layout_marginRight="25dp"
+                    android:layout_marginTop="36dp"
+                    android:text="Running alone could be boring sometimes, Invite Friends and enjoy a run together"
+                    android:textAlignment="center"
+                    android:textSize="20sp" />
 
-                >
+                <View
+                    android:id="@+id/view"
+                    android:layout_width="fill_parent"
+                    android:layout_height="2dp"
+                    android:layout_below="@id/run_text1"
+                    android:layout_marginTop="16dp"
+                    android:background="#c0c0c0" />
+
+                <TextView
+                    android:id="@+id/txt_goal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@+id/view"
+                    android:layout_margin="20dp"
+                    android:text="Location Goal"
+                    android:textColor="#000"
+                    android:textSize="20dp"
+                    android:textStyle="bold" />
+
 
                 <Button
                     android:id="@+id/btn_solo_run"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="4dp"
-                    android:layout_marginLeft="40dp"
-                    android:layout_marginRight="8dp"
+
+
                     android:background="@color/primary_dark"
                     android:padding="12dp"
+
                     android:text="START SOLO"
                     android:textColor="@android:color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintLeft_toLeftOf="parent"
-                    app:layout_constraintRight_toLeftOf="@+id/btn_challenge_friend" />
+                    android:layout_alignParentBottom="true"
+                    android:layout_alignEnd="@+id/run_text1" />
 
                 <Button
                     android:id="@+id/btn_challenge_friend"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="8dp"
+                    android:layout_alignLeft="@id/txt_goal"
+                    android:layout_alignTop="@+id/txt_goal"
+                    android:layout_below="@id/add_loc_goal"
                     android:layout_marginRight="38dp"
+                    android:layout_marginTop="36dp"
                     android:background="@color/accent"
                     android:padding="12dp"
                     android:text="CHALLENGE A FRIEND"
-                    android:textColor="@android:color/white"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintRight_toRightOf="parent" />
+                    android:textColor="@android:color/white" />
 
-            </android.support.constraint.ConstraintLayout>
+
+            </RelativeLayout>
+
+        </ScrollView>
+
+
+        <RelativeLayout
+            android:id="@+id/relLayoutBottomBar"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:layout_gravity="bottom"
+
+            >
+
+            <android.support.design.widget.BottomNavigationView
+                android:id="@+id/bottomNavView_Bar"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/gray_border_top"
+                app:menu="@menu/bottom_nav_menu" />
 
 
         </RelativeLayout>
-
-    </ScrollView>
-
-    <RelativeLayout
-        android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:id="@+id/relLayoutBottomBar"
-        android:layout_gravity="bottom"
-
-        >
-        <android.support.design.widget.BottomNavigationView
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:id="@+id/bottomNavView_Bar"
-            android:background="@drawable/gray_border_top"
-            app:menu="@menu/bottom_nav_menu"
-            />
-
-
-
-
     </RelativeLayout>
-
-
-
 
 
 </FrameLayout>
