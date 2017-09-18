@@ -96,7 +96,7 @@ public class LocationsFragment extends Fragment {
 
                 viewHolder.setLocationName(model.getLocationName());
                 viewHolder.setLocationImage(getContext(),model.getLocationPhotoUrl());
-                viewHolder.setLocationDistance(model.getLocationDistance());
+              //  viewHolder.setLocationDistance(model.getLocationDistance());
                 Log.d(TAG, "Photo Url: "+model.getLocationPhotoUrl());
                 Log.d(TAG, "Location Name: "+model.getLocationName());
                 Log.d(TAG, "Location Distance: "+model.getLocationDistance());

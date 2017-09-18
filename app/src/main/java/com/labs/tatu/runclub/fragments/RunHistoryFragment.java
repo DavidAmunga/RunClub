@@ -87,7 +87,8 @@ public class RunHistoryFragment extends Fragment {
     }
 
     private void setLocationsList() {
-
+        String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mDatabase=FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userLocations");
 
         FirebaseRecyclerAdapter<Location,LocationsFragment.LocationViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Location, LocationsFragment.LocationViewHolder>(
                 Location.class,
