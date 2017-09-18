@@ -259,8 +259,9 @@ public class MainActivity extends AppCompatActivity {
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(1).withName("Profile").withTag("Profile");
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Location").withTag("AddLoc");
         PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Event").withTag("AddEvent");
-        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(1).withName("Run Activity").withTag("RunActivity");
-        SecondaryDrawerItem item6 = new SecondaryDrawerItem().withIdentifier(2).withName("Log Out").withTag("LogOut");
+        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Awards").withTag("AddAward");
+        PrimaryDrawerItem item6 = new PrimaryDrawerItem().withIdentifier(1).withName("Run Activity").withTag("RunActivity");
+        SecondaryDrawerItem item7 = new SecondaryDrawerItem().withIdentifier(2).withName("Log Out").withTag("LogOut");
 
 //create the drawer and remember the `Drawer` result object
         Drawer result = new DrawerBuilder()
@@ -271,11 +272,12 @@ public class MainActivity extends AppCompatActivity {
                         item2.withIcon(R.drawable.ic_account_box_black_24dp),
                         item3.withIcon(R.drawable.ic_add_location_black_24dp),
                         item4.withIcon(R.drawable.ic_event_note_black_24dp),
-                        item5.withIcon(R.drawable.ic_directions_run_black_24dp),
+                        item5.withIcon(R.drawable.ic_action_achievement),
+                        item6.withIcon(R.drawable.ic_directions_run_black_24dp),
 
 
                         new DividerDrawerItem(),
-                        item6.withIcon(R.drawable.ic_log_out_black_24dp)
+                        item7.withIcon(R.drawable.ic_log_out_black_24dp)
 
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -297,6 +299,9 @@ public class MainActivity extends AppCompatActivity {
                                 break;
                             case "Profile":
                                 startActivity(new Intent(MainActivity.this,ProfileActivity.class));
+                                break;
+                            case "AddAward":
+                                startActivity(new Intent(MainActivity.this,AddAwardsActivity.class));
                                 break;
 
                         }

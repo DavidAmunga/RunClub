@@ -32,7 +32,6 @@
                 android:textSize="35dp"
                 android:textStyle="bold"
 
-                android:layout_marginTop="19dp"
                 android:layout_alignParentTop="true"
                 android:layout_centerHorizontal="true" />
             <TextView
@@ -43,11 +42,8 @@
                 android:text="2 KM"
                 android:layout_marginLeft="20dp"
                 android:textSize="30dp"
-
-
                 android:layout_below="@+id/loc_title"
                 android:layout_centerHorizontal="true"
-                android:layout_marginBottom="20dp"
                 />
 
             <ImageButton

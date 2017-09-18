@@ -104,7 +104,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="LOCATIONS"
-            android:id="@+id/lbl_challenges"
+            android:id="@+id/lbl_locations"
             android:textSize="20sp"
             android:textColor="#000"
             android:layout_marginTop="13dp"

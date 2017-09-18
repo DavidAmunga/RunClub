@@ -127,7 +127,7 @@ public class WorkoutActivity extends AppCompatActivity {
                                     String locationPhotoUrl=snapshot.child("locationPhotoUrl").getValue().toString();
 
                                     String user_id=FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                    DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userLocations");
+                                    DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userLocations").push();
                                     ref.child("locationName").setValue(locationName);
                                     ref.child("locationDistance").setValue(locationDistance);
                                     ref.child("locationPhotoUrl").setValue(locationPhotoUrl);

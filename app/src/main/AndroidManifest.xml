@@ -82,7 +82,8 @@
         </activity>
         <activity android:name=".ProfileActivity" />
         <activity android:name=".MyRunActivity" />
-        <activity android:name=".AwardsActivity"></activity>
+        <activity android:name=".AwardsActivity" />
+        <activity android:name=".AddAwardsActivity"></activity>
     </application>
 
 </manifest>

@@ -96,7 +96,7 @@ public class LocationsFragment extends Fragment {
 
                 viewHolder.setLocationName(model.getLocationName());
                 viewHolder.setLocationImage(getContext(),model.getLocationPhotoUrl());
-              //  viewHolder.setLocationDistance(model.getLocationDistance());
+                viewHolder.setLocationDistance(model.getLocationDistance());
                 Log.d(TAG, "Photo Url: "+model.getLocationPhotoUrl());
                 Log.d(TAG, "Location Name: "+model.getLocationName());
                 Log.d(TAG, "Location Distance: "+model.getLocationDistance());
@@ -139,7 +139,7 @@ public class LocationsFragment extends Fragment {
             location_name.setText(title);
 
         }
-        public void setLocationDistance(int distance)
+        public void setLocationDistance(long distance)
         {
             TextView locationDistance=(TextView)mView.findViewById(R.id.loc_distance);
             if(distance>1000)

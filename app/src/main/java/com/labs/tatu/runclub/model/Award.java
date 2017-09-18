@@ -4,11 +4,16 @@ package com.labs.tatu.runclub.model;
  * Created by amush on 18-Sep-17.
  */
 
-public class Awards {
+public class Award {
     private String awardName,awardDescription,awardImage,awardPoints;
 
 
-    public Awards(String awardName, String awardDescription, String awardImage, String awardPoints) {
+    public Award()
+    {
+
+    }
+
+    public Award(String awardName, String awardDescription, String awardImage, String awardPoints) {
         this.awardName = awardName;
         this.awardDescription = awardDescription;
         this.awardImage = awardImage;

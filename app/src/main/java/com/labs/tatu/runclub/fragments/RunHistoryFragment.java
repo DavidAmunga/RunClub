@@ -5,7 +5,6 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -18,12 +17,13 @@ import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.jaredrummler.materialspinner.MaterialSpinner;
-import com.labs.tatu.runclub.EventsActivity;
 import com.labs.tatu.runclub.LocationRunActivity;
-import com.labs.tatu.runclub.MyRunActivity;
 import com.labs.tatu.runclub.R;
 import com.labs.tatu.runclub.SingleEventActivity;
 import com.labs.tatu.runclub.model.Event;
@@ -43,6 +43,8 @@ import java.util.Date;
 public class RunHistoryFragment extends Fragment {
     private static final String TAG = "RunHistoryFragment";
 
+    private TextView txtAwards,txtLocations;
+
     private RecyclerView mList;
     private DatabaseReference mDatabase;
     MaterialSpinner spinner;
@@ -50,6 +52,10 @@ public class RunHistoryFragment extends Fragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_run_history_layout,container,false);
+
+        txtAwards=(TextView)view.findViewById(R.id.txt_awards);
+        txtLocations=(TextView)view.findViewById(R.id.txt_locations);
+
 
         mList=(RecyclerView)view.findViewById(R.id.run_list);
         mList.setHasFixedSize(true);
@@ -62,42 +68,81 @@ public class RunHistoryFragment extends Fragment {
         spinner.setItems("My Locations", "My Events", "My Challenges");
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                if(item.equals("My Locations"))
+                 if(item.equals("My Challenges"))
                 {
-                    setLocationsList();
-
-                }
-                else if(item.equals("My Challenges"))
-                {
-
-
-
                 }
                 else if(item.equals("My Events"))
                 {
                     setEventsList();
 
                 }
+                else
+                {
+                    setLocationsList();
+
+                }
+
 
 
             }
         });
 
+//        Count No of Children in Nodes
+//        Awards
+        String user_id=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference awardsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userAwards");
+        awardsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int size =(int)dataSnapshot.getChildrenCount();
+                Log.d(TAG, "Child Size "+size);
+                txtAwards.setText(String.valueOf(size));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+//        Locations
+
+
+        DatabaseReference locationsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userLocations");
+        locationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int size =(int)dataSnapshot.getChildrenCount();
+                Log.d(TAG, "Child Size "+size);
+                txtLocations.setText(String.valueOf(size));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
         return view;
     }
+
+
+
 
     private void setLocationsList() {
         String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabase=FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userLocations");
 
-        FirebaseRecyclerAdapter<Location,RunHistoryFragment.LocationViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Location, RunHistoryFragment.LocationViewHolder>(
+        FirebaseRecyclerAdapter<Location, LocationViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Location, LocationViewHolder>(
                 Location.class,
                 R.layout.location_row,
-                RunHistoryFragment.LocationViewHolder.class,
+                LocationViewHolder.class,
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(RunHistoryFragment.LocationViewHolder viewHolder, final Location model, final int position) {
+            protected void populateViewHolder(LocationViewHolder viewHolder, final Location model, final int position) {
 
                 viewHolder.setLocationName(model.getLocationName());
                 viewHolder.setLocationImage(getContext(),model.getLocationPhotoUrl());
@@ -106,7 +151,7 @@ public class RunHistoryFragment extends Fragment {
                 Log.d(TAG, "Location Name: "+model.getLocationName());
                 Log.d(TAG, "Location Distance: "+model.getLocationDistance());
 
-                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
                         Log.w(TAG, "You clicked on "+position);
@@ -230,7 +275,7 @@ public class RunHistoryFragment extends Fragment {
         public void setEventsAttending(String att)
         {
             TextView eventAtt=(TextView)mView.findViewById(R.id.event_attending);
-            eventAtt.setText(String.valueOf(att)+" ATTENDING");
+            eventAtt.setText("GOING");
         }
 
 //        public void setEventsImage(final Context ctx, final String image)
