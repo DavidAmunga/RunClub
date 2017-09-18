@@ -105,7 +105,7 @@ public class MyRunActivity extends AppCompatActivity {
         tabLayout.getTabAt(0).setIcon(R.drawable.ic_run_history);
         tabLayout.getTabAt(1).setIcon(R.drawable.ic_action_achievement);
 
-
+        setBottomNav();
 
 
         drawer();
@@ -293,6 +293,55 @@ public class MyRunActivity extends AppCompatActivity {
         }
     }
 
+
+    private void setBottomNav()
+    {
+        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavView_Bar);
+        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
+
+        Menu menu=bottomNavigationView.getMenu();
+        MenuItem menuItem=menu.getItem(1);
+        menuItem.setChecked(true);
+
+
+
+
+
+        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                switch(item.getItemId())
+                {
+                    case R.id.ic_events:
+                        startActivity(new Intent(MyRunActivity.this,EventsActivity.class));
+                        break;
+
+
+                    case R.id.ic_friends:
+                        startActivity(new Intent(MyRunActivity.this,FriendsActivity.class));
+
+                        break;
+
+                    case R.id.ic_inbox:
+                        startActivity(new Intent(MyRunActivity.this,InboxActivity.class));
+
+                        break;
+
+                    case R.id.ic_stats:
+                        startActivity(new Intent(MyRunActivity.this,StatsActivity.class));
+
+                        break;
+                    case R.id.ic_run:
+                        startActivity(new Intent(MyRunActivity.this,MainActivity.class));
+
+                        break;
+
+
+                }
+                return false;
+            }
+        });
+    }
 
 
 }

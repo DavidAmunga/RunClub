@@ -1,16 +1,40 @@
 package com.labs.tatu.runclub.fragments;
 
+import android.content.Context;
+import android.content.Intent;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
 import android.support.v4.app.Fragment;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
 import com.jaredrummler.materialspinner.MaterialSpinner;
+import com.labs.tatu.runclub.EventsActivity;
+import com.labs.tatu.runclub.LocationRunActivity;
+import com.labs.tatu.runclub.MyRunActivity;
 import com.labs.tatu.runclub.R;
+import com.labs.tatu.runclub.SingleEventActivity;
+import com.labs.tatu.runclub.model.Event;
+import com.labs.tatu.runclub.model.Location;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 /**
  * Created by amush on 18-Sep-17.
@@ -19,11 +43,17 @@ import com.labs.tatu.runclub.R;
 public class RunHistoryFragment extends Fragment {
     private static final String TAG = "RunHistoryFragment";
 
+    private RecyclerView mList;
+    private DatabaseReference mDatabase;
     MaterialSpinner spinner;
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view=inflater.inflate(R.layout.fragment_run_history_layout,container,false);
+
+        mList=(RecyclerView)view.findViewById(R.id.run_list);
+        mList.setHasFixedSize(true);
+        mList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         spinner=(MaterialSpinner)view.findViewById(R.id.spinner);
         spinner.setTextColor(getResources().getColor(android.R.color.black));
@@ -34,17 +64,18 @@ public class RunHistoryFragment extends Fragment {
             @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                 if(item.equals("Locations"))
                 {
-
+                    setLocationsList();
 
                 }
                 else if(item.equals("Challenges"))
                 {
 
 
+
                 }
                 else if(item.equals("Events"))
                 {
-
+                    setEventsList();
 
                 }
 
@@ -53,5 +84,226 @@ public class RunHistoryFragment extends Fragment {
         });
 
         return view;
+    }
+
+    private void setLocationsList() {
+
+
+        FirebaseRecyclerAdapter<Location,LocationsFragment.LocationViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Location, LocationsFragment.LocationViewHolder>(
+                Location.class,
+                R.layout.location_row,
+                LocationsFragment.LocationViewHolder.class,
+                mDatabase
+        ) {
+            @Override
+            protected void populateViewHolder(LocationsFragment.LocationViewHolder viewHolder, final Location model, final int position) {
+
+                viewHolder.setLocationName(model.getLocationName());
+                viewHolder.setLocationImage(getContext(),model.getLocationPhotoUrl());
+                viewHolder.setLocationDistance(model.getLocationDistance());
+                Log.d(TAG, "Photo Url: "+model.getLocationPhotoUrl());
+                Log.d(TAG, "Location Name: "+model.getLocationName());
+                Log.d(TAG, "Location Distance: "+model.getLocationDistance());
+
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.w(TAG, "You clicked on "+position);
+                        Intent intent=new Intent(getContext(),LocationRunActivity.class);
+                        intent.putExtra("locName",model.getLocationName());
+                        intent.putExtra("locDistance",model.getLocationDistance());
+                        intent.putExtra("fromLat",model.getFromLat());
+                        intent.putExtra("fromLong",model.getFromLong());
+                        intent.putExtra("locGoal",model.getLocationGoal());
+                        intent.putExtra("toLat",model.getToLat());
+                        intent.putExtra("toLong",model.getToLong());
+                        Log.d(TAG, "fromLat: "+model.getFromLat());
+                        startActivity(intent);
+
+                    }
+                });
+
+            }
+        };
+        mList.setAdapter(firebaseRecyclerAdapter);
+
+
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+
+    }
+
+    public void setEventsList()
+    {
+
+
+        String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mDatabase=FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userEvents");
+
+        FirebaseRecyclerAdapter<Event,EventsActivity.EventsViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Event, EventsActivity.EventsViewHolder>(
+                Event.class,
+                R.layout.event_row,
+                EventsActivity.EventsViewHolder.class,
+                mDatabase
+        ) {
+            @Override
+            protected void populateViewHolder(EventsActivity.EventsViewHolder viewHolder, final Event model, final int position) {
+                viewHolder.setEventsName(model.getEventName());
+                Log.d(TAG, "populateViewHolder: "+model.getEventName());
+                viewHolder.setEventsDate(model.getEventDate());
+                viewHolder.setEventsTime(model.getEventTime());
+                viewHolder.setEventsAttending(model.getEventAttending());
+
+
+
+
+                viewHolder.itemView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        Log.d(TAG, "onClick: You clicked on "+position);
+                        Intent intent=new Intent(getContext(),SingleEventActivity.class);
+                        intent.putExtra("eventName",model.getEventName());
+                        startActivity(intent);
+                    }
+                });
+
+            }
+        };
+        mList.setAdapter(firebaseRecyclerAdapter);
+
+
+
+    }
+
+
+
+    public static class EventsViewHolder extends RecyclerView.ViewHolder
+    {
+        View mView;
+
+        public EventsViewHolder(View itemView) {
+            super(itemView);
+
+            mView=itemView;
+        }
+        public void setEventsName(String name)
+        {
+            TextView eventsName=(TextView)mView.findViewById(R.id.event_name);
+            eventsName.setText(name);
+        }
+        public void setEventsDate(String date)
+        {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            try {
+                Date firstDate = (Date) sdf.parse(date);
+                SimpleDateFormat parseFormat = new SimpleDateFormat("E MMMM dd,yyyy");
+                String eventDate=parseFormat.format(firstDate);
+
+                TextView eventsDate=(TextView)mView.findViewById(R.id.event_date);
+                eventsDate.setText(eventDate);
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+
+
+        }
+        public void setEventsTime(String time)
+        {
+            SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
+
+            try {
+                Date firstTime=sdf.parse(time);
+                String eventTime=sdf.format(firstTime);
+
+                TextView eventsTime=(TextView)mView.findViewById(R.id.event_time);
+                eventsTime.setText(eventTime);
+            } catch (ParseException e) {
+                e.printStackTrace();
+            }
+        }
+        public void setEventsAttending(String att)
+        {
+            TextView eventAtt=(TextView)mView.findViewById(R.id.event_attending);
+            eventAtt.setText(String.valueOf(att)+" ATTENDING");
+        }
+
+//        public void setEventsImage(final Context ctx, final String image)
+//        {
+//            final ImageView events_image=(ImageView)itemView.findViewById(R.id.event_image);
+//            Picasso
+//                    .with(ctx)
+//                    .load(image)
+//                    .networkPolicy(NetworkPolicy.OFFLINE)
+//                    .into(events_image, new Callback() {
+//                        @Override
+//                        public void onSuccess() {
+//
+//                        }
+//
+//                        @Override
+//                        public void onError() {
+//                            Picasso.with(ctx).load(image).into(events_image);
+//                        }
+//                    });
+//        }
+    }
+    public static class LocationViewHolder extends RecyclerView.ViewHolder
+    {
+        View mView;
+
+        public LocationViewHolder(View itemView) {
+            super(itemView);
+
+            mView=itemView;
+        }
+        public void setLocationName(String title)
+        {
+            TextView location_name=(TextView)mView.findViewById(R.id.loc_title);
+            location_name.setText(title);
+
+        }
+        public void setLocationDistance(int distance)
+        {
+            TextView locationDistance=(TextView)mView.findViewById(R.id.loc_distance);
+            if(distance>1000)
+            {
+                locationDistance.setText(String.valueOf(distance/1000)+" km");
+            }
+            else
+            {
+                locationDistance.setText(String.valueOf(distance)+" m");
+
+            }
+
+
+        }
+        public void setLocationImage(final Context ctx,final String image)
+        {
+            final ImageView loc_image=(ImageView)mView.findViewById(R.id.loc_image);
+
+
+            Picasso
+                    .with(ctx)
+                    .load(image)
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .into(loc_image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            Picasso.with(ctx).load(image).into(loc_image);
+                        }
+                    });
+
+
+        }
     }
 }

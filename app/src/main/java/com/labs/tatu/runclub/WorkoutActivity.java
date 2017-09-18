@@ -8,6 +8,7 @@ import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -15,10 +16,17 @@ import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.labs.tatu.runclub.helpers.BottomNavigationViewHelper;
 import com.tapadoo.alerter.Alerter;
 
 public class WorkoutActivity extends AppCompatActivity {
+    private static final String TAG = "WorkoutActivity";
 
     TextView textView,txt_loc_name;
 
@@ -34,6 +42,7 @@ public class WorkoutActivity extends AppCompatActivity {
 
     String locGoal="";
     public boolean isStart;
+    FirebaseAuth mAuth;
 
 
 
@@ -42,6 +51,8 @@ public class WorkoutActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_workout);
+
+        mAuth=FirebaseAuth.getInstance();
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -102,6 +113,42 @@ public class WorkoutActivity extends AppCompatActivity {
                     }
                     else
                     {
+                        String user_id=mAuth.getCurrentUser().getUid();
+                        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Locations");
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                if (snapshot.child("locationName").getValue().equals(txt_loc_name.getText().toString().trim())) {
+                                    Log.d(TAG, "onDataChange: Success");
+                                    String locationName=snapshot.child("locationName").getValue().toString();
+                                    int locationDistance=Integer.parseInt(snapshot.child("locationDistance").getValue().toString());
+                                    String locationPhotoUrl=snapshot.child("locationPhotoUrl").getValue().toString();
+
+                                    String user_id=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                    DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userLocations");
+                                    ref.child("locationName").setValue(locationName);
+                                    ref.child("locationDistance").setValue(locationDistance);
+                                    ref.child("locationPhotoUrl").setValue(locationPhotoUrl);
+
+
+
+                                }
+
+
+                            }
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+
+
+
                         Alerter.create(WorkoutActivity.this)
                                 .setTitle(txt_loc_name.getText().toString() + "Challenge")
                                 .setText("See through the whole distance")
