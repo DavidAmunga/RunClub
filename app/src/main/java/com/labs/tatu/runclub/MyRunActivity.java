@@ -6,6 +6,8 @@ import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.design.widget.TabLayout;
+import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
@@ -15,11 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
-import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
@@ -30,7 +30,13 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.labs.tatu.runclub.fragments.AwardsFragment;
+import com.labs.tatu.runclub.fragments.ChallengesFragment;
+import com.labs.tatu.runclub.fragments.LocationsFragment;
+import com.labs.tatu.runclub.fragments.QuickStartFragment;
+import com.labs.tatu.runclub.fragments.RunHistoryFragment;
 import com.labs.tatu.runclub.helpers.BottomNavigationViewHelper;
+import com.labs.tatu.runclub.helpers.SectionsPagerAdapter;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -44,34 +50,28 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.squareup.picasso.Picasso;
 
-public class FriendsActivity extends AppCompatActivity {
-    private static final String TAG = "FriendsActivity";
-    private static final int REQUEST_INVITE=1;
+public class MyRunActivity extends AppCompatActivity {
+    private static final String TAG = "MyRunActivity";
+    private SectionsPagerAdapter sectionsPagerAdapter;
+    private ViewPager mViewPager;
     private Toolbar toolbar;
-
-    FirebaseAuth mAuth;
     private boolean isLoggingOut = false;
     private GoogleApiClient mGoogleApiClient;
-
+    FirebaseAuth mAuth;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_friends);
+        setContentView(R.layout.activity_my_run);
 
-        toolbar = (Toolbar) findViewById(R.id.friendsToolbar);
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
 
         setSupportActionBar(toolbar);
-
-        getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("");
 
-//        Set No Status Bar
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
-//
+        mAuth = FirebaseAuth.getInstance();
 
-        mAuth=FirebaseAuth.getInstance();
-        //        Set Google Log In
+
+//        Set Google Log In
 
         //Google Sign In
         GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
@@ -82,97 +82,53 @@ public class FriendsActivity extends AppCompatActivity {
                 .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
                     @Override
                     public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Toast.makeText(FriendsActivity.this, "Something went wrong....", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(MyRunActivity.this, "Something went wrong....", Toast.LENGTH_SHORT).show();
                     }
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
 
-        TextView invite = (TextView) findViewById(R.id.invite);
-
-        invite.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-                        .setMessage(getString(R.string.invitation_message))
-                        .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-                        .setCustomImage(Uri.parse("https://drive.google.com/open?id=0B7ppRoKalXOdUWxCWHRLTmdwaUk"))
-                        .setCallToActionText(getString(R.string.invitation_cta))
-                        .build();
-                startActivityForResult(intent, REQUEST_INVITE);
-            }
-        });
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
-
-        BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavView_Bar);
-        BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
-
-        Menu menu = bottomNavigationView.getMenu();
-        MenuItem menuItem = menu.getItem(0);
-        menuItem.setChecked(true);
-
-        bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
-            @Override
-            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch (item.getItemId()) {
-                    case R.id.ic_events:
-                        startActivity(new Intent(FriendsActivity.this, EventsActivity.class));
-                        break;
+        sectionsPagerAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mViewPager = (ViewPager) findViewById(R.id.container);
 
 
-                    case R.id.ic_friends:
-                        startActivity(new Intent(FriendsActivity.this, FriendsActivity.class));
+        setupViewPager(mViewPager);
 
-                        break;
+        TabLayout tabLayout = (TabLayout) findViewById(R.id.run_history_tabs);
+        tabLayout.setupWithViewPager(mViewPager);
 
-                    case R.id.ic_inbox:
-                        startActivity(new Intent(FriendsActivity.this, InboxActivity.class));
-
-                        break;
-
-                    case R.id.ic_stats:
-                        startActivity(new Intent(FriendsActivity.this, StatsActivity.class));
-
-                        break;
-                    case R.id.ic_run:
-                        startActivity(new Intent(FriendsActivity.this, MainActivity.class));
-
-                        break;
+        tabLayout.getTabAt(0).setIcon(R.drawable.ic_run_history);
+        tabLayout.getTabAt(1).setIcon(R.drawable.ic_action_achievement);
 
 
-                }
-                return false;
-            }
-        });
+
 
         drawer();
-    }
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-        Log.d(TAG, "onActivityResult: requestCode=" + requestCode + ", resultCode=" + resultCode);
 
-        if (requestCode == REQUEST_INVITE) {
-            if (resultCode == RESULT_OK) {
-                // Get the invitation IDs of all sent messages
-                String[] ids = AppInviteInvitation.getInvitationIds(resultCode, data);
-                for (String id : ids) {
-                    Log.d(TAG, "onActivityResult: sent invitation " + id);
-                }
-            } else {
-                // Sending failed or it was canceled, show failure message to the user
-                // ...
-            }
-        }
+
+
+//
     }
+
 
     @Override
     protected void onPause() {
         super.onPause();
         overridePendingTransition(0, 0);
     }
+    private void setupViewPager(ViewPager viewPager) {
+        SectionsPagerAdapter mAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+        mAdapter.addFragment(new RunHistoryFragment());
+        mAdapter.addFragment(new AwardsFragment());
+
+        viewPager.setAdapter(mAdapter);
+    }
+
 
     public void drawer() {
         String name=mAuth.getCurrentUser().getDisplayName();
@@ -284,20 +240,20 @@ public class FriendsActivity extends AppCompatActivity {
                     public boolean onItemClick(View view, int position, IDrawerItem drawerItem) {
                         switch (drawerItem.getTag().toString()) {
                             case "AddLoc":
-                                startActivity(new Intent(FriendsActivity.this, AddLocationActivity.class));
+                                startActivity(new Intent(MyRunActivity.this, AddLocationActivity.class));
                                 break;
                             case "AddEvent":
 
-                                startActivity(new Intent(FriendsActivity.this, LoginActivity.class));
+                                startActivity(new Intent(MyRunActivity.this, LoginActivity.class));
                                 break;
                             case "LogOut":
                                 logOut();
                                 break;
                             case "RunActivity":
-                                startActivity(new Intent(FriendsActivity.this,MyRunActivity.class));
+                                startActivity(new Intent(MyRunActivity.this,MyRunActivity.class));
                                 break;
                             case "Profile":
-                                startActivity(new Intent(FriendsActivity.this,ProfileActivity.class));
+                                startActivity(new Intent(MyRunActivity.this,ProfileActivity.class));
                                 break;
 
                         }
@@ -322,7 +278,7 @@ public class FriendsActivity extends AppCompatActivity {
             Log.d(TAG, "logOut: Facebook");
             FirebaseAuth.getInstance().signOut();
             LoginManager.getInstance().logOut();
-            startActivity(new Intent(FriendsActivity.this, LoginActivity.class));
+            startActivity(new Intent(MyRunActivity.this, LoginActivity.class));
             finish();
 
 
@@ -330,10 +286,13 @@ public class FriendsActivity extends AppCompatActivity {
             Log.d(TAG, "logOut: Google");
             FirebaseAuth.getInstance().signOut();
             Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-            startActivity(new Intent(FriendsActivity.this, LoginActivity.class));
+            startActivity(new Intent(MyRunActivity.this, LoginActivity.class));
             finish();
 
 
         }
     }
+
+
+
 }

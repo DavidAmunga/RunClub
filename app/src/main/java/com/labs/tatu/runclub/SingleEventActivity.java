@@ -42,6 +42,7 @@ public class SingleEventActivity extends AppCompatActivity {
 
     private boolean isInterested=true;
 
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -80,10 +81,19 @@ public class SingleEventActivity extends AppCompatActivity {
                                 DatabaseReference eventAttending=snapshot.getRef().child("eventAttending");
                                 eventAttending.setValue(String.valueOf(attending+1));
 
-//                                Add Event to User Events
+//                                Remove Listener
                                 String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                DatabaseReference userRef=FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userEvents");
-                                userRef.child(txt_event_name.getText().toString().trim()).setValue("Going");
+                                DatabaseReference eventRef=FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userEvents");
+
+
+//                                Add Event to User Events
+                                user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
+                                DatabaseReference userRef=FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userEvents").push();
+                                userRef.child("eventName").setValue(txt_event_name.getText().toString().trim());
+                                userRef.child("eventLocation").setValue(txt_event_loc.getText().toString().trim());
+                                userRef.child("eventDate").setValue(txt_event_date.getText().toString().trim());
+                                userRef.child("eventTime").setValue(txt_event_time.getText().toString().trim());
+                                userRef.child("eventStatus").setValue("Going");
 
 
                                 Sneaker.with(SingleEventActivity.this)
@@ -112,6 +122,7 @@ public class SingleEventActivity extends AppCompatActivity {
                 });
             }
         });
+
         btn_notInterested.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -130,11 +141,30 @@ public class SingleEventActivity extends AppCompatActivity {
                                 DatabaseReference eventAttending=snapshot.getRef().child("eventAttending");
                                 eventAttending.setValue(String.valueOf(attending-1));
 
-                                String eventName=snapshot.child("eventName").getValue().toString();
+                                final String eventName=snapshot.child("eventName").getValue().toString();
                                 String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userEvents").child(eventName);
-                                ref.setValue(null);
+
+                                final DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userEvents");
+
+
+                               ref.addValueEventListener(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                            if(snapshot.child("eventName").getValue().equals(eventName))
+                                            {
+                                                Log.d(TAG, "Snapshot Deleted!");
+                                                snapshot.getRef().setValue(null);
+                                                ref.removeEventListener(this);
+                                            }
+                                        }
+                                    }
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+                                    }
+                                });
 //
+
 
 
 
@@ -191,7 +221,7 @@ public class SingleEventActivity extends AppCompatActivity {
                         txt_event_date.setText(convertDate(snapshot.child("eventDate").getValue().toString()));
                         txt_event_loc.setText(snapshot.child("eventLocation").getValue().toString());
                         txt_event_time.setText(snapshot.child("eventTime").getValue().toString());
-                        txt_event_type.setText(snapshot.child("eventType").getValue().toString());
+                       // txt_event_type.setText(snapshot.child("eventType").getValue().toString());
 
                     }
 

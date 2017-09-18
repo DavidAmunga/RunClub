@@ -34,7 +34,6 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.labs.tatu.runclub.helpers.BottomNavigationViewHelper;
 import com.labs.tatu.runclub.model.Event;
-import com.labs.tatu.runclub.model.MyRunActivity;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
