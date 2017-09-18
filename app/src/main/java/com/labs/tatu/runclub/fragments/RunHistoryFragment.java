@@ -59,21 +59,21 @@ public class RunHistoryFragment extends Fragment {
         spinner.setTextColor(getResources().getColor(android.R.color.black));
         spinner.setText("COMPLETED RUNS");
         spinner.setBackgroundColor(Color.parseColor("#c3c3c3"));
-        spinner.setItems("Locations", "Events", "Challenges");
+        spinner.setItems("My Locations", "My Events", "My Challenges");
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
-                if(item.equals("Locations"))
+                if(item.equals("My Locations"))
                 {
                     setLocationsList();
 
                 }
-                else if(item.equals("Challenges"))
+                else if(item.equals("My Challenges"))
                 {
 
 
 
                 }
-                else if(item.equals("Events"))
+                else if(item.equals("My Events"))
                 {
                     setEventsList();
 
@@ -90,14 +90,14 @@ public class RunHistoryFragment extends Fragment {
         String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabase=FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userLocations");
 
-        FirebaseRecyclerAdapter<Location,LocationsFragment.LocationViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Location, LocationsFragment.LocationViewHolder>(
+        FirebaseRecyclerAdapter<Location,RunHistoryFragment.LocationViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Location, RunHistoryFragment.LocationViewHolder>(
                 Location.class,
                 R.layout.location_row,
-                LocationsFragment.LocationViewHolder.class,
+                RunHistoryFragment.LocationViewHolder.class,
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(LocationsFragment.LocationViewHolder viewHolder, final Location model, final int position) {
+            protected void populateViewHolder(RunHistoryFragment.LocationViewHolder viewHolder, final Location model, final int position) {
 
                 viewHolder.setLocationName(model.getLocationName());
                 viewHolder.setLocationImage(getContext(),model.getLocationPhotoUrl());
@@ -145,14 +145,14 @@ public class RunHistoryFragment extends Fragment {
         String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
         mDatabase=FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userEvents");
 
-        FirebaseRecyclerAdapter<Event,EventsActivity.EventsViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Event, EventsActivity.EventsViewHolder>(
+        FirebaseRecyclerAdapter<Event,RunHistoryFragment.EventsViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Event,RunHistoryFragment.EventsViewHolder>(
                 Event.class,
                 R.layout.event_row,
-                EventsActivity.EventsViewHolder.class,
+                RunHistoryFragment.EventsViewHolder.class,
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(EventsActivity.EventsViewHolder viewHolder, final Event model, final int position) {
+            protected void populateViewHolder(RunHistoryFragment.EventsViewHolder viewHolder, final Event model, final int position) {
                 viewHolder.setEventsName(model.getEventName());
                 Log.d(TAG, "populateViewHolder: "+model.getEventName());
                 viewHolder.setEventsDate(model.getEventDate());

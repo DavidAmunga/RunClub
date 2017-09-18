@@ -81,8 +81,8 @@
             </intent-filter>
         </activity>
         <activity android:name=".ProfileActivity" />
-        <activity android:name=".MyRunActivity"></activity>
-
+        <activity android:name=".MyRunActivity" />
+        <activity android:name=".AwardsActivity"></activity>
     </application>
 
 </manifest>

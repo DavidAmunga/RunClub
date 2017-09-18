@@ -90,7 +90,7 @@
             android:layout_height="wrap_content"
             android:text="30"
             android:textStyle="bold"
-            android:id="@+id/txt_challenges"
+            android:id="@+id/txt_locations"
             android:layout_gravity="center"
             android:textSize="30sp"
             android:textColor="@color/colorPrimary"
@@ -103,7 +103,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="CHALLENGES"
+            android:text="LOCATIONS"
             android:id="@+id/lbl_challenges"
             android:textSize="20sp"
             android:textColor="#000"

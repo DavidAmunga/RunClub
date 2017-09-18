@@ -60,6 +60,7 @@ public class WorkoutActivity extends AppCompatActivity {
         getSupportActionBar().setTitle("");
 
 
+
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
 
