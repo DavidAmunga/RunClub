@@ -62,6 +62,7 @@ public class LoginActivity extends AppCompatActivity {
     LoginButton btnFB;
     SignInButton btnGG;
     Button btnLogin;
+    TextView txtRegister;
 
     EditText txtEmail,txtPassword;
     private static final int RC_SIGN_IN=2;
@@ -156,7 +157,7 @@ public class LoginActivity extends AppCompatActivity {
                                 else
                                 {
                                     Log.d(TAG, "onComplete: Sign Up Success");
-                                    signUp();
+                                    normalSignIn();
                                 }
 
                                 // ...
@@ -164,19 +165,45 @@ public class LoginActivity extends AppCompatActivity {
                         });
             }
         });
+
+        txtRegister.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+            }
+        });
     }
 
-    private void signUp() {
+    private void normalSignIn()
+    {
         String email=txtEmail.getText().toString().trim();
+        String password=txtPassword.getText().toString().trim();
+        mAuth.signInWithEmailAndPassword(email, password)
+                .addOnCompleteListener(this, new OnCompleteListener<AuthResult>() {
+                    @Override
+                    public void onComplete(@NonNull Task<AuthResult> task) {
+                        Log.d(TAG, "signInWithEmail:onComplete:" + task.isSuccessful());
 
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").push();
-        ref.child("userEmail").setValue(email);
-        ref.child("userPhotoUrl").setValue("");
-        ref.child("userLevel").setValue("Tera");
+                        // If sign in fails, display a message to the user. If sign in succeeds
+                        // the auth state listener will be notified and logic to handle the
+                        // signed in user can be handled in the listener.
+                        if (!task.isSuccessful()) {
+                            Log.w(TAG, "signInWithEmail:failed", task.getException());
+                            Toast.makeText(LoginActivity.this, R.string.auth_failed,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                        else
+                        {
+                            Log.d(TAG, "onComplete: Sign In Success!");
+                            startActivity(new Intent(LoginActivity.this,MainActivity.class));
+                        }
+
+                        // ...
+                    }
+                });
 
 
     }
-
     @Override
     protected void onStart() {
         super.onStart();
@@ -313,6 +340,7 @@ public class LoginActivity extends AppCompatActivity {
         btnLogin=(Button)findViewById(R.id.btnLogin);
         txtEmail=(EditText)findViewById(R.id.txt_email);
         txtPassword=(EditText)findViewById(R.id.txt_pass);
+        txtRegister=(TextView)findViewById(R.id.txt_signUp);
     }
 
 }
