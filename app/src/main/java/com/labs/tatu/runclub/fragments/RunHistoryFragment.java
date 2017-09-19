@@ -43,7 +43,7 @@ import java.util.Date;
 public class RunHistoryFragment extends Fragment {
     private static final String TAG = "RunHistoryFragment";
 
-    private TextView txtAwards,txtLocations;
+    private TextView txtAwards,txtLocations,txtEvents,txtChallenges;
 
     private RecyclerView mList;
     private DatabaseReference mDatabase;
@@ -55,6 +55,8 @@ public class RunHistoryFragment extends Fragment {
 
         txtAwards=(TextView)view.findViewById(R.id.txt_awards);
         txtLocations=(TextView)view.findViewById(R.id.txt_locations);
+        txtEvents=(TextView)view.findViewById(R.id.txt_events);
+        txtChallenges=(TextView)view.findViewById(R.id.txt_challenges);
 
 
         mList=(RecyclerView)view.findViewById(R.id.run_list);
@@ -87,48 +89,13 @@ public class RunHistoryFragment extends Fragment {
             }
         });
 
-//        Count No of Children in Nodes
-//        Awards
-        String user_id=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference awardsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userAwards");
-        awardsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                int size =(int)dataSnapshot.getChildrenCount();
-                Log.d(TAG, "Child Size "+size);
-                txtAwards.setText(String.valueOf(size));
-            }
+        count_no();
 
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-//        Locations
-
-
-        DatabaseReference locationsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userLocations");
-        locationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                int size =(int)dataSnapshot.getChildrenCount();
-                Log.d(TAG, "Child Size "+size);
-                txtLocations.setText(String.valueOf(size));
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
 
 
 
         return view;
     }
-
-
 
 
     private void setLocationsList() {
@@ -352,4 +319,87 @@ public class RunHistoryFragment extends Fragment {
 
         }
     }
+
+    private void count_no() {
+        //        Count No of Children in Nodes
+//        Awards
+        String user_id=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference awardsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userAwards");
+        awardsRef.keepSynced(true);
+        awardsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int size =(int)dataSnapshot.getChildrenCount();
+                Log.d(TAG, "Child Size "+size);
+                txtAwards.setText(String.valueOf(size));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+//        Locations
+
+
+        DatabaseReference locationsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userLocations");
+        locationsRef.keepSynced(true);
+        locationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int size =(int)dataSnapshot.getChildrenCount();
+                Log.d(TAG, "Child Size "+size);
+                txtLocations.setText(String.valueOf(size));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //        Events
+
+
+        DatabaseReference eventsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userEvents");
+        eventsRef.keepSynced(true);
+        eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int size =(int)dataSnapshot.getChildrenCount();
+                Log.d(TAG, "Child Size "+size);
+                txtEvents.setText(String.valueOf(size));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //        Challenges
+
+
+        DatabaseReference challengesRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userChallenges");
+        challengesRef.keepSynced(true);
+        challengesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int size =(int)dataSnapshot.getChildrenCount();
+                Log.d(TAG, "Child Size "+size);
+                txtChallenges.setText(String.valueOf(size));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+    }
+
+
 }

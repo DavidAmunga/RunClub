@@ -1,13 +1,113 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="vertical" android:layout_width="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    android:layout_width="match_parent"
     android:layout_height="match_parent">
+    
+    
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="YOUR RUN LEVEL"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        android:layout_marginTop="20dp"
+        android:textColor="#000"
+        android:layout_centerHorizontal="true"
+        android:id="@+id/txtRunLevel" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/relLevel"
+        android:layout_below="@+id/txtRunLevel"
+        android:layout_alignEnd="@+id/txtRunLevel">
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/txtUserProfile"
+            android:layout_width="100dp"
+            android:layout_height="100dp"
+            android:layout_marginLeft="40dp"
+            android:elevation="15dp"
+            android:background="@drawable/circle"
+            android:src="@drawable/ic_account_circle"
+            android:layout_marginEnd="24dp"
+            android:layout_centerVertical="true"
+            android:layout_alignEnd="@+id/user_level" />
+
+        <com.github.lzyzsd.circleprogress.ArcProgress
+            android:id="@+id/user_level"
+            android:layout_marginLeft="50dp"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            app:arc_progress="55"
+            app:arc_stroke_width="10dp"
+            app:arc_unfinished_color="#c3c3c3"
+            app:arc_finished_color="#ff1c0a"
+            app:arc_bottom_text="USER LEVEL"
+            app:arc_text_color="#000"
+            />
+
+
+
+    </RelativeLayout>
+
+
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="4dp"
+        android:background="@color/colorGray"
+        android:id="@+id/view6"
+        android:layout_marginTop="20dp"
+        android:layout_below="@+id/relLevel"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="YOUR BADGES"
+        android:textSize="20sp"
+        android:textStyle="bold"
+        android:textColor="#000"
+        android:id="@+id/txt_your_badges"
+        android:layout_below="@id/view6"
+        android:layout_marginTop="20dp"
+        android:layout_centerHorizontal="true"
+        />
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="BADGES ARE AWARDED WHEN YOU RUN AND COMPETE IN A BIG RACE"
+        android:textSize="10sp"
+        android:id="@+id/txt_your_badges2"
+        android:textColor="@color/colorPrimaryDark"
+        android:layout_below="@id/txt_your_badges"
+        android:layout_marginTop="10dp"
+        android:layout_centerHorizontal="true"
+        />
+    <de.hdodenhof.circleimageview.CircleImageView
+        android:id="@+id/userBadge1"
+        android:layout_width="50dp"
+        android:layout_height="50dp"
+        android:layout_marginLeft="40dp"
+        android:elevation="15dp"
+        android:background="@drawable/circle"
+        android:src="@drawable/ic_account_circle"
+        android:layout_marginTop="20dp"
+        android:layout_below="@id/txt_your_badges2"
+        android:layout_centerVertical="true"
+         />
+
+
 
 
     <android.support.v7.widget.RecyclerView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:id="@+id/awards_list"
+        android:layout_below="@id/userBadge1"
+
         >
 
     </android.support.v7.widget.RecyclerView>
