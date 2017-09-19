@@ -7,8 +7,11 @@ import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
+import android.view.TextureView;
 import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.AccessToken;
@@ -58,6 +61,9 @@ public class LoginActivity extends AppCompatActivity {
 
     LoginButton btnFB;
     SignInButton btnGG;
+    Button btnLogin;
+
+    EditText txtEmail,txtPassword;
     private static final int RC_SIGN_IN=2;
 
 
@@ -131,6 +137,44 @@ public class LoginActivity extends AppCompatActivity {
         });
 
 
+        btnLogin.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String email=txtEmail.getText().toString().trim();
+                String password=txtPassword.getText().toString().trim();
+
+                mAuth.createUserWithEmailAndPassword(email, password)
+                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                            @Override
+                            public void onComplete(@NonNull Task<AuthResult> task) {
+                                Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+
+                                if (!task.isSuccessful()) {
+                                    Toast.makeText(LoginActivity.this, R.string.auth_failed,
+                                            Toast.LENGTH_SHORT).show();
+                                }
+                                else
+                                {
+                                    Log.d(TAG, "onComplete: Sign Up Success");
+                                    signUp();
+                                }
+
+                                // ...
+                            }
+                        });
+            }
+        });
+    }
+
+    private void signUp() {
+        String email=txtEmail.getText().toString().trim();
+
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").push();
+        ref.child("userEmail").setValue(email);
+        ref.child("userPhotoUrl").setValue("");
+        ref.child("userLevel").setValue("Tera");
+
+
     }
 
     @Override
@@ -178,7 +222,7 @@ public class LoginActivity extends AppCompatActivity {
         ref.child("userName").setValue(name);
         ref.child("userEmail").setValue(email);
         ref.child("userPhotoUrl").setValue(photoUrl.toString());
-        ref.child("userLevel").setValue("Tera Level");
+        ref.child("userLevel").setValue("Tera");
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -266,6 +310,9 @@ public class LoginActivity extends AppCompatActivity {
     private void initViews() {
         btnFB=(LoginButton)findViewById(R.id.btnFb);
         btnGG=(SignInButton) findViewById(R.id.btnGG);
+        btnLogin=(Button)findViewById(R.id.btnLogin);
+        txtEmail=(EditText)findViewById(R.id.txt_email);
+        txtPassword=(EditText)findViewById(R.id.txt_pass);
     }
 
 }
