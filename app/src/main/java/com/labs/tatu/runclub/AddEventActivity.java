@@ -125,17 +125,17 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         final String add_date=add_event_date.getText().toString().trim();
         final String add_time=add_event_time.getText().toString().trim();
 
-        if(!TextUtils.isEmpty(add_name) &&  !TextUtils.isEmpty(add_details) &&  !TextUtils.isEmpty(add_type) &&  !TextUtils.isEmpty(add_fee) &&  !TextUtils.isEmpty(add_attending) &&  !TextUtils.isEmpty(add_loc))
-        {
-            StorageReference filepath=mStorage.child("Event_Images").child(mImageUri.getLastPathSegment());
+            if(!TextUtils.isEmpty(add_name) &&  !TextUtils.isEmpty(add_details) &&  !TextUtils.isEmpty(add_type) &&  !TextUtils.isEmpty(add_fee) &&  !TextUtils.isEmpty(add_attending) &&  !TextUtils.isEmpty(add_loc))
+            {
+                StorageReference filepath=mStorage.child("Event_Images").child(mImageUri.getLastPathSegment());
 
-            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                @Override
-                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                    @Override
+                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                    @SuppressWarnings("VisibleForTesting") Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                    Log.d(TAG, "onSuccess: "+downloadUrl);
-                    DatabaseReference newEvent=mDatabase.push();
+                        @SuppressWarnings("VisibleForTesting") Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                        Log.d(TAG, "onSuccess: "+downloadUrl);
+                        DatabaseReference newEvent=mDatabase.push();
                     newEvent.child("eventName").setValue(add_name);
                     newEvent.child("eventFee").setValue(add_fee);
                     newEvent.child("eventDesc").setValue(add_details);

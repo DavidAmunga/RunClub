@@ -335,5 +335,9 @@ public class FriendsActivity extends AppCompatActivity {
 
 
         }
+        else
+        {
+            FirebaseAuth.getInstance().signOut();
+        }
     }
 }

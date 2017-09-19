@@ -168,7 +168,7 @@ public class EventsActivity extends AppCompatActivity {
         {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             try {
-                Date firstDate = (Date) sdf.parse(date);
+                Date firstDate = sdf.parse(date);
                 SimpleDateFormat parseFormat = new SimpleDateFormat("E MMMM dd,yyyy");
                 String eventDate=parseFormat.format(firstDate);
 
@@ -427,6 +427,10 @@ public class EventsActivity extends AppCompatActivity {
             finish();
 
 
+        }
+        else
+        {
+            FirebaseAuth.getInstance().signOut();
         }
     }
 

@@ -1,13 +1,28 @@
 package com.labs.tatu.runclub;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
+import android.net.Uri;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.FirebaseStorage;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
@@ -15,43 +30,161 @@ import com.squareup.picasso.Picasso;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class ProfileActivity extends AppCompatActivity {
+    private static final String TAG = "ProfileActivity";
 
     CircleImageView user_image;
-    Button btnMyRunActivity;
-    TextView txtPhoneNo,txtBio,txtEmail,txtName;
+    Button btnSave;
+    TextView txtEmail,txtName;
+    EditText txtPhoneNo,txtBio,txtUserName;
+    private Uri mImageUri=null;
+    private static final int GALLERY_REQUEST=1;
 
+    private FirebaseAuth mAuth;
+    private ProgressDialog mProgress;
+    private StorageReference mStorage;
 
-    FirebaseAuth mAuth;
+    String phoneNo="";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
         initViews();
+
+        mProgress=new ProgressDialog(this);
+
+        this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
+
         mAuth=FirebaseAuth.getInstance();
 
-        txtName.setText(mAuth.getCurrentUser().getDisplayName());
-        txtEmail.setText(mAuth.getCurrentUser().getEmail());
-        Picasso
-                .with(this)
-                .load(mAuth.getCurrentUser().getPhotoUrl())
-                .networkPolicy(NetworkPolicy.OFFLINE)
-                .into(user_image, new Callback() {
-                    @Override
-                    public void onSuccess() {
-
-                    }
-
-                    @Override
-                    public void onError() {
-                        Picasso.with(ProfileActivity.this).load(mAuth.getCurrentUser().getPhotoUrl()).into(user_image);
-                    }
-                });
-
-        btnMyRunActivity.setOnClickListener(new View.OnClickListener() {
+        user_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivity(new Intent(ProfileActivity.this, MyRunActivity.class));
+                Intent galleryIntent=new Intent(Intent.ACTION_GET_CONTENT);
+                galleryIntent.setType("image/*");
+                startActivityForResult(galleryIntent,GALLERY_REQUEST);
+            }
+        });
+
+
+        String user_id=mAuth.getCurrentUser().getUid();
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+               if(dataSnapshot.child("userName").exists() && dataSnapshot.child("userPhotoUrl").exists())
+               {
+                   Log.d(TAG, "Details Available!");
+                   txtName.setText(dataSnapshot.child("userName").getValue().toString());
+                   final Uri photoUrl=Uri.parse(dataSnapshot.child("userPhotoUrl").getValue().toString());
+                   Log.d(TAG, "User Phone No "+dataSnapshot.child("userPhoneNo").getValue().toString());
+                   txtPhoneNo.setText(dataSnapshot.child("userPhoneNo").getValue().toString());
+
+
+
+                   Picasso
+                           .with(ProfileActivity.this)
+                           .load(photoUrl)
+                           .networkPolicy(NetworkPolicy.OFFLINE)
+                           .into(user_image, new Callback() {
+                               @Override
+                               public void onSuccess() {
+
+                               }
+
+                               @Override
+                               public void onError() {
+                                   Picasso.with(ProfileActivity.this).load(photoUrl).into(user_image);
+                               }
+                           });
+
+
+               }
+               else
+               {
+                   txtName.setText(mAuth.getCurrentUser().getDisplayName());
+                   Picasso
+                           .with(ProfileActivity.this)
+                           .load(mAuth.getCurrentUser().getPhotoUrl())
+                           .networkPolicy(NetworkPolicy.OFFLINE)
+                           .into(user_image, new Callback() {
+                               @Override
+                               public void onSuccess() {
+
+                               }
+
+                               @Override
+                               public void onError() {
+                                   Picasso.with(ProfileActivity.this).load(mAuth.getCurrentUser().getPhotoUrl()).into(user_image);
+                               }
+                           });
+                   txtPhoneNo.setText(dataSnapshot.child("userPhoneNo").getValue().toString());
+
+
+
+
+               }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+        txtEmail.setText(mAuth.getCurrentUser().getEmail());
+
+
+        btnSave.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                mProgress.setMessage("Saving Details");
+                mProgress.setCancelable(false);
+                mProgress.show();
+
+                final String name=txtUserName.getText().toString().trim();
+                final String bio=txtBio.getText().toString().trim();
+                final String phoneNo=txtPhoneNo.getText().toString().trim();
+
+
+                if(mImageUri!=null)
+                {
+                    Log.d(TAG, "onClick: Image URI not Null");
+                    StorageReference filepath=mStorage.child("User_Images").child(mImageUri.getLastPathSegment());
+                    filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                        @Override
+                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+
+                            @SuppressWarnings("VisibleForTesting") Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                            Log.d(TAG, "onSuccess: "+downloadUrl);
+                            String user_id=mAuth.getCurrentUser().getUid();
+                            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+                            ref.child("userName").setValue(name);
+                            ref.child("userPhotoUrl").setValue(downloadUrl.toString());
+                            ref.child("userBio").setValue(bio);
+                            ref.child("userPhoneNo").setValue(phoneNo);
+
+                            mProgress.dismiss();
+                            Toast.makeText(ProfileActivity.this, "Details Saved", Toast.LENGTH_SHORT).show();
+                        }
+                    });
+                }
+                else
+                {
+                    String user_id=mAuth.getCurrentUser().getUid();
+                    DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+                    ref.child("userName").setValue(name);
+                    ref.child("userBio").setValue(bio);
+                    ref.child("userPhoneNo").setValue(phoneNo);
+
+
+                    Toast.makeText(ProfileActivity.this, "Details Saved", Toast.LENGTH_SHORT).show();
+                }
+
+
+
             }
         });
 
@@ -59,11 +192,26 @@ public class ProfileActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        txtPhoneNo=(TextView)findViewById(R.id.txt_phoneNo);
+        txtPhoneNo=(EditText)findViewById(R.id.txt_phoneNo);
         txtName=(TextView)findViewById(R.id.txtUserName);
         txtEmail=(TextView)findViewById(R.id.txtUserEmail);
-        txtBio=(TextView)findViewById(R.id.txt_bio);
-        btnMyRunActivity=(Button)findViewById(R.id.btnMyRunActivity);
+        txtBio=(EditText) findViewById(R.id.txt_bio);
+        txtUserName=(EditText)findViewById(R.id.txtUserName);
+        btnSave=(Button)findViewById(R.id.btnSave);
         user_image=(CircleImageView)findViewById(R.id.txtUserImage);
+
+        mStorage= FirebaseStorage.getInstance().getReference();
+        mProgress=new ProgressDialog(this);
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+
+        if(requestCode==GALLERY_REQUEST && resultCode==RESULT_OK)
+        {
+            mImageUri=data.getData();
+            user_image.setImageURI(mImageUri);
+        }
     }
 }

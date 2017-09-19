@@ -2,6 +2,8 @@ package com.labs.tatu.runclub;
 
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
@@ -11,6 +13,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Base64;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,6 +53,10 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.squareup.picasso.Picasso;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.Signature;
+
 public class MainActivity extends AppCompatActivity {
 
 
@@ -60,6 +67,7 @@ public class MainActivity extends AppCompatActivity {
     public static TextView toolBarTitle;
 
     private boolean isLoggingOut = false;
+    private Uri photo_url=null;
     private GoogleApiClient mGoogleApiClient;
     FirebaseAuth mAuth;
 
@@ -68,6 +76,8 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
 
@@ -177,17 +187,23 @@ public class MainActivity extends AppCompatActivity {
         String name=mAuth.getCurrentUser().getDisplayName();
         String email=mAuth.getCurrentUser().getEmail();
         String user_id=mAuth.getCurrentUser().getUid();
-        Uri photo_url=mAuth.getCurrentUser().getPhotoUrl();
+        photo_url=mAuth.getCurrentUser().getPhotoUrl();
 
         DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("photo_url").exists())
+                if(dataSnapshot.child("userPhotoUrl").exists())
                 {
-                   String url=dataSnapshot.child("photo_url").getValue().toString();
-                   Uri photo_url=Uri.parse(url);
-                    Log.d(TAG, "Photo Url Exists "+photo_url.toString());
+
+                   String url=dataSnapshot.child("userPhotoUrl").getValue().toString();
+                   photo_url=Uri.parse(url);
+                    Log.d(TAG, "Photo Url Exists "+photo_url);
+
+                }
+                else
+                {
+
                 }
             }
 
@@ -233,7 +249,7 @@ public class MainActivity extends AppCompatActivity {
         });
 
 
-        Log.d(TAG, "Foto Url"+photo_url);
+        Log.d(TAG, "Foto Url "+photo_url);
 
         // Create a few sample profile
         final IProfile profile = new ProfileDrawerItem().withName(name)
@@ -288,8 +304,7 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(new Intent(MainActivity.this, AddLocationActivity.class));
                                 break;
                             case "AddEvent":
-
-                                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                                startActivity(new Intent(MainActivity.this, AddEventActivity.class));
                                 break;
                             case "LogOut":
                                 logOut();
@@ -337,9 +352,14 @@ public class MainActivity extends AppCompatActivity {
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
             finish();
 
-
+        }
+        else
+        {
+            FirebaseAuth.getInstance().signOut();
         }
     }
+
+
 
 
     @Override

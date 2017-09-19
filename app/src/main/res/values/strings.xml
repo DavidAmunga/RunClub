@@ -8,6 +8,6 @@
     <string name="invitation_deep_link">http://runclub.com</string>
     <string name="invitation_cta">Install!</string>
 
-    <string name="facebook_app_id">1940543759561350</string>
+    <string name="facebook_app_id">152862615308121</string>
     <string name="auth_failed">Sign Up Failed</string>
 </resources>
