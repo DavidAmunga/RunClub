@@ -323,16 +323,15 @@ public class RunHistoryFragment extends Fragment {
 
     private void count_no() {
         //        Count No of Children in Nodes
-        //        Awards
+        //        Points
         String user_id=FirebaseAuth.getInstance().getCurrentUser().getUid();
         DatabaseReference pointsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userPoints");
         pointsRef.keepSynced(true);
         pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int size =(int)dataSnapshot.getChildrenCount();
-                Log.d(TAG, "Child Size "+size);
-                txtPoints.setText(String.valueOf(size));
+
+                txtPoints.setText(dataSnapshot.getValue().toString());
             }
 
             @Override

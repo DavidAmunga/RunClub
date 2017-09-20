@@ -1,6 +1,7 @@
 package com.labs.tatu.runclub;
 
 import android.content.Intent;
+import android.graphics.Color;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -119,6 +120,7 @@ public class SingleEventActivity extends AppCompatActivity {
                                 Sneaker.with(SingleEventActivity.this)
                                         .setTitle("Gear on for "+snapshot.child("eventName").getValue(), R.color.white)
                                         .setMessage("Get Ready to participate in ", R.color.white)
+
                                         .setDuration(4000) // Time duration to show
                                         .autoHide(true) // Auto hide Sneaker view
                                         .setHeight(ViewGroup.LayoutParams.WRAP_CONTENT)
@@ -129,7 +131,7 @@ public class SingleEventActivity extends AppCompatActivity {
 
                                              }
                                          }) // Click listener for Sneaker
-                                    .sneak(android.R.color.black); // Sneak with background color
+                                    .sneak(Color.parseColor("#f2003c")); // Sneak with background color
 
                                 isInterested=false;
 
