@@ -95,6 +95,9 @@ public class RegisterActivity extends AppCompatActivity {
                                     ref.child("userName").setValue(userName);
                                     ref.child("userPhotoUrl").setValue("");
                                     ref.child("userLevel").setValue("Tera");
+                                    ref.child("userBio").setValue("");
+                                    ref.child("userPhoneNo").setValue("");
+                                    ref.child("userPoints").setValue("0");
 
 
 

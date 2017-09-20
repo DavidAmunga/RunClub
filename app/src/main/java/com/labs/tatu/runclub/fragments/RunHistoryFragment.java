@@ -43,7 +43,7 @@ import java.util.Date;
 public class RunHistoryFragment extends Fragment {
     private static final String TAG = "RunHistoryFragment";
 
-    private TextView txtAwards,txtLocations,txtEvents,txtChallenges;
+    private TextView txtAwards,txtLocations,txtEvents,txtChallenges,txtPoints;
 
     private RecyclerView mList;
     private DatabaseReference mDatabase;
@@ -57,6 +57,7 @@ public class RunHistoryFragment extends Fragment {
         txtLocations=(TextView)view.findViewById(R.id.txt_locations);
         txtEvents=(TextView)view.findViewById(R.id.txt_events);
         txtChallenges=(TextView)view.findViewById(R.id.txt_challenges);
+        txtPoints=(TextView)view.findViewById(R.id.txt_points);
 
 
         mList=(RecyclerView)view.findViewById(R.id.run_list);
@@ -212,7 +213,7 @@ public class RunHistoryFragment extends Fragment {
         {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             try {
-                Date firstDate = (Date) sdf.parse(date);
+                Date firstDate = sdf.parse(date);
                 SimpleDateFormat parseFormat = new SimpleDateFormat("E MMMM dd,yyyy");
                 String eventDate=parseFormat.format(firstDate);
 
@@ -322,8 +323,28 @@ public class RunHistoryFragment extends Fragment {
 
     private void count_no() {
         //        Count No of Children in Nodes
-//        Awards
+        //        Awards
         String user_id=FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference pointsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userPoints");
+        pointsRef.keepSynced(true);
+        pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int size =(int)dataSnapshot.getChildrenCount();
+                Log.d(TAG, "Child Size "+size);
+                txtPoints.setText(String.valueOf(size));
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
+//        Awards
+
         DatabaseReference awardsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userAwards");
         awardsRef.keepSynced(true);
         awardsRef.addListenerForSingleValueEvent(new ValueEventListener() {

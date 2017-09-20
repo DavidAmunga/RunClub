@@ -250,6 +250,8 @@ public class LoginActivity extends AppCompatActivity {
         ref.child("userEmail").setValue(email);
         ref.child("userPhotoUrl").setValue(photoUrl.toString());
         ref.child("userLevel").setValue("Tera");
+        ref.child("userPoints").setValue("0");
+
 
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override

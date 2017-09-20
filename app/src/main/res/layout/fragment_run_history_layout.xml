@@ -4,6 +4,40 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical" android:layout_width="match_parent"
     android:layout_height="match_parent">
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_gravity="center_horizontal"
+        android:id="@+id/linearPoints"
+
+        android:layout_alignParentTop="true"
+        android:layout_centerHorizontal="true">
+
+        <TextView
+            android:id="@+id/txt_points"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:layout_marginTop="14dp"
+            android:text="0"
+            android:textColor="@color/colorPrimary"
+            android:textSize="20sp"
+            android:textStyle="bold" />
+
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="POINTS"
+            android:id="@+id/lbl_points"
+            android:textSize="15sp"
+            android:textColor="#000"
+            android:layout_marginTop="13dp"
+            />
+
+
+    </LinearLayout>
 
 
 
@@ -12,10 +46,11 @@
         android:layout_height="wrap_content"
         android:orientation="vertical"
         android:layout_gravity="center_horizontal"
-        android:layout_marginTop="16dp"
         android:id="@+id/linearAwards"
-        android:layout_marginStart="13dp"
 
+        android:layout_marginStart="9dp"
+
+        android:layout_below="@+id/linearPoints"
         android:layout_alignParentStart="true">
 
         <TextView

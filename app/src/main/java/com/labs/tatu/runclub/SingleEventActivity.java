@@ -95,6 +95,26 @@ public class SingleEventActivity extends AppCompatActivity {
                                 userRef.child("eventTime").setValue(txt_event_time.getText().toString().trim());
                                 userRef.child("eventStatus").setValue("Going");
 
+                                DatabaseReference userPoints=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+                                final String finalUser_id = user_id;
+                                userPoints.addListenerForSingleValueEvent(new ValueEventListener() {
+                                    @Override
+                                    public void onDataChange(DataSnapshot dataSnapshot) {
+                                        String userPoints=dataSnapshot.child("userPoints").getValue().toString();
+                                        int pts=5;
+                                        int userPts=Integer.parseInt(userPoints);
+                                        userPts=userPts+pts;
+
+                                        DatabaseReference addPts=FirebaseDatabase.getInstance().getReference("Users").child(finalUser_id).child("userPoints");
+                                        addPts.setValue(String.valueOf(userPts));
+                                    }
+
+                                    @Override
+                                    public void onCancelled(DatabaseError databaseError) {
+
+                                    }
+                                });
+
 
                                 Sneaker.with(SingleEventActivity.this)
                                         .setTitle("Gear on for "+snapshot.child("eventName").getValue(), R.color.white)
@@ -314,7 +334,7 @@ public class SingleEventActivity extends AppCompatActivity {
     {
         SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
         try {
-            Date firstDate = (Date) sdf.parse(date);
+            Date firstDate = sdf.parse(date);
             SimpleDateFormat parseFormat = new SimpleDateFormat("E MMMM dd,yyyy");
             String eventDate=parseFormat.format(firstDate);
 

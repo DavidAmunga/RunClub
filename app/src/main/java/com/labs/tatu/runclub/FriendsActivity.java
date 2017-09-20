@@ -19,6 +19,8 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.facebook.login.LoginManager;
+import com.facebook.share.model.AppInviteContent;
+import com.facebook.share.widget.AppInviteDialog;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -51,7 +53,10 @@ public class FriendsActivity extends AppCompatActivity {
 
     FirebaseAuth mAuth;
     private boolean isLoggingOut = false;
+    private Uri photo_url=null;
     private GoogleApiClient mGoogleApiClient;
+
+    TextView inviteGG,inviteFb;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,6 +66,8 @@ public class FriendsActivity extends AppCompatActivity {
         toolbar = (Toolbar) findViewById(R.id.friendsToolbar);
 
         setSupportActionBar(toolbar);
+
+        initViews();
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("");
@@ -89,9 +96,9 @@ public class FriendsActivity extends AppCompatActivity {
                 .build();
 
 
-        TextView invite = (TextView) findViewById(R.id.invite);
 
-        invite.setOnClickListener(new View.OnClickListener() {
+
+        inviteGG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
@@ -103,6 +110,25 @@ public class FriendsActivity extends AppCompatActivity {
                 startActivityForResult(intent, REQUEST_INVITE);
             }
         });
+        inviteFb.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                String appLinkUrl, previewImageUrl;
+
+                appLinkUrl = "https://www.mydomain.com/myapplink";
+                previewImageUrl = "https://drive.google.com/open?id=0B7ppRoKalXOdUWxCWHRLTmdwaUk";
+
+                if (AppInviteDialog.canShow()) {
+                    AppInviteContent content = new AppInviteContent.Builder()
+                            .setApplinkUrl(appLinkUrl)
+                            .setPreviewImageUrl(previewImageUrl)
+                            .build();
+                    AppInviteDialog.show(FriendsActivity.this, content);
+                }
+            }
+        });
+
+
 
 
 
@@ -149,6 +175,12 @@ public class FriendsActivity extends AppCompatActivity {
 
         drawer();
     }
+
+    private void initViews() {
+        inviteGG = (TextView) findViewById(R.id.inviteGG);
+        inviteFb = (TextView) findViewById(R.id.inviteFb);
+    }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
@@ -173,22 +205,32 @@ public class FriendsActivity extends AppCompatActivity {
         super.onPause();
         overridePendingTransition(0, 0);
     }
-
     public void drawer() {
-        String name=mAuth.getCurrentUser().getDisplayName();
-        String email=mAuth.getCurrentUser().getEmail();
+        final String name=mAuth.getCurrentUser().getDisplayName();
+        final String email=mAuth.getCurrentUser().getEmail();
         String user_id=mAuth.getCurrentUser().getUid();
-        Uri photo_url=mAuth.getCurrentUser().getPhotoUrl();
 
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("photo_url").exists())
+                if(dataSnapshot.child("userPhotoUrl").exists())
                 {
-                    String url=dataSnapshot.child("photo_url").getValue().toString();
-                    Uri photo_url=Uri.parse(url);
-                    Log.d(TAG, "Photo Url Exists "+photo_url.toString());
+
+                    String url=dataSnapshot.child("userPhotoUrl").getValue().toString();
+                    photo_url=Uri.parse(url);
+                    Log.d(TAG, "Photo Url Exists "+photo_url);
+
+                    drawerLogic(name,email);
+
+                }
+                else
+                {
+                    photo_url=mAuth.getCurrentUser().getPhotoUrl();
+                    drawerLogic(name,email);
+
+
                 }
             }
 
@@ -202,6 +244,9 @@ public class FriendsActivity extends AppCompatActivity {
 
 
 
+    }
+    public void drawerLogic(String name,String email)
+    {
         //initialize and create the image loader logic
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
             @Override
@@ -234,7 +279,7 @@ public class FriendsActivity extends AppCompatActivity {
         });
 
 
-        Log.d(TAG, "Foto Url"+photo_url);
+        Log.d(TAG, "Foto Url "+photo_url);
 
         // Create a few sample profile
         final IProfile profile = new ProfileDrawerItem().withName(name)
@@ -260,8 +305,9 @@ public class FriendsActivity extends AppCompatActivity {
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(1).withName("Profile").withTag("Profile");
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Location").withTag("AddLoc");
         PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Event").withTag("AddEvent");
-        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(1).withName("Run Activity").withTag("RunActivity");
-        SecondaryDrawerItem item6 = new SecondaryDrawerItem().withIdentifier(2).withName("Log Out").withTag("LogOut");
+        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Awards").withTag("AddAward");
+        PrimaryDrawerItem item6 = new PrimaryDrawerItem().withIdentifier(1).withName("Run Activity").withTag("RunActivity");
+        SecondaryDrawerItem item7 = new SecondaryDrawerItem().withIdentifier(2).withName("Log Out").withTag("LogOut");
 
 //create the drawer and remember the `Drawer` result object
         Drawer result = new DrawerBuilder()
@@ -272,11 +318,12 @@ public class FriendsActivity extends AppCompatActivity {
                         item2.withIcon(R.drawable.ic_account_box_black_24dp),
                         item3.withIcon(R.drawable.ic_add_location_black_24dp),
                         item4.withIcon(R.drawable.ic_event_note_black_24dp),
-                        item5.withIcon(R.drawable.ic_directions_run_black_24dp),
+                        item5.withIcon(R.drawable.ic_action_achievement),
+                        item6.withIcon(R.drawable.ic_directions_run_black_24dp),
 
 
                         new DividerDrawerItem(),
-                        item6.withIcon(R.drawable.ic_log_out_black_24dp)
+                        item7.withIcon(R.drawable.ic_log_out_black_24dp)
 
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -287,8 +334,7 @@ public class FriendsActivity extends AppCompatActivity {
                                 startActivity(new Intent(FriendsActivity.this, AddLocationActivity.class));
                                 break;
                             case "AddEvent":
-
-                                startActivity(new Intent(FriendsActivity.this, LoginActivity.class));
+                                startActivity(new Intent(FriendsActivity.this, AddEventActivity.class));
                                 break;
                             case "LogOut":
                                 logOut();
@@ -298,6 +344,9 @@ public class FriendsActivity extends AppCompatActivity {
                                 break;
                             case "Profile":
                                 startActivity(new Intent(FriendsActivity.this,ProfileActivity.class));
+                                break;
+                            case "AddAward":
+                                startActivity(new Intent(FriendsActivity.this,AddAwardsActivity.class));
                                 break;
 
                         }
@@ -313,6 +362,7 @@ public class FriendsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+
     }
 
     private void logOut() {
@@ -332,7 +382,6 @@ public class FriendsActivity extends AppCompatActivity {
             Auth.GoogleSignInApi.signOut(mGoogleApiClient);
             startActivity(new Intent(FriendsActivity.this, LoginActivity.class));
             finish();
-
 
         }
         else

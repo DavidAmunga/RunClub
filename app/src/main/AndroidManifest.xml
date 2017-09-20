@@ -80,9 +80,10 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".ProfileActivity" />
+        <activity android:name=".ProfileActivity"  android:parentActivityName=".MainActivity" >
+
+        </activity>
         <activity android:name=".MyRunActivity" />
-        <activity android:name=".AwardsActivity" />
         <activity android:name=".AddAwardsActivity" />
         <activity android:name=".RegisterActivity"></activity>
     </application>

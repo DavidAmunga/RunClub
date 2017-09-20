@@ -27,7 +27,7 @@
                 android:id="@+id/friendsToolbar"
                 android:layout_width="match_parent"
                 android:layout_height="?attr/actionBarSize"
-                android:background="#ffffff"
+                android:background="@drawable/gray_border_bottom"
                 app:layout_scrollFlags="scroll|enterAlways"
                 app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 
@@ -62,14 +62,23 @@
                 android:textSize="45sp" />
 
             <Button
-                android:id="@+id/invite"
+            android:id="@+id/inviteGG"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:colorButtonNormal="#3F51B5"
+            android:text="INVITE FROM GOOGLE"
+            android:layout_marginTop="22dp"
+                android:layout_alignParentTop="true"
+                android:layout_centerHorizontal="true" />
+            <Button
+                android:id="@+id/inviteFb"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerHorizontal="true"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="100dp"
                 android:colorButtonNormal="#3F51B5"
-                android:text="Wanna bring in your friends?"/>
+                android:text="INVITE FROM FACEBOOK"
+                android:layout_marginBottom="50dp"
+                android:layout_above="@+id/title"
+                android:layout_centerHorizontal="true" />
 
 
 

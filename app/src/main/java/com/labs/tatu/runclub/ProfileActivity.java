@@ -3,8 +3,10 @@ package com.labs.tatu.runclub;
 import android.app.ProgressDialog;
 import android.content.Intent;
 import android.net.Uri;
+import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.View;
 import android.view.WindowManager;
@@ -13,6 +15,7 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
@@ -36,11 +39,14 @@ public class ProfileActivity extends AppCompatActivity {
     Button btnSave;
     TextView txtEmail,txtName;
     EditText txtPhoneNo,txtBio,txtUserName;
+    private Toolbar toolbar;
+
     private Uri mImageUri=null;
     private static final int GALLERY_REQUEST=1;
 
     private FirebaseAuth mAuth;
     private ProgressDialog mProgress;
+
     private StorageReference mStorage;
 
     String phoneNo="";
@@ -49,6 +55,11 @@ public class ProfileActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
+
+        toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setTitle("");
 
         initViews();
 
@@ -67,8 +78,10 @@ public class ProfileActivity extends AppCompatActivity {
             }
         });
 
-
-        String user_id=mAuth.getCurrentUser().getUid();
+        mProgress.setMessage("Loading Profile");
+        mProgress.setCancelable(false);
+        mProgress.show();
+        final String user_id=mAuth.getCurrentUser().getUid();
         DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -78,8 +91,12 @@ public class ProfileActivity extends AppCompatActivity {
                    Log.d(TAG, "Details Available!");
                    txtName.setText(dataSnapshot.child("userName").getValue().toString());
                    final Uri photoUrl=Uri.parse(dataSnapshot.child("userPhotoUrl").getValue().toString());
-                   Log.d(TAG, "User Phone No "+dataSnapshot.child("userPhoneNo").getValue().toString());
-                   txtPhoneNo.setText(dataSnapshot.child("userPhoneNo").getValue().toString());
+                   if(dataSnapshot.child("userPhone").exists())
+                   {
+                       Log.d(TAG, "User Phone No "+dataSnapshot.child("userPhoneNo").getValue().toString());
+                       txtPhoneNo.setText(dataSnapshot.child("userPhoneNo").getValue().toString());
+                   }
+
 
 
 
@@ -98,7 +115,7 @@ public class ProfileActivity extends AppCompatActivity {
                                    Picasso.with(ProfileActivity.this).load(photoUrl).into(user_image);
                                }
                            });
-
+                    mProgress.dismiss();
 
                }
                else
@@ -121,7 +138,7 @@ public class ProfileActivity extends AppCompatActivity {
                            });
                    txtPhoneNo.setText(dataSnapshot.child("userPhoneNo").getValue().toString());
 
-
+                   mProgress.dismiss();
 
 
                }
@@ -129,7 +146,7 @@ public class ProfileActivity extends AppCompatActivity {
 
             @Override
             public void onCancelled(DatabaseError databaseError) {
-
+                mProgress.dismiss();
             }
         });
 
@@ -152,24 +169,43 @@ public class ProfileActivity extends AppCompatActivity {
                 if(mImageUri!=null)
                 {
                     Log.d(TAG, "onClick: Image URI not Null");
-                    StorageReference filepath=mStorage.child("User_Images").child(mImageUri.getLastPathSegment());
-                    filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+
+//                    Delete Previous Image
+                    DatabaseReference photoUrl=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userPhotoUrl");
+                    photoUrl.addValueEventListener(new ValueEventListener() {
                         @Override
-                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                            @SuppressWarnings("VisibleForTesting") Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                            Log.d(TAG, "onSuccess: "+downloadUrl);
-                            String user_id=mAuth.getCurrentUser().getUid();
-                            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
-                            ref.child("userName").setValue(name);
-                            ref.child("userPhotoUrl").setValue(downloadUrl.toString());
-                            ref.child("userBio").setValue(bio);
-                            ref.child("userPhoneNo").setValue(phoneNo);
+                                    Log.d(TAG, "Success!");
+                                    StorageReference filepath=mStorage.child("User_Images").child(user_id).child(mImageUri.getLastPathSegment());
+                                    filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                                        @Override
+                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                            mProgress.dismiss();
-                            Toast.makeText(ProfileActivity.this, "Details Saved", Toast.LENGTH_SHORT).show();
+                                            @SuppressWarnings("VisibleForTesting") Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                                            Log.d(TAG, "onSuccess: "+downloadUrl);
+                                            String user_id=mAuth.getCurrentUser().getUid();
+                                            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+                                            ref.child("userName").setValue(name);
+                                            ref.child("userPhotoUrl").setValue(downloadUrl.toString());
+                                            ref.child("userBio").setValue(bio);
+                                            ref.child("userPhoneNo").setValue(phoneNo);
+
+                                            Toast.makeText(ProfileActivity.this, "Details Saved", Toast.LENGTH_SHORT).show();
+                                            mProgress.dismiss();
+                                        }
+                                    });
+                                }
+
+
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
                         }
                     });
+
+
                 }
                 else
                 {

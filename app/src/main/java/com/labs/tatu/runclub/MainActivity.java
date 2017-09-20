@@ -1,5 +1,6 @@
 package com.labs.tatu.runclub;
 
+import android.app.ProgressDialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
@@ -68,6 +69,7 @@ public class MainActivity extends AppCompatActivity {
 
     private boolean isLoggingOut = false;
     private Uri photo_url=null;
+    ProgressDialog mProgress;
     private GoogleApiClient mGoogleApiClient;
     FirebaseAuth mAuth;
 
@@ -105,6 +107,7 @@ public class MainActivity extends AppCompatActivity {
                 .build();
 //
 
+        mProgress=new ProgressDialog(this);
 
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
@@ -184,10 +187,10 @@ public class MainActivity extends AppCompatActivity {
 
 
     public void drawer() {
-        String name=mAuth.getCurrentUser().getDisplayName();
-        String email=mAuth.getCurrentUser().getEmail();
+        final String name=mAuth.getCurrentUser().getDisplayName();
+        final String email=mAuth.getCurrentUser().getEmail();
         String user_id=mAuth.getCurrentUser().getUid();
-        photo_url=mAuth.getCurrentUser().getPhotoUrl();
+
 
         DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
@@ -200,9 +203,14 @@ public class MainActivity extends AppCompatActivity {
                    photo_url=Uri.parse(url);
                     Log.d(TAG, "Photo Url Exists "+photo_url);
 
+                    drawerLogic(name,email);
+
                 }
                 else
                 {
+                    photo_url=mAuth.getCurrentUser().getPhotoUrl();
+                    drawerLogic(name,email);
+
 
                 }
             }
@@ -217,6 +225,9 @@ public class MainActivity extends AppCompatActivity {
 
 
 
+    }
+    public void drawerLogic(String name,String email)
+    {
         //initialize and create the image loader logic
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
             @Override
@@ -227,7 +238,7 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void set(ImageView imageView, Uri uri, Drawable placeholder, String tag) {
 
-                    Picasso.with(imageView.getContext()).load(uri).placeholder(placeholder).into(imageView);
+                Picasso.with(imageView.getContext()).load(uri).placeholder(placeholder).into(imageView);
 
 
             }
@@ -332,6 +343,7 @@ public class MainActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+
     }
 
     private void logOut() {

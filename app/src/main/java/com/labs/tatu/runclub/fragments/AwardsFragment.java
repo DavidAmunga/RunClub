@@ -16,12 +16,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.github.lzyzsd.circleprogress.ArcProgress;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.MutableData;
 import com.google.firebase.database.Transaction;
+import com.google.firebase.database.ValueEventListener;
 import com.labs.tatu.runclub.LocationRunActivity;
 import com.labs.tatu.runclub.R;
 import com.labs.tatu.runclub.model.Award;
@@ -42,8 +45,12 @@ public class AwardsFragment extends Fragment {
     private static final String TAG = "AwardsFragment";
 
 
-    private CircleImageView btnImage;
+    private CircleImageView userBadgeImage;
+    private ArcProgress arcUserLevel;
     private RecyclerView mAwardsList;
+
+    TextView txtUserLevel,txtUserPoints;
+
 
     private DatabaseReference mDatabase;
     FirebaseRecyclerAdapter<Award,AwardsViewHolder> firebaseRecyclerAdapter;
@@ -75,14 +82,72 @@ public class AwardsFragment extends Fragment {
             }
         });
 
+        arcUserLevel=(ArcProgress)view.findViewById(R.id.user_level);
+        txtUserLevel=(TextView)view.findViewById(R.id.txtRunLevel);
+        userBadgeImage=(CircleImageView)view.findViewById(R.id.imgUserLevel);
+
         mAwardsList=(RecyclerView)view.findViewById(R.id.awards_list);
         //mLocationsList.setHasFixedSize(true);
         mAwardsList.setLayoutManager(new LinearLayoutManager(getActivity()));
+
+        String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        DatabaseReference refUserLevel=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+        refUserLevel.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                final String userLevel=dataSnapshot.child("userLevel").getValue().toString();
+                final String userPoints=dataSnapshot.child("userPoints").getValue().toString();
+
+                DatabaseReference refMaxLevel=FirebaseDatabase.getInstance().getReference("UserLevel").child(userLevel);
+                refMaxLevel.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        String maxPoints=dataSnapshot.getValue().toString();
+
+                        txtUserLevel.setText(userLevel+" Level");
+                        arcUserLevel.setBottomText(userPoints+"/"+maxPoints+" Points");
+                        arcUserLevel.setMax(Integer.parseInt(maxPoints));
+                        arcUserLevel.setProgress(Integer.parseInt(userPoints));
+
+                        setUserBadgeLevel(userLevel);
+
+
+                    }
+
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
+
+                    }
+                });
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+
+
 
 
 
         return view;
     }
+
+    private void setUserBadgeLevel(String userLevel) {
+        switch(userLevel)
+        {
+            case "Tera":
+                userBadgeImage.setImageDrawable(getResources().getDrawable(R.drawable.tera));
+                break;
+
+
+        }
+
+    }
+
 
     @Override
     public void onStart() {
@@ -153,6 +218,9 @@ public class AwardsFragment extends Fragment {
                     });
         }
     }
+
+
+
 
 
 

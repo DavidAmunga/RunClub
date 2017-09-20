@@ -13,7 +13,8 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="#ffffff"
+
+        android:background="@drawable/gray_border_bottom"
         app:layout_scrollFlags="scroll|enterAlways"
         app:popupTheme="@style/ThemeOverlay.AppCompat.Light"
 
@@ -22,7 +23,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="Profile"
-            android:background="@drawable/gray_border_bottom"
+
             android:textSize="30sp"
             android:textColor="#000"
             android:layout_gravity="center"
