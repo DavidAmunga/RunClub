@@ -282,4 +282,33 @@ public class WorkoutActivity extends AppCompatActivity {
             }
         });
     }
+
+    @Override
+    protected void onPause() {
+        super.onPause();
+        TimeBuff += MillisecondTime;
+
+        handler.removeCallbacks(runnable);
+
+        reset.setEnabled(true);
+        reset.setText("RESET");
+
+
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+
+        MillisecondTime = 0L;
+        StartTime = 0L;
+        TimeBuff = 0L;
+        UpdateTime = 0L;
+        Seconds = 0;
+        Minutes = 0;
+        MilliSeconds = 0;
+        Hours=0;
+
+        textView.setText("00:00:00");
+    }
 }

@@ -63,8 +63,14 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".SplashScreenActivity"
-            android:screenOrientation="portrait" />
-        <activity android:name=".AddEventActivity" />
+            android:screenOrientation="portrait" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+            </activity>
+        <activity android:name=".AddEventActivity"  android:screenOrientation="portrait" />
         <activity
             android:name=".SingleEventActivity"
             android:parentActivityName=".EventsActivity">
@@ -72,20 +78,16 @@
         </activity>
         <activity
             android:name=".WorkoutActivity"
-            android:parentActivityName=".MainActivity" />
+            android:parentActivityName=".MainActivity" android:screenOrientation="portrait"  />
         <activity android:name=".LoginActivity">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
         </activity>
         <activity android:name=".ProfileActivity"  android:parentActivityName=".MainActivity" >
 
         </activity>
-        <activity android:name=".MyRunActivity" />
-        <activity android:name=".AddAwardsActivity" />
-        <activity android:name=".RegisterActivity"></activity>
+        <activity android:name=".MyRunActivity"  android:screenOrientation="portrait" />
+        <activity android:name=".AddAwardsActivity"  android:screenOrientation="portrait" />
+        <activity android:name=".RegisterActivity" android:screenOrientation="portrait" />
     </application>
 
 </manifest>

@@ -29,7 +29,7 @@
     <TextView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="ASDASDASDAS"
+        android:text="Quick Start"
         android:textStyle="bold"
         android:id="@+id/txt_loc_name"
         android:textSize="30sp"

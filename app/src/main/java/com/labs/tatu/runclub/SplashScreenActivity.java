@@ -22,12 +22,16 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         EasySplashScreen config=new EasySplashScreen(SplashScreenActivity.this)
                 .withFullScreen()
-                .withTargetActivity(MainActivity.class)
+                .withTargetActivity(LoginActivity.class)
                 .withSplashTimeOut(3000)
                 .withBackgroundColor(Color.parseColor("#000000"))
                 .withLogo(R.drawable.logo)
-                .withBeforeLogoText("RunClub")
+
+                .withBeforeLogoText("RunForce")
                 .withAfterLogoText("Running with you");
+
+        config.getLogo().setMinimumHeight(250);
+        config.getLogo().setMinimumWidth(250);
 
 
         //Set text color
