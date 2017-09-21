@@ -121,7 +121,7 @@ public class LocationRunActivity extends FragmentActivity implements
                 .addApi(LocationServices.API)
                 .build();
 
-        Bundle locData = getIntent().getExtras();
+        final Bundle locData = getIntent().getExtras();
         final String locName = locData.get("locName").toString();
         String locDistance = locData.get("locDistance").toString();
         String locGoal=locData.get("locGoal").toString();
@@ -185,9 +185,17 @@ public class LocationRunActivity extends FragmentActivity implements
         btn_solo_run.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
                 Intent intent = new Intent(new Intent(LocationRunActivity.this, WorkoutActivity.class));
                 intent.putExtra("locName",txtTitle.getText().toString().trim());
                 intent.putExtra("locGoal",txtTitle.getText().toString().trim());
+                intent.putExtra("fromLat",fromLatitude);
+                intent.putExtra("fromLong",fromLongitude);
+                intent.putExtra("toLat",toLatitude);
+                intent.putExtra("toLong",toLongitude);
+
                 startActivity(intent);
             }
         });

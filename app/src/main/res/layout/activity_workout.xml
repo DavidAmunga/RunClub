@@ -34,11 +34,11 @@
         android:id="@+id/txt_loc_name"
         android:textSize="30sp"
         android:textColor="#000"
-        android:layout_centerHorizontal="true"
-        android:layout_below="@id/toolbar"
 
-        android:layout_margin="30dp"
-        />
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:layout_below="@+id/toolbar"
+        android:layout_centerHorizontal="true" />
 
     <RelativeLayout
         android:id="@+id/timerText"
@@ -48,21 +48,21 @@
         android:layout_centerVertical="true"
         android:background="@color/md_cyan_300">
 
+
+
         <TextView
             android:id="@+id/textView"
             android:layout_width="300dp"
             android:layout_height="wrap_content"
-            android:layout_alignParentTop="true"
-            android:layout_centerHorizontal="true"
-            android:layout_centerVertical="true"
             android:layout_gravity="center"
-            android:layout_marginTop="77dp"
             android:fontFamily="monospace"
             android:text="00:00:00"
             android:textAlignment="center"
             android:textColor="#fff"
             android:textSize="50dp"
-            android:textStyle="bold" />
+            android:textStyle="bold"
+            android:layout_centerVertical="true"
+            android:layout_centerHorizontal="true" />
 
         <TextView
             android:layout_width="wrap_content"
@@ -96,6 +96,17 @@
 
 
     </RelativeLayout>
+
+    <fragment xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:map="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:id="@+id/map"
+        android:name="com.google.android.gms.maps.SupportMapFragment"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@id/timerText"
+        android:layout_above="@id/bottomNavView_Bar"
+        tools:context="com.labs.tatu.runclub.fragments.QuickStartFragment" />
 
       <Button
           android:text="Start"
