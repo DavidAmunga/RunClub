@@ -7,6 +7,7 @@
     android:layout_height="match_parent"
     tools:context="com.labs.tatu.runclub.FriendsActivity"
     android:background="#ffffff"
+
     >
 
 
@@ -50,35 +51,38 @@
             android:layout_below="@+id/relLayoutTopBar"
 
             >
-
-            <TextView
-                android:id="@+id/title"
-                android:layout_width="wrap_content"
+            <RelativeLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:gravity="center"
-                android:text="Hi."
-                android:textAppearance="@style/TextAppearance.AppCompat.Title"
-                android:textSize="45sp" />
+                android:id="@+id/inviteBtns"
+                >
+                <Button
+                    android:id="@+id/inviteGG"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:colorButtonNormal="#3F51B5"
+                    android:text="INVITE FROM GOOGLE"
+                    android:layout_alignParentTop="true"
+                    android:layout_alignParentStart="true" />
+                <Button
+                    android:id="@+id/inviteFb"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:colorButtonNormal="#3F51B5"
+                    android:text="INVITE FROM FACEBOOK"
+                    android:layout_alignParentTop="true"
+                    android:layout_toEndOf="@+id/inviteGG" />
+            </RelativeLayout>
 
-            <Button
-            android:id="@+id/inviteGG"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:colorButtonNormal="#3F51B5"
-            android:text="INVITE FROM GOOGLE"
-            android:layout_marginTop="22dp"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
-            <Button
-                android:id="@+id/inviteFb"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:colorButtonNormal="#3F51B5"
-                android:text="INVITE FROM FACEBOOK"
-                android:layout_marginBottom="50dp"
-                android:layout_above="@+id/title"
-                android:layout_centerHorizontal="true" />
+            <android.support.v7.widget.RecyclerView
+                android:layout_below="@+id/inviteBtns"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:id="@+id/user_lists"
+                >
+
+            </android.support.v7.widget.RecyclerView>
+
 
 
 

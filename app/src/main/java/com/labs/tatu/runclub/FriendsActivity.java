@@ -8,6 +8,8 @@ import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -21,6 +23,7 @@ import android.widget.Toast;
 import com.facebook.login.LoginManager;
 import com.facebook.share.model.AppInviteContent;
 import com.facebook.share.widget.AppInviteDialog;
+import com.firebase.ui.database.FirebaseRecyclerAdapter;
 import com.google.android.gms.appinvite.AppInviteInvitation;
 import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
@@ -32,7 +35,10 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.labs.tatu.runclub.fragments.ChallengesFragment;
 import com.labs.tatu.runclub.helpers.BottomNavigationViewHelper;
+import com.labs.tatu.runclub.model.Challenge;
+import com.labs.tatu.runclub.model.User;
 import com.mikepenz.materialdrawer.AccountHeader;
 import com.mikepenz.materialdrawer.AccountHeaderBuilder;
 import com.mikepenz.materialdrawer.Drawer;
@@ -44,6 +50,8 @@ import com.mikepenz.materialdrawer.model.SecondaryDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IDrawerItem;
 import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
 
 public class FriendsActivity extends AppCompatActivity {
@@ -58,6 +66,10 @@ public class FriendsActivity extends AppCompatActivity {
 
     TextView inviteGG,inviteFb;
 
+    private RecyclerView mUserList;
+
+    private DatabaseReference mDatabase;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -71,6 +83,14 @@ public class FriendsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("");
+
+        mDatabase= FirebaseDatabase.getInstance().getReference().child("Users");
+
+
+
+        mUserList=(RecyclerView)findViewById(R.id.user_lists);
+        //mChallengeList.setHasFixedSize(true);
+        mUserList.setLayoutManager(new LinearLayoutManager(this));
 
 //        Set No Status Bar
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
@@ -175,6 +195,69 @@ public class FriendsActivity extends AppCompatActivity {
 
         drawer();
     }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+
+        FirebaseRecyclerAdapter<User,UserViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<User,UserViewHolder>(
+                User.class,
+                R.layout.user_row,
+                UserViewHolder.class,
+                mDatabase
+        ) {
+            @Override
+            protected void populateViewHolder(UserViewHolder viewHolder, User model, int position) {
+                viewHolder.setUserName(model.getUserName());
+                viewHolder.setUserImage(FriendsActivity.this,model.getUserPhotoUrl());
+            }
+
+
+        };
+
+        mUserList.setAdapter(firebaseRecyclerAdapter);
+
+    }
+
+    public static class UserViewHolder extends RecyclerView.ViewHolder
+    {
+        View mView;
+
+
+        public UserViewHolder(View itemView) {
+            super(itemView);
+        }
+
+        public void setUserName(String name)
+        {
+            TextView userName=(TextView) itemView.findViewById(R.id.txtUserName);
+            userName.setText(name);
+        }
+        public void setUserImage(final Context ctx,final String image)
+        {
+            final ImageView user_image=(ImageView)itemView.findViewById(R.id.userImage);
+
+
+            Picasso
+                    .with(ctx)
+                    .load(image)
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .into(user_image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            Picasso.with(ctx).load(image).into(user_image);
+                        }
+                    });
+
+
+        }
+    }
+
 
     private void initViews() {
         inviteGG = (TextView) findViewById(R.id.inviteGG);
@@ -306,7 +389,8 @@ public class FriendsActivity extends AppCompatActivity {
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Location").withTag("AddLoc");
         PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Event").withTag("AddEvent");
         PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Awards").withTag("AddAward");
-        PrimaryDrawerItem item6 = new PrimaryDrawerItem().withIdentifier(1).withName("Run Activity").withTag("RunActivity");
+        PrimaryDrawerItem item6 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Challenge").withTag("AddChallenge");
+
         SecondaryDrawerItem item7 = new SecondaryDrawerItem().withIdentifier(2).withName("Log Out").withTag("LogOut");
 
 //create the drawer and remember the `Drawer` result object
@@ -322,6 +406,7 @@ public class FriendsActivity extends AppCompatActivity {
                         item6.withIcon(R.drawable.ic_directions_run_black_24dp),
 
 
+
                         new DividerDrawerItem(),
                         item7.withIcon(R.drawable.ic_log_out_black_24dp)
 
@@ -332,6 +417,9 @@ public class FriendsActivity extends AppCompatActivity {
                         switch (drawerItem.getTag().toString()) {
                             case "AddLoc":
                                 startActivity(new Intent(FriendsActivity.this, AddLocationActivity.class));
+                                break;
+                            case "AddChallenge":
+                                startActivity(new Intent(FriendsActivity.this, AddChallengeActivity.class));
                                 break;
                             case "AddEvent":
                                 startActivity(new Intent(FriendsActivity.this, AddEventActivity.class));
@@ -364,7 +452,6 @@ public class FriendsActivity extends AppCompatActivity {
         result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
 
     }
-
     private void logOut() {
         Log.d(TAG, "logOut: Is Logging out");
         if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com")) {

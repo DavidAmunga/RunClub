@@ -1,13 +1,13 @@
 <resources>
-    <string name="app_name">RunForce</string>
+    <string name="app_name">RunClub</string>
     <string name="title_activity_maps">Map</string>
     <string name="lorem">Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum."</string>
 
-    <string name="invitation_title">Download RunForce today</string>
-    <string name="invitation_message">Try out RunForce. Its awesome! I am on Tera level!!</string>
-    <string name="invitation_deep_link">http://runforce.io</string>
+    <string name="invitation_title">Download RunClub today</string>
+    <string name="invitation_message">Try out RunClub. Its awesome! I am on Tera level!!</string>
+    <string name="invitation_deep_link">http://runclub.io</string>
     <string name="invitation_cta">Install!</string>
 
-    <string name="facebook_app_id">152862615308121</string>
+    <string name="facebook_app_id">1940543759561350</string>
     <string name="auth_failed">Sign Up Failed</string>
 </resources>

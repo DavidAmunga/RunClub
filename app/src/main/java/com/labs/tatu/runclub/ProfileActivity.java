@@ -69,12 +69,13 @@ public class ProfileActivity extends AppCompatActivity {
 
         mAuth=FirebaseAuth.getInstance();
 
+
         user_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent=new Intent(Intent.ACTION_GET_CONTENT);
-                galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent,GALLERY_REQUEST);
+//                Intent galleryIntent=new Intent(Intent.ACTION_GET_CONTENT);
+//                galleryIntent.setType("image/*");
+//                startActivityForResult(galleryIntent,GALLERY_REQUEST);
             }
         });
 
@@ -157,58 +158,34 @@ public class ProfileActivity extends AppCompatActivity {
         btnSave.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mProgress.setMessage("Saving Details");
-                mProgress.setCancelable(false);
-                mProgress.show();
+
 
                 final String name=txtUserName.getText().toString().trim();
                 final String bio=txtBio.getText().toString().trim();
                 final String phoneNo=txtPhoneNo.getText().toString().trim();
 
 
-                if(mImageUri!=null)
-                {
+                if(mImageUri!=null) {
                     Log.d(TAG, "onClick: Image URI not Null");
 
-//                    Delete Previous Image
-                    DatabaseReference photoUrl=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userPhotoUrl");
-                    photoUrl.addValueEventListener(new ValueEventListener() {
-                        @Override
-                        public void onDataChange(DataSnapshot dataSnapshot) {
 
-                                    Log.d(TAG, "Success!");
-                                    StorageReference filepath=mStorage.child("User_Images").child(user_id).child(mImageUri.getLastPathSegment());
-                                    filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                                        @Override
-                                        public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+//                                        Log.d(TAG, "onSuccess: "+downloadUrl);
+                    String user_id = mAuth.getCurrentUser().getUid();
+                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+                    ref.child("userName").setValue(name);
+                    //  ref.child("userPhotoUrl").setValue(downloadUrl.toString());
+                    ref.child("userBio").setValue(bio);
+                    ref.child("userPhoneNo").setValue(phoneNo);
 
-                                            @SuppressWarnings("VisibleForTesting") Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                                            Log.d(TAG, "onSuccess: "+downloadUrl);
-                                            String user_id=mAuth.getCurrentUser().getUid();
-                                            DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
-                                            ref.child("userName").setValue(name);
-                                            ref.child("userPhotoUrl").setValue(downloadUrl.toString());
-                                            ref.child("userBio").setValue(bio);
-                                            ref.child("userPhoneNo").setValue(phoneNo);
+                    Toast.makeText(ProfileActivity.this, "Details Saved", Toast.LENGTH_SHORT).show();
 
-                                            Toast.makeText(ProfileActivity.this, "Details Saved", Toast.LENGTH_SHORT).show();
-                                            mProgress.dismiss();
-                                        }
-                                    });
-                                }
-
-
-
-                        @Override
-                        public void onCancelled(DatabaseError databaseError) {
-
-                        }
-                    });
 
 
                 }
                 else
                 {
+                    user_image.setImageURI(mAuth.getCurrentUser().getPhotoUrl());
+
                     String user_id=mAuth.getCurrentUser().getUid();
                     DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
                     ref.child("userName").setValue(name);
@@ -217,6 +194,7 @@ public class ProfileActivity extends AppCompatActivity {
 
 
                     Toast.makeText(ProfileActivity.this, "Details Saved", Toast.LENGTH_SHORT).show();
+
                 }
 
 
@@ -240,14 +218,14 @@ public class ProfileActivity extends AppCompatActivity {
         mProgress=new ProgressDialog(this);
     }
 
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
-
-        if(requestCode==GALLERY_REQUEST && resultCode==RESULT_OK)
-        {
-            mImageUri=data.getData();
-            user_image.setImageURI(mImageUri);
-        }
-    }
+//    @Override
+//    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+//        super.onActivityResult(requestCode, resultCode, data);
+//
+//        if(requestCode==GALLERY_REQUEST && resultCode==RESULT_OK)
+//        {
+//            mImageUri=data.getData();
+//            user_image.setImageURI(mImageUri);
+//        }
+//    }
 }

@@ -1,14 +1,19 @@
 package com.labs.tatu.runclub;
 
 import android.content.Intent;
+import android.content.pm.PackageInfo;
+import android.content.pm.PackageManager;
+import android.content.pm.Signature;
 import android.graphics.Color;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Base64;
 import android.util.Log;
 import android.view.TextureView;
 import android.view.View;
+import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -46,6 +51,8 @@ import com.google.firebase.database.ValueEventListener;
 import com.labs.tatu.runclub.R;
 import com.muddzdev.styleabletoastlibrary.StyleableToast;
 
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.concurrent.Callable;
 
 public class LoginActivity extends AppCompatActivity {
@@ -87,6 +94,10 @@ public class LoginActivity extends AppCompatActivity {
                 }
             }
         };
+
+        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
 
 
         //Google Sign In
@@ -230,6 +241,8 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed. Please try again",
                                     Toast.LENGTH_SHORT).show();
+
+                            Log.e(TAG, "Error: ",task.getException());
                             // updateUI(null);
                         }
 
@@ -301,6 +314,7 @@ public class LoginActivity extends AppCompatActivity {
                             Log.w(TAG, "signInWithCredential:failure", task.getException());
                             Toast.makeText(LoginActivity.this, "Authentication failed. Please try again",
                                     Toast.LENGTH_SHORT).show();
+                            task.getException();
 
 
                         }

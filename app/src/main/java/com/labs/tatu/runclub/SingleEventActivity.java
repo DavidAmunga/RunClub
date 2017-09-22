@@ -243,7 +243,7 @@ public class SingleEventActivity extends AppCompatActivity {
                         txt_event_date.setText(convertDate(snapshot.child("eventDate").getValue().toString()));
                         txt_event_loc.setText(snapshot.child("eventLocation").getValue().toString());
                         txt_event_time.setText(snapshot.child("eventTime").getValue().toString());
-                       // txt_event_type.setText(snapshot.child("eventType").getValue().toString());
+                        txt_event_type.setText(snapshot.child("eventType").getValue().toString());
 
                     }
 

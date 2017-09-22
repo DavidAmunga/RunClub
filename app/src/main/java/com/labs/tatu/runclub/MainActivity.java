@@ -54,9 +54,7 @@ import com.mikepenz.materialdrawer.model.interfaces.IProfile;
 import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.squareup.picasso.Picasso;
 
-import java.security.MessageDigest;
-import java.security.NoSuchAlgorithmException;
-import java.security.Signature;
+
 
 public class MainActivity extends AppCompatActivity {
 
@@ -78,6 +76,7 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
 
 
 
@@ -169,6 +168,7 @@ public class MainActivity extends AppCompatActivity {
 
         drawer();
     }
+
 
     @Override
     protected void onPause() {
@@ -287,7 +287,8 @@ public class MainActivity extends AppCompatActivity {
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Location").withTag("AddLoc");
         PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Event").withTag("AddEvent");
         PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Awards").withTag("AddAward");
-        PrimaryDrawerItem item6 = new PrimaryDrawerItem().withIdentifier(1).withName("Run Activity").withTag("RunActivity");
+        PrimaryDrawerItem item6 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Challenge").withTag("AddChallenge");
+
         SecondaryDrawerItem item7 = new SecondaryDrawerItem().withIdentifier(2).withName("Log Out").withTag("LogOut");
 
 //create the drawer and remember the `Drawer` result object
@@ -303,6 +304,7 @@ public class MainActivity extends AppCompatActivity {
                         item6.withIcon(R.drawable.ic_directions_run_black_24dp),
 
 
+
                         new DividerDrawerItem(),
                         item7.withIcon(R.drawable.ic_log_out_black_24dp)
 
@@ -313,6 +315,9 @@ public class MainActivity extends AppCompatActivity {
                         switch (drawerItem.getTag().toString()) {
                             case "AddLoc":
                                 startActivity(new Intent(MainActivity.this, AddLocationActivity.class));
+                                break;
+                            case "AddChallenge":
+                                startActivity(new Intent(MainActivity.this, AddChallengeActivity.class));
                                 break;
                             case "AddEvent":
                                 startActivity(new Intent(MainActivity.this, AddEventActivity.class));

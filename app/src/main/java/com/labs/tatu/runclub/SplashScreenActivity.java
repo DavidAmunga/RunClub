@@ -27,11 +27,12 @@ public class SplashScreenActivity extends AppCompatActivity {
                 .withBackgroundColor(Color.parseColor("#000000"))
                 .withLogo(R.drawable.logo)
 
-                .withBeforeLogoText("RunForce")
-                .withAfterLogoText("Running with you");
+                .withBeforeLogoText("RunClub")
+                .withAfterLogoText("Running together");
 
         config.getLogo().setMinimumHeight(250);
         config.getLogo().setMinimumWidth(250);
+
 
 
         //Set text color

@@ -68,7 +68,7 @@ public class RunHistoryFragment extends Fragment {
         spinner.setTextColor(getResources().getColor(android.R.color.black));
         spinner.setText("COMPLETED RUNS");
         spinner.setBackgroundColor(Color.parseColor("#c3c3c3"));
-        spinner.setItems("My Locations", "My Events", "My Challenges");
+        spinner.setItems("My Locations", "My Events");
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                  if(item.equals("My Challenges"))

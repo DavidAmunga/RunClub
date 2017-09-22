@@ -9,7 +9,7 @@
     <ImageView
         android:layout_width="match_parent"
         android:layout_height="140dp"
-        android:src="@drawable/logo"
+        android:src="@drawable/bg1"
         android:scaleType="fitXY"
         android:id="@+id/login_image"
         />

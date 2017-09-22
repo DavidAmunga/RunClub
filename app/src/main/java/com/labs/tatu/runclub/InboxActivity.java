@@ -140,7 +140,7 @@ public class InboxActivity extends AppCompatActivity {
         String user_id=mAuth.getCurrentUser().getUid();
 
 
-        DatabaseReference ref= FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -148,7 +148,7 @@ public class InboxActivity extends AppCompatActivity {
                 {
 
                     String url=dataSnapshot.child("userPhotoUrl").getValue().toString();
-                    photo_url= Uri.parse(url);
+                    photo_url=Uri.parse(url);
                     Log.d(TAG, "Photo Url Exists "+photo_url);
 
                     drawerLogic(name,email);
@@ -235,7 +235,8 @@ public class InboxActivity extends AppCompatActivity {
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Location").withTag("AddLoc");
         PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Event").withTag("AddEvent");
         PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Awards").withTag("AddAward");
-        PrimaryDrawerItem item6 = new PrimaryDrawerItem().withIdentifier(1).withName("Run Activity").withTag("RunActivity");
+        PrimaryDrawerItem item6 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Challenge").withTag("AddChallenge");
+
         SecondaryDrawerItem item7 = new SecondaryDrawerItem().withIdentifier(2).withName("Log Out").withTag("LogOut");
 
 //create the drawer and remember the `Drawer` result object
@@ -251,6 +252,7 @@ public class InboxActivity extends AppCompatActivity {
                         item6.withIcon(R.drawable.ic_directions_run_black_24dp),
 
 
+
                         new DividerDrawerItem(),
                         item7.withIcon(R.drawable.ic_log_out_black_24dp)
 
@@ -261,6 +263,9 @@ public class InboxActivity extends AppCompatActivity {
                         switch (drawerItem.getTag().toString()) {
                             case "AddLoc":
                                 startActivity(new Intent(InboxActivity.this, AddLocationActivity.class));
+                                break;
+                            case "AddChallenge":
+                                startActivity(new Intent(InboxActivity.this, AddChallengeActivity.class));
                                 break;
                             case "AddEvent":
                                 startActivity(new Intent(InboxActivity.this, AddEventActivity.class));

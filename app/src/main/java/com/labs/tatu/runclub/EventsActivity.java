@@ -65,6 +65,8 @@ public class EventsActivity extends AppCompatActivity {
     private boolean isLoggingOut = false;
     private GoogleApiClient mGoogleApiClient;
 
+    private Uri photo_url=null;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -268,20 +270,31 @@ public class EventsActivity extends AppCompatActivity {
     }
 
     public void drawer() {
-        String name=mAuth.getCurrentUser().getDisplayName();
-        String email=mAuth.getCurrentUser().getEmail();
+        final String name=mAuth.getCurrentUser().getDisplayName();
+        final String email=mAuth.getCurrentUser().getEmail();
         String user_id=mAuth.getCurrentUser().getUid();
-        Uri photo_url=mAuth.getCurrentUser().getPhotoUrl();
+
 
         DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("photo_url").exists())
+                if(dataSnapshot.child("userPhotoUrl").exists())
                 {
-                    String url=dataSnapshot.child("photo_url").getValue().toString();
-                    Uri photo_url=Uri.parse(url);
-                    Log.d(TAG, "Photo Url Exists "+photo_url.toString());
+
+                    String url=dataSnapshot.child("userPhotoUrl").getValue().toString();
+                    photo_url=Uri.parse(url);
+                    Log.d(TAG, "Photo Url Exists "+photo_url);
+
+                    drawerLogic(name,email);
+
+                }
+                else
+                {
+                    photo_url=mAuth.getCurrentUser().getPhotoUrl();
+                    drawerLogic(name,email);
+
+
                 }
             }
 
@@ -295,6 +308,9 @@ public class EventsActivity extends AppCompatActivity {
 
 
 
+    }
+    public void drawerLogic(String name,String email)
+    {
         //initialize and create the image loader logic
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
             @Override
@@ -327,7 +343,7 @@ public class EventsActivity extends AppCompatActivity {
         });
 
 
-        Log.d(TAG, "Foto Url"+photo_url);
+        Log.d(TAG, "Foto Url "+photo_url);
 
         // Create a few sample profile
         final IProfile profile = new ProfileDrawerItem().withName(name)
@@ -353,8 +369,10 @@ public class EventsActivity extends AppCompatActivity {
         PrimaryDrawerItem item2 = new PrimaryDrawerItem().withIdentifier(1).withName("Profile").withTag("Profile");
         PrimaryDrawerItem item3 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Location").withTag("AddLoc");
         PrimaryDrawerItem item4 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Event").withTag("AddEvent");
-        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(1).withName("Run Activity").withTag("RunActivity");
-        SecondaryDrawerItem item6 = new SecondaryDrawerItem().withIdentifier(2).withName("Log Out").withTag("LogOut");
+        PrimaryDrawerItem item5 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Awards").withTag("AddAward");
+        PrimaryDrawerItem item6 = new PrimaryDrawerItem().withIdentifier(1).withName("Add Challenge").withTag("AddChallenge");
+
+        SecondaryDrawerItem item7 = new SecondaryDrawerItem().withIdentifier(2).withName("Log Out").withTag("LogOut");
 
 //create the drawer and remember the `Drawer` result object
         Drawer result = new DrawerBuilder()
@@ -365,11 +383,13 @@ public class EventsActivity extends AppCompatActivity {
                         item2.withIcon(R.drawable.ic_account_box_black_24dp),
                         item3.withIcon(R.drawable.ic_add_location_black_24dp),
                         item4.withIcon(R.drawable.ic_event_note_black_24dp),
-                        item5.withIcon(R.drawable.ic_directions_run_black_24dp),
+                        item5.withIcon(R.drawable.ic_action_achievement),
+                        item6.withIcon(R.drawable.ic_directions_run_black_24dp),
+
 
 
                         new DividerDrawerItem(),
-                        item6.withIcon(R.drawable.ic_log_out_black_24dp)
+                        item7.withIcon(R.drawable.ic_log_out_black_24dp)
 
                 )
                 .withOnDrawerItemClickListener(new Drawer.OnDrawerItemClickListener() {
@@ -379,9 +399,11 @@ public class EventsActivity extends AppCompatActivity {
                             case "AddLoc":
                                 startActivity(new Intent(EventsActivity.this, AddLocationActivity.class));
                                 break;
+                            case "AddChallenge":
+                                startActivity(new Intent(EventsActivity.this, AddChallengeActivity.class));
+                                break;
                             case "AddEvent":
-
-                                startActivity(new Intent(EventsActivity.this, LoginActivity.class));
+                                startActivity(new Intent(EventsActivity.this, AddEventActivity.class));
                                 break;
                             case "LogOut":
                                 logOut();
@@ -391,6 +413,9 @@ public class EventsActivity extends AppCompatActivity {
                                 break;
                             case "Profile":
                                 startActivity(new Intent(EventsActivity.this,ProfileActivity.class));
+                                break;
+                            case "AddAward":
+                                startActivity(new Intent(EventsActivity.this,AddAwardsActivity.class));
                                 break;
 
                         }
@@ -406,6 +431,7 @@ public class EventsActivity extends AppCompatActivity {
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
         result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
+
     }
 
     private void logOut() {

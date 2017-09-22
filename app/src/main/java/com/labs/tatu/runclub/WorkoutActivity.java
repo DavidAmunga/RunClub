@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.location.Location;
+import android.media.MediaPlayer;
 import android.os.Handler;
 import android.os.SystemClock;
 import android.support.annotation.NonNull;
@@ -21,6 +22,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -43,8 +45,13 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.SphericalUtil;
 import com.labs.tatu.runclub.helpers.BottomNavigationViewHelper;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 import com.tapadoo.alerter.Alerter;
 import com.xw.repo.BubbleSeekBar;
+
+import static com.labs.tatu.runclub.R.id.loc_image;
 
 public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener, com.google.android.gms.location.LocationListener {
     private static final String TAG = "WorkoutActivity";
@@ -52,6 +59,8 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
     private TextView textView, txt_loc_name;
     private Toolbar toolbar;
     private Button start, pause, reset;
+    private ImageView locHeader;
+    private MediaPlayer mp;
     private GoogleMap mMap;
 
 
@@ -125,6 +134,7 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
         pause = (Button) findViewById(R.id.buttonPause);
         reset = (Button) findViewById(R.id.buttonReset);
         txt_loc_name = (TextView) findViewById(R.id.txt_loc_name);
+        locHeader=(ImageView)findViewById(R.id.locHeader);
 
 
 
@@ -152,6 +162,48 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
             LatLng fromLatLng = new LatLng(fromLatitude, fromLongitude);
 
 
+            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Locations");
+            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(DataSnapshot dataSnapshot) {
+                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                        if (snapshot.child("locationName").getValue().equals(txt_loc_name.getText().toString().trim())) {
+                            Log.d(TAG, "onDataChange: Success");
+
+                            final String locationPhotoUrl = snapshot.child("locationPhotoUrl").getValue().toString();
+
+                            Picasso
+                                    .with(WorkoutActivity.this)
+                                    .load(locationPhotoUrl)
+                                    .networkPolicy(NetworkPolicy.OFFLINE)
+                                    .into(locHeader, new Callback() {
+                                        @Override
+                                        public void onSuccess() {
+
+                                        }
+
+                                        @Override
+                                        public void onError() {
+                                            Picasso.with(WorkoutActivity.this).load(locationPhotoUrl).into(locHeader);
+                                        }
+                                    });
+
+
+                        } else {
+                            Log.d(TAG, "No Location");
+                        }
+
+
+                    }
+                }
+
+                @Override
+                public void onCancelled(DatabaseError databaseError) {
+
+                }
+            });
+
+
         //    setMarkers(fromLatitude,fromLongitude,toLatitude,toLongitude);
         }
 
@@ -165,7 +217,8 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
 
                 StartTime = SystemClock.uptimeMillis();
                 handler.postDelayed(runnable, 0);
-
+                mp=MediaPlayer.create(WorkoutActivity.this, R.raw.start);
+                mp.start();
                 reset.setEnabled(false);
                 if (isStart = true) {
                     if (locGoal.equals("")) {
@@ -188,6 +241,8 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
                                         String locationName = snapshot.child("locationName").getValue().toString();
                                         int locationDistance = Integer.parseInt(snapshot.child("locationDistance").getValue().toString());
                                         String locationPhotoUrl = snapshot.child("locationPhotoUrl").getValue().toString();
+
+
 
                                         String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
                                         DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userLocations").push();
@@ -237,7 +292,7 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
 
 
                         Alerter.create(WorkoutActivity.this)
-                                .setTitle(txt_loc_name.getText().toString() + "Challenge")
+                                .setTitle(txt_loc_name.getText().toString() + " Challenge")
                                 .setText("See through the whole distance")
                                 .setDuration(2000)
                                 .setIcon(R.drawable.ic_directions_run)
@@ -256,7 +311,8 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
         pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-
+                mp=MediaPlayer.create(WorkoutActivity.this, R.raw.stop);
+                mp.start();
                 TimeBuff += MillisecondTime;
 
                 handler.removeCallbacks(runnable);
@@ -270,6 +326,8 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                mp=MediaPlayer.create(WorkoutActivity.this, R.raw.stop);
+                mp.start();
 
                 MillisecondTime = 0L;
                 StartTime = 0L;
@@ -525,7 +583,7 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
             Double distance = SphericalUtil.computeDistanceBetween(latLng, toLatLng);
             Double totalDistance = SphericalUtil.computeDistanceBetween(fromLatLng, toLatLng);
             Log.d(TAG, "toLatLng " + toLatLng);
-            Toast.makeText(this, "Distance is " + distance, Toast.LENGTH_SHORT).show();
+
 
             Log.d(TAG, "Location Total Distance "+totalDistance);
             Log.d(TAG, "Location  Distance "+distance);
@@ -537,6 +595,10 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     public void getMarkers() {
+
+
+
+
 
     }
 }
