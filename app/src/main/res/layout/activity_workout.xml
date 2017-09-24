@@ -51,8 +51,11 @@
             android:textColor="#ffffffff"
             android:textStyle="bold"
             android:textSize="35dp"
-            android:layout_alignParentTop="true"
+            android:layout_centerVertical="true"
             android:layout_centerHorizontal="true" />
+
+
+
 
     </RelativeLayout>
 
@@ -65,6 +68,39 @@
         android:layout_alignParentStart="true"
         android:layout_centerVertical="true"
         android:background="@color/md_cyan_300">
+        <Button
+            android:text="Start"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnStart"
+            android:background="@color/primary"
+            android:textColor="@color/white"
+
+            android:layout_marginBottom="10dp"
+            android:layout_above="@+id/textView"
+            android:layout_alignStart="@+id/textView" />
+
+        <Button
+            android:text="Pause"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonPause"
+            android:background="@android:color/holo_blue_dark"
+            android:textColor="@color/white"
+            android:layout_alignBaseline="@+id/btnStart"
+            android:layout_alignBottom="@+id/btnStart"
+            android:layout_centerHorizontal="true" />
+
+        <Button
+            android:text="STOP RUN"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:id="@+id/buttonReset"
+            android:background="#f2003c"
+            android:textColor="@color/white"
+            android:layout_alignBaseline="@+id/buttonPause"
+            android:layout_alignBottom="@+id/buttonPause"
+            android:layout_alignEnd="@+id/textView" />
 
 
 
@@ -128,41 +164,7 @@
 
 
 
-      <Button
-          android:text="Start"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:id="@+id/btnStart"
-          android:background="@color/primary"
-          android:textColor="@color/white"
-          android:layout_marginStart="18dp"
-          android:layout_above="@+id/timerText"
-          android:layout_alignParentStart="true"
-          android:layout_marginBottom="8dp" />
 
-      <Button
-          android:text="Pause"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:id="@+id/buttonPause"
-          android:background="@android:color/holo_blue_dark"
-          android:textColor="@color/white"
-          android:layout_alignBaseline="@+id/btnStart"
-          android:layout_alignBottom="@+id/btnStart"
-          android:layout_centerHorizontal="true" />
-
-      <Button
-          android:text="STOP RUN"
-          android:layout_width="wrap_content"
-          android:layout_height="wrap_content"
-          android:id="@+id/buttonReset"
-          android:background="#f2003c"
-          android:textColor="@color/white"
-          android:layout_alignBaseline="@+id/buttonPause"
-          android:layout_alignBottom="@+id/buttonPause"
-          android:layout_alignParentEnd="true"
-          android:layout_marginEnd="15dp"
-          />
 
 
     <android.support.design.widget.BottomNavigationView

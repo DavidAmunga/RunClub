@@ -145,63 +145,74 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
 
         if (getIntent().getExtras() != null) {
             Bundle locData = getIntent().getExtras();
-            txt_loc_name.setText(locData.get("locName").toString().trim());
-            locGoal = locData.get("locGoal").toString().trim();
-            fromLatitude =Double.valueOf(locData.get("fromLat").toString().trim());
-            fromLongitude =Double.valueOf(locData.get("fromLong").toString().trim());
-            toLatitude =Double.valueOf(locData.get("toLat").toString().trim());
-            toLongitude =Double.valueOf(locData.get("toLong").toString().trim());
+            if(locData.get("locName")!=null)
+            {
+                txt_loc_name.setText(locData.get("locName").toString().trim());
+                locGoal = locData.get("locGoal").toString().trim();
+                fromLatitude =Double.valueOf(locData.get("fromLat").toString().trim());
+                fromLongitude =Double.valueOf(locData.get("fromLong").toString().trim());
+                toLatitude =Double.valueOf(locData.get("toLat").toString().trim());
+                toLongitude =Double.valueOf(locData.get("toLong").toString().trim());
 
 
-            Log.d(TAG, "fromLat "+locData.get("fromLat").toString().trim());
-            Log.d(TAG, "fromLong "+Double.valueOf(fromLongitude));
-            Log.d(TAG, "toLat "+  locData.get("toLat").toString());
-            Log.d(TAG, "toLong "+Double.valueOf(toLongitude));
+                Log.d(TAG, "fromLat "+locData.get("fromLat").toString().trim());
+                Log.d(TAG, "fromLong "+Double.valueOf(fromLongitude));
+                Log.d(TAG, "toLat "+  locData.get("toLat").toString());
+                Log.d(TAG, "toLong "+Double.valueOf(toLongitude));
 
 
-            LatLng fromLatLng = new LatLng(fromLatitude, fromLongitude);
+                LatLng fromLatLng = new LatLng(fromLatitude, fromLongitude);
 
 
-            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Locations");
-            ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                @Override
-                public void onDataChange(DataSnapshot dataSnapshot) {
-                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                        if (snapshot.child("locationName").getValue().equals(txt_loc_name.getText().toString().trim())) {
-                            Log.d(TAG, "onDataChange: Success");
+                DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Locations");
+                ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                    @Override
+                    public void onDataChange(DataSnapshot dataSnapshot) {
+                        for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                            if (snapshot.child("locationName").getValue().equals(txt_loc_name.getText().toString().trim())) {
+                                Log.d(TAG, "onDataChange: Success");
 
-                            final String locationPhotoUrl = snapshot.child("locationPhotoUrl").getValue().toString();
+                                final String locationPhotoUrl = snapshot.child("locationPhotoUrl").getValue().toString();
 
-                            Picasso
-                                    .with(WorkoutActivity.this)
-                                    .load(locationPhotoUrl)
-                                    .networkPolicy(NetworkPolicy.OFFLINE)
-                                    .into(locHeader, new Callback() {
-                                        @Override
-                                        public void onSuccess() {
+                                Picasso
+                                        .with(WorkoutActivity.this)
+                                        .load(locationPhotoUrl)
+                                        .networkPolicy(NetworkPolicy.OFFLINE)
+                                        .into(locHeader, new Callback() {
+                                            @Override
+                                            public void onSuccess() {
 
-                                        }
+                                            }
 
-                                        @Override
-                                        public void onError() {
-                                            Picasso.with(WorkoutActivity.this).load(locationPhotoUrl).into(locHeader);
-                                        }
-                                    });
+                                            @Override
+                                            public void onError() {
+                                                Picasso.with(WorkoutActivity.this).load(locationPhotoUrl).into(locHeader);
+                                            }
+                                        });
 
 
-                        } else {
-                            Log.d(TAG, "No Location");
+                            } else {
+                                Log.d(TAG, "No Location");
+                            }
+
+
                         }
+                    }
 
+                    @Override
+                    public void onCancelled(DatabaseError databaseError) {
 
                     }
-                }
+                });
 
-                @Override
-                public void onCancelled(DatabaseError databaseError) {
+            }
+            else if(locData.get("challengeName")!=null)
+            {
+                String name=locData.get("challengeName").toString();
+                txt_loc_name.setText(name+"'s Challenge");
 
-                }
-            });
+            }
+
 
 
         //    setMarkers(fromLatitude,fromLongitude,toLatitude,toLongitude);

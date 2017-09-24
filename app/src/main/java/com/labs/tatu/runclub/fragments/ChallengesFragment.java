@@ -1,6 +1,8 @@
 package com.labs.tatu.runclub.fragments;
 
 import android.content.Context;
+import android.content.Intent;
+import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -11,13 +13,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.firebase.ui.database.FirebaseRecyclerAdapter;
+import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.labs.tatu.runclub.R;
+import com.labs.tatu.runclub.WorkoutActivity;
 import com.labs.tatu.runclub.model.Challenge;
 import com.squareup.picasso.Picasso;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 /**
  * Created by amush on 10-Sep-17.
@@ -38,7 +44,10 @@ public class ChallengesFragment extends Fragment {
 
         //toolBarTitle.setText("Challenges");
 
-        mDatabase= FirebaseDatabase.getInstance().getReference().child("Challenges");
+
+        String id= FirebaseAuth.getInstance().getCurrentUser().getUid();
+
+        mDatabase= FirebaseDatabase.getInstance().getReference("Users").child(id).child("userChallenges");
 
 
 
@@ -62,10 +71,33 @@ public class ChallengesFragment extends Fragment {
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(ChallengeViewHolder viewHolder, Challenge model, int position) {
+            protected void populateViewHolder(ChallengeViewHolder viewHolder, final Challenge model, int position) {
                 viewHolder.setChallengeName(model.getChallengeName());
                 viewHolder.setImage(getContext(),model.getChallengeImage());
                 viewHolder.setChallenger(model.getChallenger());
+
+
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new LovelyStandardDialog(getContext())
+                                .setTopColorRes(R.color.colorPrimary)
+                                .setButtonsColorRes(R.color.colorRed)
+                                .setIcon(R.drawable.ic_directions_run)
+                                .setTitle("Perform Challenge")
+                                .setMessage("Accept "+model.getChallenger()+"'s Challenge?")
+                                .setPositiveButton("Perform", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                       Intent intent=new Intent(getContext(), WorkoutActivity.class);
+                                       intent.putExtra("challengeName",model.getChallengeName());
+                                       startActivity(intent);
+                                    }
+                                })
+                                .setNegativeButton("Dismiss", null)
+                                .show();
+                    }
+                });
 
             }
         };
@@ -88,14 +120,11 @@ public class ChallengesFragment extends Fragment {
             TextView challenge_name=(TextView)mView.findViewById(R.id.ch_title);
             challenge_name.setText(title);
         }
-        public void setChallengeLoc(String loc)
-        {
-
-        }
         public void setImage(Context ctx, String image)
         {
-            ImageView challenge_image=(ImageView)itemView.findViewById(R.id.ch_image);
-            Picasso.with(ctx).load(image).into(challenge_image);
+             ImageView challenge_image=(ImageView)itemView.findViewById(R.id.ch_image);
+
+             challenge_image.setImageResource(R.drawable.header);
         }
         public void setChallenger(String challenger_name)
         {

@@ -26,11 +26,15 @@ import com.jaredrummler.materialspinner.MaterialSpinner;
 import com.labs.tatu.runclub.LocationRunActivity;
 import com.labs.tatu.runclub.R;
 import com.labs.tatu.runclub.SingleEventActivity;
+import com.labs.tatu.runclub.WorkoutActivity;
+import com.labs.tatu.runclub.model.Award;
+import com.labs.tatu.runclub.model.Challenge;
 import com.labs.tatu.runclub.model.Event;
 import com.labs.tatu.runclub.model.Location;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.yarolegovich.lovelydialog.LovelyStandardDialog;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -68,22 +72,27 @@ public class RunHistoryFragment extends Fragment {
         spinner.setTextColor(getResources().getColor(android.R.color.black));
         spinner.setText("COMPLETED RUNS");
         spinner.setBackgroundColor(Color.parseColor("#c3c3c3"));
-        spinner.setItems("My Locations", "My Events");
+        spinner.setItems("My Locations", "My Events","My Challenges","My Awards");
         spinner.setOnItemSelectedListener(new MaterialSpinner.OnItemSelectedListener<String>() {
             @Override public void onItemSelected(MaterialSpinner view, int position, long id, String item) {
                  if(item.equals("My Challenges"))
                 {
+                    setChallengeList();
                 }
                 else if(item.equals("My Events"))
                 {
                     setEventsList();
 
                 }
-                else
+                else if(item.equals("My Locations"))
                 {
                     setLocationsList();
 
                 }
+                else
+                 {
+                     setAwardsList();
+                 }
 
 
 
@@ -96,6 +105,32 @@ public class RunHistoryFragment extends Fragment {
 
 
         return view;
+    }
+
+    private void setAwardsList()
+    {
+        String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mDatabase=FirebaseDatabase.getInstance().getReference("Awards");
+
+        FirebaseRecyclerAdapter<Award,AwardsViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Award, AwardsViewHolder>(
+                Award.class,
+                R.layout.award_row,
+                AwardsViewHolder.class,
+                mDatabase
+        ) {
+            @Override
+            protected void populateViewHolder(AwardsViewHolder viewHolder, Award model, int position) {
+                viewHolder.setAwardName(model.getAwardName());
+                viewHolder.setAwardDesc(model.getAwardDescription());
+                viewHolder.setAwardImage(getActivity(),model.getAwardImage());
+
+                Log.d(TAG, "AwardImage"+model.getAwardImage());
+                Log.d(TAG, "AwardName"+model.getAwardName());
+            }
+        };
+
+        mList.setAdapter(firebaseRecyclerAdapter);
+
     }
 
 
@@ -189,6 +224,134 @@ public class RunHistoryFragment extends Fragment {
         };
         mList.setAdapter(firebaseRecyclerAdapter);
 
+
+
+    }
+
+    public void setChallengeList()
+    {
+        String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
+        mDatabase=FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userChallenges");
+
+        FirebaseRecyclerAdapter<Challenge,ChallengeViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Challenge, ChallengeViewHolder>(
+                Challenge.class,
+                R.layout.challenge_row,
+                ChallengeViewHolder.class,
+                mDatabase
+        ) {
+            @Override
+            protected void populateViewHolder(ChallengeViewHolder viewHolder, final Challenge model, int position) {
+                viewHolder.setChallengeName(model.getChallengeName());
+                viewHolder.setImage(getContext(),model.getChallengeImage());
+                viewHolder.setChallenger(model.getChallenger());
+
+
+                viewHolder.mView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        new LovelyStandardDialog(getContext())
+                                .setTopColorRes(R.color.colorPrimary)
+                                .setButtonsColorRes(R.color.colorRed)
+                                .setIcon(R.drawable.ic_directions_run)
+                                .setTitle("Perform Challenge")
+                                .setMessage("Accept "+model.getChallenger()+"'s Challenge?")
+                                .setPositiveButton("Perform", new View.OnClickListener() {
+                                    @Override
+                                    public void onClick(View v) {
+                                        Intent intent=new Intent(getContext(), WorkoutActivity.class);
+                                        intent.putExtra("challengeName",model.getChallengeName());
+                                        startActivity(intent);
+                                    }
+                                })
+                                .setNegativeButton("Dismiss", null)
+                                .show();
+                    }
+                });
+
+            }
+        };
+
+        mList.setAdapter(firebaseRecyclerAdapter);
+    }
+
+
+
+
+
+    public static class AwardsViewHolder extends RecyclerView.ViewHolder
+    {
+        View mView;
+
+
+        public AwardsViewHolder(View itemView) {
+            super(itemView);
+
+            mView=itemView;
+        }
+        public void setAwardName(String name)
+        {
+            TextView awardName=(TextView)mView.findViewById(R.id.txtAwardName);
+            awardName.setText(name);
+        }
+        public void setAwardDesc(String desc)
+        {
+            TextView awardDesc=(TextView)mView.findViewById(R.id.txtAwardDesc);
+            awardDesc.setText(desc);
+
+        }
+        public void setAwardImage(final Context ctx, final String image)
+        {
+            final ImageView award_image=(ImageView)mView.findViewById(R.id.awardImage);
+
+
+            Picasso
+                    .with(ctx)
+                    .load(image)
+                    .networkPolicy(NetworkPolicy.OFFLINE)
+                    .into(award_image, new Callback() {
+                        @Override
+                        public void onSuccess() {
+
+                        }
+
+                        @Override
+                        public void onError() {
+                            Picasso.with(ctx).load(image).into(award_image);
+                        }
+                    });
+        }
+    }
+
+
+
+
+
+    public static class ChallengeViewHolder extends RecyclerView.ViewHolder
+    {
+        View mView;
+
+        public ChallengeViewHolder(View itemView) {
+            super(itemView);
+
+            mView=itemView;
+
+        }
+        public void setChallengeName(String title)
+        {
+            TextView challenge_name=(TextView)mView.findViewById(R.id.ch_title);
+            challenge_name.setText(title);
+        }
+        public void setImage(Context ctx, String image)
+        {
+            ImageView challenge_image=(ImageView)itemView.findViewById(R.id.ch_image);
+
+            challenge_image.setImageResource(R.drawable.header);
+        }
+        public void setChallenger(String challenger_name)
+        {
+            TextView challenger=(TextView)mView.findViewById(R.id.challenger_name);
+            challenger.setText(challenger_name);
+        }
 
 
     }

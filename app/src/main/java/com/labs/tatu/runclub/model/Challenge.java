@@ -5,14 +5,14 @@ package com.labs.tatu.runclub.model;
  */
 
 public class Challenge {
-    private String challengeName,challengeLoc,challenger,challengeImage,challengeDesc;
+    private String challengeName,challenger,challengeImage;
 
-    public Challenge(String challengeName, String challengeLoc, String challenger, String challengeImage, String challengeDesc) {
+    public Challenge(String challengeName, String challenger, String challengeImage) {
         this.challengeName = challengeName;
-        this.challengeLoc = challengeLoc;
+
         this.challenger = challenger;
         this.challengeImage = challengeImage;
-        this.challengeDesc = challengeDesc;
+
     }
 
     public Challenge()
@@ -26,14 +26,6 @@ public class Challenge {
 
     public void setChallengeName(String challengeName) {
         this.challengeName = challengeName;
-    }
-
-    public String getChallengeLoc() {
-        return challengeLoc;
-    }
-
-    public void setChallengeLoc(String challengeLoc) {
-        this.challengeLoc = challengeLoc;
     }
 
     public String getChallenger() {
@@ -52,11 +44,5 @@ public class Challenge {
         this.challengeImage = challengeImage;
     }
 
-    public String getChallengeDesc() {
-        return challengeDesc;
-    }
 
-    public void setChallengeDesc(String challengeDesc) {
-        this.challengeDesc = challengeDesc;
-    }
 }

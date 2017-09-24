@@ -25,21 +25,13 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="John Doe"
+                android:textColor="#000"
                 android:id="@+id/challenger_name"
-                tools:layout_editor_absoluteY="-3dp"
                 app:layout_constraintLeft_toRightOf="@+id/challenger_prof"
                 app:layout_constraintTop_toBottomOf="parent"
-                android:layout_marginLeft="0dp" />
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Tera Level"
-                android:textStyle="bold"
-                android:layout_below="@+id/challenger_name"
-                app:layout_constraintTop_toBottomOf="@+id/challenger_name"
-                app:layout_constraintLeft_toLeftOf="@id/challenger_name"
+                android:layout_marginLeft="10dp"
+                android:layout_marginTop="7dp" />
 
-                />
         </android.support.constraint.ConstraintLayout>
 
         <RelativeLayout
@@ -63,47 +55,27 @@
                 android:text="You have been challenged to run"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentTop="true"
                 android:textColor="@android:color/white"
                 android:textAllCaps="true"
                 android:textSize="17sp"
                 android:layout_marginTop="20dp"
-                android:layout_centerHorizontal="true" />
+                android:layout_alignParentTop="true"
+                android:layout_alignParentStart="true"
+                android:layout_marginStart="16dp" />
 
             <TextView
                 android:id="@+id/ch_title"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="50dp"
                 android:textColor="@android:color/white"
-                android:text="Ndakaini"
+                android:text="Ndakaini Challenge"
                 android:layout_marginTop="30dp"
+                android:maxLength="20"
                 android:textSize="30dp"
                 android:textStyle="bold"
                 android:layout_centerHorizontal="true"
                 android:layout_alignTop="@+id/text_challenge"
                 />
-
-            <Button
-                android:text="REJECT"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_below="@id/ch_image"
-                android:layout_alignParentLeft="true"
-                android:layout_marginLeft="40dp"
-                android:background="@drawable/button_border"
-
-
-                />
-            <Button
-                android:text="START RUN"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@id/ch_image"
-                android:background="#000000"
-                android:textColor="#ffffff"
-                android:layout_marginRight="40dp"
-                 />
 
         </RelativeLayout>
         <LinearLayout
