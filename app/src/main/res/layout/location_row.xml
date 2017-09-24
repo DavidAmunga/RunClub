@@ -15,12 +15,17 @@
 
             >
 
+
+
             <ImageView
                 android:id="@+id/loc_image"
                 android:src="@mipmap/ic_launcher_round"
                 android:layout_width="match_parent"
                 android:scaleType="fitXY"
-                android:layout_height="100dp" />
+                android:layout_height="100dp"
+                android:backgroundTint="#000"
+
+                />
 
 
             <TextView

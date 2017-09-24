@@ -18,6 +18,7 @@ import android.text.TextUtils;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
@@ -73,15 +74,14 @@ import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 public class FriendsActivity extends AppCompatActivity {
     private static final String TAG = "FriendsActivity";
-    private static final int REQUEST_INVITE=1;
+    private static final int REQUEST_INVITE = 1;
     private Toolbar toolbar;
 
     FirebaseAuth mAuth;
     private boolean isLoggingOut = false;
-    private Uri photo_url=null;
+    private Uri photo_url = null;
     private GoogleApiClient mGoogleApiClient;
 
-    TextView inviteGG,inviteFb;
 
 
 
@@ -89,7 +89,7 @@ public class FriendsActivity extends AppCompatActivity {
 
     private DatabaseReference mDatabase;
 
-    String id="";
+    String id = "";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,11 +105,10 @@ public class FriendsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("");
 
-        mDatabase= FirebaseDatabase.getInstance().getReference().child("Users");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
 
 
-
-        mUserList=(RecyclerView)findViewById(R.id.user_lists);
+        mUserList = (RecyclerView) findViewById(R.id.user_lists);
         //mChallengeList.setHasFixedSize(true);
         mUserList.setLayoutManager(new LinearLayoutManager(this));
 
@@ -118,7 +117,7 @@ public class FriendsActivity extends AppCompatActivity {
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //
 
-        mAuth=FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         //        Set Google Log In
 
         //Google Sign In
@@ -135,66 +134,6 @@ public class FriendsActivity extends AppCompatActivity {
                 })
                 .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
-
-
-
-
-
-
-        inviteGG.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
-                        .setMessage(getString(R.string.invitation_message))
-                        .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
-                        .setCustomImage(Uri.parse("https://drive.google.com/open?id=0B7ppRoKalXOdUWxCWHRLTmdwaUk"))
-                        .setCallToActionText(getString(R.string.invitation_cta))
-                        .build();
-                startActivityForResult(intent, REQUEST_INVITE);
-            }
-        });
-        inviteFb.setOnClickListener(new View.OnClickListener() {
-
-            @Override
-            public void onClick(View v) {
-                if(isFbLoggedIn()) {
-                    Log.d(TAG, "User ID "+id);
-                   /* make the API call */
-                    new GraphRequest(
-                            AccessToken.getCurrentAccessToken(),
-                            "/"+id+"/friendlists",
-                            null,
-                            HttpMethod.GET,
-                            new GraphRequest.Callback() {
-                                public void onCompleted(GraphResponse response) {
-                                    Log.d(TAG, "Friends Lists " + response.toString());
-                                }
-                            }
-                    ).executeAsync();
-                }
-
-
-//
-//                String appLinkUrl, previewImageUrl;
-//
-//                appLinkUrl = "https://www.mydomain.com/myapplink";
-//                previewImageUrl = "https://drive.google.com/open?id=0B7ppRoKalXOdUWxCWHRLTmdwaUk";
-//
-//                if (AppInviteDialog.canShow()) {
-//                    AppInviteContent content = new AppInviteContent.Builder()
-//                            .setApplinkUrl(appLinkUrl)
-//                            .setPreviewImageUrl(previewImageUrl)
-//                            .build();
-//                    AppInviteDialog.show(FriendsActivity.this, content);
-//                }
-            }
-        });
-
-
-
-
-
-
 
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavView_Bar);
@@ -241,13 +180,12 @@ public class FriendsActivity extends AppCompatActivity {
         drawer();
     }
 
-    public boolean isFbLoggedIn()
-    {
+    public boolean isFbLoggedIn() {
 
         if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com")) {
             Profile profile = Profile.getCurrentProfile();
             profile.getFirstName();
-            id=profile.getId();
+            id = profile.getId();
 
             return true;
         }
@@ -258,7 +196,7 @@ public class FriendsActivity extends AppCompatActivity {
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<User,UserViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<User,UserViewHolder>(
+        FirebaseRecyclerAdapter<User, UserViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<User, UserViewHolder>(
                 User.class,
                 R.layout.user_row,
                 UserViewHolder.class,
@@ -267,12 +205,12 @@ public class FriendsActivity extends AppCompatActivity {
             @Override
             protected void populateViewHolder(final UserViewHolder viewHolder, final User model, final int position) {
                 viewHolder.setUserName(model.getUserName());
-                viewHolder.setUserImage(FriendsActivity.this,model.getUserPhotoUrl());
+                viewHolder.setUserImage(FriendsActivity.this, model.getUserPhotoUrl());
 
                 viewHolder.itemView.findViewById(R.id.btn_challenge_user).setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        showDialog(model,position);
+                        showDialog(model, position);
                     }
                 });
 
@@ -285,21 +223,19 @@ public class FriendsActivity extends AppCompatActivity {
 
     }
 
-    private void showDialog( final User model, final int position) {
+    private void showDialog(final User model, final int position) {
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
         LayoutInflater inflater = this.getLayoutInflater();
         final View dialogView = inflater.inflate(R.layout.challenge_item, null);
         dialogBuilder.setView(dialogView);
 
-        final EditText challengeName=(EditText)dialogView.findViewById(R.id.txt_challengeName);
-        Button btnAdd=(Button)dialogView.findViewById(R.id.buttonChallenge);
+        final EditText challengeName = (EditText) dialogView.findViewById(R.id.txt_challengeName);
+        Button btnAdd = (Button) dialogView.findViewById(R.id.buttonChallenge);
 
-        Log.d(TAG, "onClick: "+challengeName.getText().toString());
-
-
+        Log.d(TAG, "onClick: " + challengeName.getText().toString());
 
 
-        dialogBuilder.setTitle("Challenge "+model.getUserName());
+        dialogBuilder.setTitle("Challenge " + model.getUserName());
         dialogBuilder.setMessage("Challenge Name");
         final AlertDialog b = dialogBuilder.create();
         b.show();
@@ -308,30 +244,28 @@ public class FriendsActivity extends AppCompatActivity {
         btnAdd.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                final String name=challengeName.getText().toString();
-                Log.d(TAG, "Name: "+name);
-                if(!TextUtils.isEmpty(name))
-                {
+                final String name = challengeName.getText().toString();
+                Log.d(TAG, "Name: " + name);
+                if (!TextUtils.isEmpty(name)) {
 //                                            Get User
-                    final DatabaseReference refUser=FirebaseDatabase.getInstance().getReference().child("Users");
+                    final DatabaseReference refUser = FirebaseDatabase.getInstance().getReference().child("Users");
                     refUser.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
                         public void onDataChange(DataSnapshot dataSnapshot) {
                             for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
 
-                                if(snapshot.child("userName").getValue().equals(model.getUserName().trim()))
-                                {
+                                if (snapshot.child("userName").getValue().equals(model.getUserName().trim())) {
                                     Log.d(TAG, "onDataChange: User Found!");
-                                    String userID=snapshot.getKey();
-                                    Log.d(TAG, "Key: "+userID);
+                                    String userID = snapshot.getKey();
+                                    Log.d(TAG, "Key: " + userID);
 
-                                    DatabaseReference newChallenge=refUser.child(userID).child("userChallenges").push();
+                                    DatabaseReference newChallenge = refUser.child(userID).child("userChallenges").push();
                                     newChallenge.child("challengeName").setValue(name);
                                     newChallenge.child("challengePoints").setValue("10");
                                     newChallenge.child("challengeImage").setValue("R.drawable.challengeHeader");
                                     newChallenge.child("challenger").setValue(mAuth.getCurrentUser().getDisplayName());
 
-                                    Toast.makeText(FriendsActivity.this, model.getUserName()+" challenged", Toast.LENGTH_SHORT).show();
+                                    Toast.makeText(FriendsActivity.this, model.getUserName() + " challenged", Toast.LENGTH_SHORT).show();
                                     b.dismiss();
                                 }
 
@@ -346,10 +280,7 @@ public class FriendsActivity extends AppCompatActivity {
                     });
 
 
-
-                }
-                else
-                {
+                } else {
                     Toast.makeText(FriendsActivity.this, "Enter Challenge Name!", Toast.LENGTH_SHORT).show();
                 }
             }
@@ -357,8 +288,7 @@ public class FriendsActivity extends AppCompatActivity {
 
     }
 
-    public static class UserViewHolder extends RecyclerView.ViewHolder
-    {
+    public static class UserViewHolder extends RecyclerView.ViewHolder {
         View mView;
 
         Button btnChallenge;
@@ -367,17 +297,16 @@ public class FriendsActivity extends AppCompatActivity {
         public UserViewHolder(View itemView) {
             super(itemView);
 
-            btnChallenge=(Button)itemView.findViewById(R.id.btn_challenge_user);
+            btnChallenge = (Button) itemView.findViewById(R.id.btn_challenge_user);
         }
 
-        public void setUserName(String name)
-        {
-            TextView userName=(TextView) itemView.findViewById(R.id.txtUserName);
+        public void setUserName(String name) {
+            TextView userName = (TextView) itemView.findViewById(R.id.txtUserName);
             userName.setText(name);
         }
-        public void setUserImage(final Context ctx,final String image)
-        {
-            final ImageView user_image=(ImageView)itemView.findViewById(R.id.userImage);
+
+        public void setUserImage(final Context ctx, final String image) {
+            final ImageView user_image = (ImageView) itemView.findViewById(R.id.userImage);
 
 
             Picasso
@@ -402,10 +331,6 @@ public class FriendsActivity extends AppCompatActivity {
 
 
     private void initViews() {
-        inviteGG = (TextView) findViewById(R.id.inviteGG);
-        inviteFb = (TextView) findViewById(R.id.inviteFb);
-
-
     }
 
     @Override
@@ -432,30 +357,28 @@ public class FriendsActivity extends AppCompatActivity {
         super.onPause();
         overridePendingTransition(0, 0);
     }
+
     public void drawer() {
-        final String name=mAuth.getCurrentUser().getDisplayName();
-        final String email=mAuth.getCurrentUser().getEmail();
-        String user_id=mAuth.getCurrentUser().getUid();
+        final String name = mAuth.getCurrentUser().getDisplayName();
+        final String email = mAuth.getCurrentUser().getEmail();
+        String user_id = mAuth.getCurrentUser().getUid();
 
 
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(user_id);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("userPhotoUrl").exists())
-                {
+                if (dataSnapshot.child("userPhotoUrl").exists()) {
 
-                    String url=dataSnapshot.child("userPhotoUrl").getValue().toString();
-                    photo_url=Uri.parse(url);
-                    Log.d(TAG, "Photo Url Exists "+photo_url);
+                    String url = dataSnapshot.child("userPhotoUrl").getValue().toString();
+                    photo_url = Uri.parse(url);
+                    Log.d(TAG, "Photo Url Exists " + photo_url);
 
-                    drawerLogic(name,email);
+                    drawerLogic(name, email);
 
-                }
-                else
-                {
-                    photo_url=mAuth.getCurrentUser().getPhotoUrl();
-                    drawerLogic(name,email);
+                } else {
+                    photo_url = mAuth.getCurrentUser().getPhotoUrl();
+                    drawerLogic(name, email);
 
 
                 }
@@ -468,12 +391,9 @@ public class FriendsActivity extends AppCompatActivity {
         });
 
 
-
-
-
     }
-    public void drawerLogic(String name,String email)
-    {
+
+    public void drawerLogic(String name, String email) {
         //initialize and create the image loader logic
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
             @Override
@@ -506,7 +426,7 @@ public class FriendsActivity extends AppCompatActivity {
         });
 
 
-        Log.d(TAG, "Foto Url "+photo_url);
+        Log.d(TAG, "Foto Url " + photo_url);
 
         // Create a few sample profile
         final IProfile profile = new ProfileDrawerItem().withName(name)
@@ -550,7 +470,6 @@ public class FriendsActivity extends AppCompatActivity {
                         item6.withIcon(R.drawable.ic_directions_run_black_24dp),
 
 
-
                         new DividerDrawerItem(),
                         item7.withIcon(R.drawable.ic_log_out_black_24dp)
 
@@ -572,13 +491,13 @@ public class FriendsActivity extends AppCompatActivity {
                                 logOut();
                                 break;
                             case "RunActivity":
-                                startActivity(new Intent(FriendsActivity.this,MyRunActivity.class));
+                                startActivity(new Intent(FriendsActivity.this, MyRunActivity.class));
                                 break;
                             case "Profile":
-                                startActivity(new Intent(FriendsActivity.this,ProfileActivity.class));
+                                startActivity(new Intent(FriendsActivity.this, ProfileActivity.class));
                                 break;
                             case "AddAward":
-                                startActivity(new Intent(FriendsActivity.this,AddAwardsActivity.class));
+                                startActivity(new Intent(FriendsActivity.this, AddAwardsActivity.class));
                                 break;
 
                         }
@@ -596,6 +515,7 @@ public class FriendsActivity extends AppCompatActivity {
         result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
 
     }
+
     private void logOut() {
         Log.d(TAG, "logOut: Is Logging out");
         if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com")) {
@@ -614,10 +534,50 @@ public class FriendsActivity extends AppCompatActivity {
             startActivity(new Intent(FriendsActivity.this, LoginActivity.class));
             finish();
 
-        }
-        else
-        {
+        } else {
             FirebaseAuth.getInstance().signOut();
         }
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.friends_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case R.id.ic_share:
+                if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("google.com")) {
+                    Intent intent = new AppInviteInvitation.IntentBuilder(getString(R.string.invitation_title))
+                            .setMessage(getString(R.string.invitation_message))
+                            .setDeepLink(Uri.parse(getString(R.string.invitation_deep_link)))
+                            .setCustomImage(Uri.parse("https://drive.google.com/open?id=0B7ppRoKalXOdUWxCWHRLTmdwaUk"))
+                            .setCallToActionText(getString(R.string.invitation_cta))
+                            .build();
+                    startActivityForResult(intent, REQUEST_INVITE);
+                } else if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com")) {
+
+                    String appLinkUrl, previewImageUrl;
+
+                    appLinkUrl = "https://www.runclub.com";
+                    previewImageUrl = "https://drive.google.com/open?id=0B7ppRoKalXOdUWxCWHRLTmdwaUk";
+
+                    if (AppInviteDialog.canShow()) {
+                        AppInviteContent content = new AppInviteContent.Builder()
+                                .setApplinkUrl(appLinkUrl)
+                                .setPreviewImageUrl(previewImageUrl)
+                                .build();
+                        AppInviteDialog.show(FriendsActivity.this, content);
+                    }
+                } else {
+
+                }
+                break;
+        }
+        return super.onOptionsItemSelected(item);
     }
 }

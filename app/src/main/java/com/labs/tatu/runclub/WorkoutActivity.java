@@ -209,7 +209,7 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
             else if(locData.get("challengeName")!=null)
             {
                 String name=locData.get("challengeName").toString();
-                txt_loc_name.setText(name+"'s Challenge");
+                txt_loc_name.setText(name+" Challenge");
 
             }
 
@@ -235,7 +235,7 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
                     if (locGoal.equals("")) {
                         Alerter.create(WorkoutActivity.this)
                                 .setTitle("First Start")
-                                .setText("See through the Infinity workout")
+                                .setText("See through your Infinity workout")
                                 .setDuration(2000)
                                 .setIcon(R.drawable.ic_directions_run)
                                 .setBackgroundColor(android.R.color.black)

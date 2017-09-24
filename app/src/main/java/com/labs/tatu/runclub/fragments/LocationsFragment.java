@@ -159,6 +159,8 @@ public class LocationsFragment extends Fragment {
             final ImageView loc_image=(ImageView)mView.findViewById(R.id.loc_image);
 
 
+
+
             Picasso
                     .with(ctx)
                     .load(image)
