@@ -137,7 +137,11 @@ public class ProfileActivity extends AppCompatActivity {
                                    Picasso.with(ProfileActivity.this).load(mAuth.getCurrentUser().getPhotoUrl()).into(user_image);
                                }
                            });
-                   txtPhoneNo.setText(dataSnapshot.child("userPhoneNo").getValue().toString());
+                   if(dataSnapshot.child("userPhone").exists())
+                   {
+                       txtPhoneNo.setText(dataSnapshot.child("userPhoneNo").getValue().toString());
+                   }
+
 
                    mProgress.dismiss();
 
@@ -176,7 +180,6 @@ public class ProfileActivity extends AppCompatActivity {
                     //  ref.child("userPhotoUrl").setValue(downloadUrl.toString());
                     ref.child("userBio").setValue(bio);
                     ref.child("userPhoneNo").setValue(phoneNo);
-
                     Toast.makeText(ProfileActivity.this, "Details Saved", Toast.LENGTH_SHORT).show();
 
 

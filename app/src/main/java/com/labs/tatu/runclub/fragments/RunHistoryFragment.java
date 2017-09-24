@@ -330,7 +330,6 @@ public class RunHistoryFragment extends Fragment {
         pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
                 txtPoints.setText(dataSnapshot.getValue().toString());
             }
 

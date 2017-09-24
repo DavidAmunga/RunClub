@@ -202,6 +202,9 @@ public class LocationRunActivity extends FragmentActivity implements
         btn_challenge.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                Intent intent=new Intent(LocationRunActivity.this,WorkoutActivity.class);
+                intent.putExtra("challenge",true);
+                startActivity(intent);
 
             }
         });
@@ -447,10 +450,6 @@ public class LocationRunActivity extends FragmentActivity implements
 
 
         if (ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(this, android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-            ActivityCompat.requestPermissions(this,
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
-                    LOCATION_REQUEST);
-
 
             return;
         }

@@ -28,6 +28,7 @@
             android:layout_height="match_parent"
             android:id="@+id/relLayoutMiddle"
             android:layout_below="@+id/relLayoutTopBar"
+            android:layout_above="@+id/relLayoutBottomBar"
 
             >
 

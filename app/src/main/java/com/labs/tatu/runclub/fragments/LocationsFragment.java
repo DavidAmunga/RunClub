@@ -36,7 +36,7 @@ import com.squareup.picasso.Picasso;
 
 public class LocationsFragment extends Fragment {
 
-    private static final String TAG = "QuickStartFragment";
+    private static final String TAG = "LocationsFragment";
 
 
     private RecyclerView mLocationsList;

@@ -1,5 +1,6 @@
 package com.labs.tatu.runclub;
 
+import android.app.ProgressDialog;
 import android.content.Intent;
 import android.content.pm.PackageInfo;
 import android.content.pm.PackageManager;
@@ -73,6 +74,7 @@ public class LoginActivity extends AppCompatActivity {
 
     EditText txtEmail,txtPassword;
     private static final int RC_SIGN_IN=2;
+    ProgressDialog mProgress;
 
 
     @Override
@@ -80,6 +82,27 @@ public class LoginActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         FacebookSdk.sdkInitialize(getApplicationContext());
         setContentView(R.layout.activity_login);
+
+
+        try {
+            PackageInfo info = getPackageManager().getPackageInfo(
+                    "com.labs.tatu.runclub",
+                    PackageManager.GET_SIGNATURES);
+            for (Signature signature : info.signatures) {
+                MessageDigest md = MessageDigest.getInstance("SHA");
+                md.update(signature.toByteArray());
+                String sign=Base64.encodeToString(md.digest(), Base64.DEFAULT);
+                Log.e("MY KEY HASH:", sign);
+
+            }
+        } catch (PackageManager.NameNotFoundException e) {
+            e.printStackTrace();
+
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+
+        }
+
         initViews();
 
         mAuth=FirebaseAuth.getInstance();
@@ -133,6 +156,7 @@ public class LoginActivity extends AppCompatActivity {
             public void onSuccess(LoginResult loginResult) {
                 Log.d(TAG, "facebook:onSuccess:" + loginResult);
                 handleFacebookAccessToken(loginResult.getAccessToken());
+
             }
 
             @Override
@@ -185,6 +209,7 @@ public class LoginActivity extends AppCompatActivity {
         });
     }
 
+
     private void normalSignIn()
     {
         String email=txtEmail.getText().toString().trim();
@@ -223,6 +248,9 @@ public class LoginActivity extends AppCompatActivity {
     }
 
     private void handleFacebookAccessToken(AccessToken token) {
+        mProgress.setTitle("Loggin you In");
+        mProgress.setCancelable(false);
+        mProgress.show();
         Log.d(TAG, "handleFacebookAccessToken:" + token);
 
         AuthCredential credential = FacebookAuthProvider.getCredential(token.getToken());
@@ -275,6 +303,7 @@ public class LoginActivity extends AppCompatActivity {
                 st.setTextColor(Color.WHITE);
                 st.setIcon(R.drawable.ic_account_box_black_24dp);
                 st.show();
+                mProgress.dismiss();
                 startActivity(new Intent(LoginActivity.this,MainActivity.class));
             }
 
@@ -296,6 +325,9 @@ public class LoginActivity extends AppCompatActivity {
     }
     //Google Firebase Auth
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
+        mProgress.setTitle("Loggin you In");
+        mProgress.setCancelable(false);
+        mProgress.show();
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
 
         AuthCredential credential = GoogleAuthProvider.getCredential(account.getIdToken(), null);
@@ -357,6 +389,7 @@ public class LoginActivity extends AppCompatActivity {
         txtEmail=(EditText)findViewById(R.id.txt_email);
         txtPassword=(EditText)findViewById(R.id.txt_pass);
         txtRegister=(TextView)findViewById(R.id.txt_signUp);
+        mProgress=new ProgressDialog(this);
     }
 
 }

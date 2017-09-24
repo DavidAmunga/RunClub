@@ -15,6 +15,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "64859663898-qjg27tq5kcrqr17r5atui3hpims6lii8.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.labs.tatu.runclub",
+            "certificate_hash": "ce92d7a69dc99a9796ec5571cc878ce02e1bffcd"
+          }
+        },
+        {
           "client_id": "64859663898-65ae77t4igqof7rsdvmrt9655aggtfmg.apps.googleusercontent.com",
           "client_type": 1,
           "android_info": {
@@ -66,6 +74,53 @@
           "client_type": 1,
           "android_info": {
             "package_name": "com.labs.tatu.actionbar",
+            "certificate_hash": "c48d432bf28f701153563bc226950375a57c3840"
+          }
+        },
+        {
+          "client_id": "64859663898-gom40gus0l529dqa64vj8tnd21g1lcub.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCMghYrv3TDlGl6SS0vnvz4Yr4KEiJYmXk"
+        },
+        {
+          "current_key": "AIzaSyAFhEkSXt4YiXMVN_X7ms15rzvBDoTObdg"
+        }
+      ],
+      "services": {
+        "analytics_service": {
+          "status": 1
+        },
+        "appinvite_service": {
+          "status": 2,
+          "other_platform_oauth_client": [
+            {
+              "client_id": "64859663898-gom40gus0l529dqa64vj8tnd21g1lcub.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        },
+        "ads_service": {
+          "status": 2
+        }
+      }
+    },
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:64859663898:android:b1c02741be5d2624",
+        "android_client_info": {
+          "package_name": "com.labs.tatu.materialdatepicker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "64859663898-hni27vmt0atgbmgl1k4luun66vo09pbj.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.labs.tatu.materialdatepicker",
             "certificate_hash": "c48d432bf28f701153563bc226950375a57c3840"
           }
         },

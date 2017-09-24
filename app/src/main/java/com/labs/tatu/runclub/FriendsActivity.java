@@ -1,25 +1,37 @@
 package com.labs.tatu.runclub;
 
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.graphics.Color;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.facebook.AccessToken;
+import com.facebook.GraphRequest;
+import com.facebook.GraphResponse;
+import com.facebook.HttpMethod;
+import com.facebook.Profile;
 import com.facebook.login.LoginManager;
 import com.facebook.share.model.AppInviteContent;
 import com.facebook.share.widget.AppInviteDialog;
@@ -29,12 +41,15 @@ import com.google.android.gms.auth.api.Auth;
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
+import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
+import com.google.firebase.storage.StorageReference;
+import com.google.firebase.storage.UploadTask;
 import com.labs.tatu.runclub.fragments.ChallengesFragment;
 import com.labs.tatu.runclub.helpers.BottomNavigationViewHelper;
 import com.labs.tatu.runclub.model.Challenge;
@@ -53,6 +68,8 @@ import com.mikepenz.materialdrawer.util.DrawerImageLoader;
 import com.squareup.picasso.Callback;
 import com.squareup.picasso.NetworkPolicy;
 import com.squareup.picasso.Picasso;
+import com.yarolegovich.lovelydialog.LovelyCustomDialog;
+import com.yarolegovich.lovelydialog.LovelyTextInputDialog;
 
 public class FriendsActivity extends AppCompatActivity {
     private static final String TAG = "FriendsActivity";
@@ -66,9 +83,13 @@ public class FriendsActivity extends AppCompatActivity {
 
     TextView inviteGG,inviteFb;
 
+
+
     private RecyclerView mUserList;
 
     private DatabaseReference mDatabase;
+
+    String id="";
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -118,6 +139,8 @@ public class FriendsActivity extends AppCompatActivity {
 
 
 
+
+
         inviteGG.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -131,22 +154,44 @@ public class FriendsActivity extends AppCompatActivity {
             }
         });
         inviteFb.setOnClickListener(new View.OnClickListener() {
+
             @Override
             public void onClick(View v) {
-                String appLinkUrl, previewImageUrl;
-
-                appLinkUrl = "https://www.mydomain.com/myapplink";
-                previewImageUrl = "https://drive.google.com/open?id=0B7ppRoKalXOdUWxCWHRLTmdwaUk";
-
-                if (AppInviteDialog.canShow()) {
-                    AppInviteContent content = new AppInviteContent.Builder()
-                            .setApplinkUrl(appLinkUrl)
-                            .setPreviewImageUrl(previewImageUrl)
-                            .build();
-                    AppInviteDialog.show(FriendsActivity.this, content);
+                if(isFbLoggedIn()) {
+                    Log.d(TAG, "User ID "+id);
+                   /* make the API call */
+                    new GraphRequest(
+                            AccessToken.getCurrentAccessToken(),
+                            "/"+id+"/friendlists",
+                            null,
+                            HttpMethod.GET,
+                            new GraphRequest.Callback() {
+                                public void onCompleted(GraphResponse response) {
+                                    Log.d(TAG, "Friends Lists " + response.toString());
+                                }
+                            }
+                    ).executeAsync();
                 }
+
+
+//
+//                String appLinkUrl, previewImageUrl;
+//
+//                appLinkUrl = "https://www.mydomain.com/myapplink";
+//                previewImageUrl = "https://drive.google.com/open?id=0B7ppRoKalXOdUWxCWHRLTmdwaUk";
+//
+//                if (AppInviteDialog.canShow()) {
+//                    AppInviteContent content = new AppInviteContent.Builder()
+//                            .setApplinkUrl(appLinkUrl)
+//                            .setPreviewImageUrl(previewImageUrl)
+//                            .build();
+//                    AppInviteDialog.show(FriendsActivity.this, content);
+//                }
             }
         });
+
+
+
 
 
 
@@ -196,6 +241,19 @@ public class FriendsActivity extends AppCompatActivity {
         drawer();
     }
 
+    public boolean isFbLoggedIn()
+    {
+
+        if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com")) {
+            Profile profile = Profile.getCurrentProfile();
+            profile.getFirstName();
+            id=profile.getId();
+
+            return true;
+        }
+        return false;
+    }
+
     @Override
     public void onStart() {
         super.onStart();
@@ -207,9 +265,17 @@ public class FriendsActivity extends AppCompatActivity {
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(UserViewHolder viewHolder, User model, int position) {
+            protected void populateViewHolder(final UserViewHolder viewHolder, final User model, final int position) {
                 viewHolder.setUserName(model.getUserName());
                 viewHolder.setUserImage(FriendsActivity.this,model.getUserPhotoUrl());
+
+                viewHolder.itemView.findViewById(R.id.btn_challenge_user).setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        showDialog(model,position);
+                    }
+                });
+
             }
 
 
@@ -219,13 +285,89 @@ public class FriendsActivity extends AppCompatActivity {
 
     }
 
+    private void showDialog( final User model, final int position) {
+        AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(this);
+        LayoutInflater inflater = this.getLayoutInflater();
+        final View dialogView = inflater.inflate(R.layout.challenge_item, null);
+        dialogBuilder.setView(dialogView);
+
+        final EditText challengeName=(EditText)dialogView.findViewById(R.id.txt_challengeName);
+        Button btnAdd=(Button)dialogView.findViewById(R.id.buttonChallenge);
+
+        Log.d(TAG, "onClick: "+challengeName.getText().toString());
+
+
+
+
+        dialogBuilder.setTitle("Challenge "+model.getUserName());
+        dialogBuilder.setMessage("Challenge Name");
+        final AlertDialog b = dialogBuilder.create();
+        b.show();
+
+
+        btnAdd.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                final String name=challengeName.getText().toString();
+                Log.d(TAG, "Name: "+name);
+                if(!TextUtils.isEmpty(name))
+                {
+//                                            Get User
+                    final DatabaseReference refUser=FirebaseDatabase.getInstance().getReference().child("Users");
+                    refUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+
+                                if(snapshot.child("userName").getValue().equals(model.getUserName().trim()))
+                                {
+                                    Log.d(TAG, "onDataChange: User Found!");
+                                    String userID=snapshot.getKey();
+                                    Log.d(TAG, "Key: "+userID);
+
+                                    DatabaseReference newChallenge=refUser.child(userID).child("userChallenges").push();
+                                    newChallenge.child("challengeName").setValue(name);
+                                    newChallenge.child("challengePoints").setValue("10");
+                                    newChallenge.child("challengeImage").setValue("R.drawable.challengeHeader");
+                                    newChallenge.child("challenger").setValue(mAuth.getCurrentUser().getDisplayName());
+
+                                    Toast.makeText(FriendsActivity.this, model.getUserName()+" challenged", Toast.LENGTH_SHORT).show();
+                                    b.dismiss();
+                                }
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
+
+
+                }
+                else
+                {
+                    Toast.makeText(FriendsActivity.this, "Enter Challenge Name!", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
+    }
+
     public static class UserViewHolder extends RecyclerView.ViewHolder
     {
         View mView;
 
+        Button btnChallenge;
+
 
         public UserViewHolder(View itemView) {
             super(itemView);
+
+            btnChallenge=(Button)itemView.findViewById(R.id.btn_challenge_user);
         }
 
         public void setUserName(String name)
@@ -262,6 +404,8 @@ public class FriendsActivity extends AppCompatActivity {
     private void initViews() {
         inviteGG = (TextView) findViewById(R.id.inviteGG);
         inviteFb = (TextView) findViewById(R.id.inviteFb);
+
+
     }
 
     @Override

@@ -353,23 +353,27 @@ public class MainActivity extends AppCompatActivity {
 
     private void logOut() {
         Log.d(TAG, "logOut: Is Logging out");
-        if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com")) {
-            isLoggingOut = true;
-            Log.d(TAG, "logOut: Facebook");
-            FirebaseAuth.getInstance().signOut();
-            LoginManager.getInstance().logOut();
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            finish();
+        if(FirebaseAuth.getInstance().getCurrentUser().getProviders()!=null)
+        {
+            if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com")) {
+                isLoggingOut = true;
+                Log.d(TAG, "logOut: Facebook");
+                FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
 
 
-        } else if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("google.com")) {
-            Log.d(TAG, "logOut: Google");
-            FirebaseAuth.getInstance().signOut();
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-            startActivity(new Intent(MainActivity.this, LoginActivity.class));
-            finish();
+            } else if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("google.com")) {
+                Log.d(TAG, "logOut: Google");
+                FirebaseAuth.getInstance().signOut();
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                startActivity(new Intent(MainActivity.this, LoginActivity.class));
+                finish();
 
+            }
         }
+
         else
         {
             FirebaseAuth.getInstance().signOut();
