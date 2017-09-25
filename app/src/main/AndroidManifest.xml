@@ -82,10 +82,10 @@
             android:name=".WorkoutActivity"
             android:parentActivityName=".MainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".LoginActivity"></activity>
+        <activity android:name=".LoginActivity" />
         <activity
             android:name=".ProfileActivity"
-            android:parentActivityName=".MainActivity"></activity>
+            android:parentActivityName=".MainActivity" />
         <activity
             android:name=".MyRunActivity"
             android:screenOrientation="portrait" />
@@ -95,7 +95,8 @@
         <activity
             android:name=".RegisterActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".AddChallengeActivity"></activity>
+        <activity android:name=".AddChallengeActivity" />
+        <activity android:name=".SetupUserActivity"></activity>
     </application>
 
 </manifest>

@@ -179,7 +179,7 @@ public class LoginActivity extends AppCompatActivity {
                 String email=txtEmail.getText().toString().trim();
                 String password=txtPassword.getText().toString().trim();
 
-                mAuth.createUserWithEmailAndPassword(email, password)
+                mAuth.signInWithEmailAndPassword(email, password)
                         .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
                             @Override
                             public void onComplete(@NonNull Task<AuthResult> task) {

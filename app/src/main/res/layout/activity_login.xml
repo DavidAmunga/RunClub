@@ -85,7 +85,7 @@
                 android:layout_marginRight="30dp"
                 android:id="@+id/btnLogin"
                 android:layout_below="@+id/txt_pass"
-                android:background="@color/colorPrimary"
+                android:background="@drawable/btn_green"
                 android:textColor="#ffffff"
                 android:textSize="20dp"
                 android:text="Login"

@@ -106,10 +106,7 @@ public class InboxActivity extends AppCompatActivity {
 
                         break;
 
-                    case R.id.ic_inbox:
-                        startActivity(new Intent(InboxActivity.this,InboxActivity.class));
 
-                        break;
 
                     case R.id.ic_stats:
                         startActivity(new Intent(InboxActivity.this,StatsActivity.class));

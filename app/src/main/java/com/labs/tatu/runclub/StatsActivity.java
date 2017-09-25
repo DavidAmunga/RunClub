@@ -129,28 +129,42 @@ public class StatsActivity extends AppCompatActivity {
     public void drawer() {
         final String name=mAuth.getCurrentUser().getDisplayName();
         final String email=mAuth.getCurrentUser().getEmail();
+
         String user_id=mAuth.getCurrentUser().getUid();
 
 
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users");
+        ref.keepSynced(true);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("userPhotoUrl").exists())
-                {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.child("userEmail").getValue().equals(email)) {
 
-                    String url=dataSnapshot.child("userPhotoUrl").getValue().toString();
-                    photo_url=Uri.parse(url);
-                    Log.d(TAG, "Photo Url Exists "+photo_url);
+                        String url = snapshot.child("userPhotoUrl").getValue().toString();
+                        Log.d(TAG, "URL " + url);
 
-                    drawerLogic(name,email);
+                        if (url.contains("firebasestorage")) {
 
-                }
-                else
-                {
-                    photo_url=mAuth.getCurrentUser().getPhotoUrl();
-                    drawerLogic(name,email);
+                            String name = snapshot.child("userName").getValue().toString();
+                            String email = snapshot.child("userEmail").getValue().toString();
 
+                            photo_url = Uri.parse(url);
+                            Log.d(TAG, "Photo Url Exists " + photo_url);
+
+                            drawerLogic(name, email);
+
+                        } else {
+                            String name = snapshot.child("userName").getValue().toString();
+                            String email = snapshot.child("userEmail").getValue().toString();
+
+                            photo_url = mAuth.getCurrentUser().getPhotoUrl();
+                            drawerLogic(name, email);
+
+
+                        }
+
+                    }
 
                 }
             }
@@ -166,7 +180,7 @@ public class StatsActivity extends AppCompatActivity {
 
 
     }
-    public void drawerLogic(String name,String email)
+    public void drawerLogic(String name, final String email)
     {
         //initialize and create the image loader logic
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
@@ -269,7 +283,9 @@ public class StatsActivity extends AppCompatActivity {
                                 startActivity(new Intent(StatsActivity.this,MyRunActivity.class));
                                 break;
                             case "Profile":
-                                startActivity(new Intent(StatsActivity.this,ProfileActivity.class));
+                                Intent intent=new Intent(StatsActivity.this,ProfileActivity.class);
+                                intent.putExtra("userEmail",email);
+                                startActivity(intent);
                                 break;
                             case "AddAward":
                                 startActivity(new Intent(StatsActivity.this,AddAwardsActivity.class));
@@ -345,10 +361,7 @@ public class StatsActivity extends AppCompatActivity {
 
                         break;
 
-                    case R.id.ic_inbox:
-                        startActivity(new Intent(StatsActivity.this,InboxActivity.class));
 
-                        break;
 
                     case R.id.ic_stats:
                         startActivity(new Intent(StatsActivity.this,StatsActivity.class));

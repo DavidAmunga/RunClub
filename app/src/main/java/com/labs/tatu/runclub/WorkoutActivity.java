@@ -69,12 +69,12 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
     private double latitude;
 
     //From -> the first coordinate from where we need to calculate the distance
-    private double fromLongitude=0;
-    private double fromLatitude=0;
+    private double fromLongitude = 0;
+    private double fromLatitude = 0;
 
     //To -> the second coordinate to where we need to calculate the distance
-    private double toLongitude=0;
-    private double toLatitude=0;
+    private double toLongitude = 0;
+    private double toLatitude = 0;
 
     //    To -> Store the LatLng To and From
 
@@ -87,6 +87,7 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
 
     String locGoal = "";
     public boolean isStart;
+    public boolean locStart=false;
     FirebaseAuth mAuth;
 
     private GoogleApiClient googleApiClient;
@@ -134,8 +135,7 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
         pause = (Button) findViewById(R.id.buttonPause);
         reset = (Button) findViewById(R.id.buttonReset);
         txt_loc_name = (TextView) findViewById(R.id.txt_loc_name);
-        locHeader=(ImageView)findViewById(R.id.locHeader);
-
+        locHeader = (ImageView) findViewById(R.id.locHeader);
 
 
         isStart = true;
@@ -145,20 +145,19 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
 
         if (getIntent().getExtras() != null) {
             Bundle locData = getIntent().getExtras();
-            if(locData.get("locName")!=null)
-            {
+            if (locData.get("locName") != null) {
                 txt_loc_name.setText(locData.get("locName").toString().trim());
                 locGoal = locData.get("locGoal").toString().trim();
-                fromLatitude =Double.valueOf(locData.get("fromLat").toString().trim());
-                fromLongitude =Double.valueOf(locData.get("fromLong").toString().trim());
-                toLatitude =Double.valueOf(locData.get("toLat").toString().trim());
-                toLongitude =Double.valueOf(locData.get("toLong").toString().trim());
+                fromLatitude = Double.valueOf(locData.get("fromLat").toString().trim());
+                fromLongitude = Double.valueOf(locData.get("fromLong").toString().trim());
+                toLatitude = Double.valueOf(locData.get("toLat").toString().trim());
+                toLongitude = Double.valueOf(locData.get("toLong").toString().trim());
 
 
-                Log.d(TAG, "fromLat "+locData.get("fromLat").toString().trim());
-                Log.d(TAG, "fromLong "+Double.valueOf(fromLongitude));
-                Log.d(TAG, "toLat "+  locData.get("toLat").toString());
-                Log.d(TAG, "toLong "+Double.valueOf(toLongitude));
+                Log.d(TAG, "fromLat " + locData.get("fromLat").toString().trim());
+                Log.d(TAG, "fromLong " + Double.valueOf(fromLongitude));
+                Log.d(TAG, "toLat " + locData.get("toLat").toString());
+                Log.d(TAG, "toLong " + Double.valueOf(toLongitude));
 
 
                 LatLng fromLatLng = new LatLng(fromLatitude, fromLongitude);
@@ -205,21 +204,15 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
                     }
                 });
 
-            }
-            else if(locData.get("challengeName")!=null)
-            {
-                String name=locData.get("challengeName").toString();
-                txt_loc_name.setText(name+" Challenge");
+            } else if (locData.get("challengeName") != null) {
+                String name = locData.get("challengeName").toString();
+                txt_loc_name.setText(name + " Challenge");
 
             }
 
 
-
-        //    setMarkers(fromLatitude,fromLongitude,toLatitude,toLongitude);
+            //    setMarkers(fromLatitude,fromLongitude,toLatitude,toLongitude);
         }
-
-
-
 
 
         start.setOnClickListener(new View.OnClickListener() {
@@ -228,91 +221,117 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
 
                 StartTime = SystemClock.uptimeMillis();
                 handler.postDelayed(runnable, 0);
-                mp=MediaPlayer.create(WorkoutActivity.this, R.raw.start);
+                mp = MediaPlayer.create(WorkoutActivity.this, R.raw.start);
                 mp.start();
                 reset.setEnabled(false);
                 if (isStart = true) {
                     if (locGoal.equals("")) {
                         Alerter.create(WorkoutActivity.this)
-                                .setTitle("First Start")
+                                .setTitle("Let's Start")
                                 .setText("See through your Infinity workout")
                                 .setDuration(2000)
                                 .setIcon(R.drawable.ic_directions_run)
                                 .setBackgroundColor(android.R.color.black)
                                 .show();
                     } else {
-                        String user_id = mAuth.getCurrentUser().getUid();
-                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Locations");
-                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
-                                    if (snapshot.child("locationName").getValue().equals(txt_loc_name.getText().toString().trim())) {
-                                        Log.d(TAG, "onDataChange: Success");
-                                        String locationName = snapshot.child("locationName").getValue().toString();
-                                        int locationDistance = Integer.parseInt(snapshot.child("locationDistance").getValue().toString());
-                                        String locationPhotoUrl = snapshot.child("locationPhotoUrl").getValue().toString();
+
+                        if (locStart = false) {
+                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Locations");
+                            ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                                @Override
+                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                        if (snapshot.child("locationName").getValue().equals(txt_loc_name.getText().toString().trim())) {
+                                            Log.d(TAG, "onDataChange: Success");
+                                            final String locationName = snapshot.child("locationName").getValue().toString();
+                                            final int locationDistance = Integer.parseInt(snapshot.child("locationDistance").getValue().toString());
+                                            final String locationPhotoUrl = snapshot.child("locationPhotoUrl").getValue().toString();
+
+//                                      Add to User Locations
+                                            final String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
 
 
+                                            DatabaseReference refUserLevel = FirebaseDatabase.getInstance().getReference().child("Users");
+                                            refUserLevel.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                        if (snapshot.child("userEmail").getValue().equals(email)) {
+                                                            Log.d(TAG, "Found Em");
+                                                            String userID = snapshot.getKey();
+                                                            DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(userID).child("userLocations").push();
+                                                            ref.child("locationName").setValue(locationName);
+                                                            ref.child("locationDistance").setValue(locationDistance);
+                                                            ref.child("locationPhotoUrl").setValue(locationPhotoUrl);
 
-                                        String user_id = FirebaseAuth.getInstance().getCurrentUser().getUid();
-                                        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(user_id).child("userLocations").push();
-                                        ref.child("locationName").setValue(locationName);
-                                        ref.child("locationDistance").setValue(locationDistance);
-                                        ref.child("locationPhotoUrl").setValue(locationPhotoUrl);
+                                                        }
+                                                    }
+                                                }
 
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
 
+                                                }
+                                            });
+//
 //
 
 
 //                                  Add Points for Working out on Activity
-                                        DatabaseReference userPoints = FirebaseDatabase.getInstance().getReference("Users").child(user_id);
-                                        final String finalUser_id = user_id;
-                                        userPoints.addListenerForSingleValueEvent(new ValueEventListener() {
-                                            @Override
-                                            public void onDataChange(DataSnapshot dataSnapshot) {
-                                                String userPoints = dataSnapshot.child("userPoints").getValue().toString();
-                                                int pts = 10;
-                                                int userPts = Integer.parseInt(userPoints);
-                                                userPts = userPts + pts;
-
-                                                DatabaseReference addPts = FirebaseDatabase.getInstance().getReference("Users").child(finalUser_id).child("userPoints");
-                                                addPts.setValue(String.valueOf(userPts));
-                                            }
-
-                                            @Override
-                                            public void onCancelled(DatabaseError databaseError) {
-
-                                            }
-                                        });
+                                            DatabaseReference userPoints = FirebaseDatabase.getInstance().getReference().child("Users");
+                                            userPoints.addListenerForSingleValueEvent(new ValueEventListener() {
+                                                @Override
+                                                public void onDataChange(DataSnapshot dataSnapshot) {
+                                                    for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                                        if (snapshot.child("userEmail").getValue().equals(email)) {
+                                                            String userID = snapshot.getKey();
 
 
-                                    } else {
-                                        Log.d(TAG, "No Location");
+                                                            String userPoints = snapshot.child("userPoints").getValue().toString();
+                                                            int pts = 10;
+                                                            int userPts = Integer.parseInt(userPoints);
+                                                            userPts = userPts + pts;
+
+                                                            DatabaseReference addPts = FirebaseDatabase.getInstance().getReference("Users").child(userID).child("userPoints");
+                                                            addPts.setValue(String.valueOf(userPts));
+
+                                                        }
+                                                    }
+                                                }
+
+                                                @Override
+                                                public void onCancelled(DatabaseError databaseError) {
+
+                                                }
+                                            });
+                                        } else {
+                                            Log.d(TAG, "No Location");
+                                        }
+
+
                                     }
+                                }
 
+                                @Override
+                                public void onCancelled(DatabaseError databaseError) {
 
                                 }
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
+                            });
 
 
-                        Alerter.create(WorkoutActivity.this)
-                                .setTitle(txt_loc_name.getText().toString() + " Challenge")
-                                .setText("See through the whole distance")
-                                .setDuration(2000)
-                                .setIcon(R.drawable.ic_directions_run)
-                                .setBackgroundColor(android.R.color.black)
-                                .show();
+                            Alerter.create(WorkoutActivity.this)
+                                    .setTitle(txt_loc_name.getText().toString() + " Challenge")
+                                    .setText("See through the whole distance")
+                                    .setDuration(2000)
+                                    .setIcon(R.drawable.ic_directions_run)
+                                    .setBackgroundColor(android.R.color.black)
+                                    .show();
+                        }
+
+
+                        isStart = false;
                     }
-
-
-                    isStart = false;
+                    locStart=true;
                 }
 
 
@@ -322,7 +341,7 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
         pause.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mp=MediaPlayer.create(WorkoutActivity.this, R.raw.stop);
+                mp = MediaPlayer.create(WorkoutActivity.this, R.raw.stop);
                 mp.start();
                 TimeBuff += MillisecondTime;
 
@@ -337,7 +356,7 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
         reset.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                mp=MediaPlayer.create(WorkoutActivity.this, R.raw.stop);
+                mp = MediaPlayer.create(WorkoutActivity.this, R.raw.stop);
                 mp.start();
 
                 MillisecondTime = 0L;
@@ -419,10 +438,6 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
 
                         break;
 
-                    case R.id.ic_inbox:
-                        startActivity(new Intent(WorkoutActivity.this, InboxActivity.class));
-
-                        break;
 
                     case R.id.ic_stats:
                         startActivity(new Intent(WorkoutActivity.this, StatsActivity.class));
@@ -470,6 +485,7 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
         Hours = 0;
 
         textView.setText("00:00:00");
+
     }
 
     @Override
@@ -546,7 +562,7 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         LatLng latLng = new LatLng(-34, 151);
-        LatLng from=new LatLng(fromLatitude,fromLongitude);
+        LatLng from = new LatLng(fromLatitude, fromLongitude);
         mMap.addMarker(new MarkerOptions().position(latLng).draggable(true).title("Me"));
 
         mMap.moveCamera(CameraUpdateFactory.newLatLng(latLng));
@@ -596,9 +612,8 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
             Log.d(TAG, "toLatLng " + toLatLng);
 
 
-            Log.d(TAG, "Location Total Distance "+totalDistance);
-            Log.d(TAG, "Location  Distance "+distance);
-
+            Log.d(TAG, "Location Total Distance " + totalDistance);
+            Log.d(TAG, "Location  Distance " + distance);
 
 
         }
@@ -606,9 +621,6 @@ public class WorkoutActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     public void getMarkers() {
-
-
-
 
 
     }

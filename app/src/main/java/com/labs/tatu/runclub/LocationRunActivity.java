@@ -231,10 +231,7 @@ public class LocationRunActivity extends FragmentActivity implements
 
                         break;
 
-                    case R.id.ic_inbox:
-                        startActivity(new Intent(LocationRunActivity.this, InboxActivity.class));
 
-                        break;
 
                     case R.id.ic_stats:
                         startActivity(new Intent(LocationRunActivity.this, StatsActivity.class));

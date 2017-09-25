@@ -31,6 +31,7 @@ import com.google.android.gms.auth.api.signin.GoogleSignInOptions;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -69,7 +70,9 @@ public class MainActivity extends AppCompatActivity {
     private Uri photo_url=null;
     ProgressDialog mProgress;
     private GoogleApiClient mGoogleApiClient;
+
     FirebaseAuth mAuth;
+    FirebaseAuth.AuthStateListener mAuthListener;
 
 
     @Override
@@ -77,7 +80,22 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    startActivity(new Intent(MainActivity.this,LoginActivity.class));
+                    finish();
+                }
+                // ...
+            }
+        };
 
 
         toolbar = (Toolbar) findViewById(R.id.toolbar);
@@ -146,10 +164,7 @@ public class MainActivity extends AppCompatActivity {
 
                         break;
 
-                    case R.id.ic_inbox:
-                        startActivity(new Intent(MainActivity.this, InboxActivity.class));
 
-                        break;
 
                     case R.id.ic_stats:
                         startActivity(new Intent(MainActivity.this, StatsActivity.class));
@@ -169,6 +184,19 @@ public class MainActivity extends AppCompatActivity {
         drawer();
     }
 
+    @Override
+    protected void onStart() {
+        super.onStart();
+        mAuth.addAuthStateListener(mAuthListener);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        if (mAuthListener != null) {
+            mAuth.removeAuthStateListener(mAuthListener);
+        }
+    }
 
     @Override
     protected void onPause() {
@@ -189,28 +217,44 @@ public class MainActivity extends AppCompatActivity {
     public void drawer() {
         final String name=mAuth.getCurrentUser().getDisplayName();
         final String email=mAuth.getCurrentUser().getEmail();
+
+
+
         String user_id=mAuth.getCurrentUser().getUid();
 
 
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users");
+        ref.keepSynced(true);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if(dataSnapshot.child("userPhotoUrl").exists())
-                {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.child("userEmail").getValue().equals(email)) {
 
-                   String url=dataSnapshot.child("userPhotoUrl").getValue().toString();
-                   photo_url=Uri.parse(url);
-                    Log.d(TAG, "Photo Url Exists "+photo_url);
+                    String url = snapshot.child("userPhotoUrl").getValue().toString();
+                    Log.d(TAG, "URL " + url);
 
-                    drawerLogic(name,email);
+                    if (url.contains("firebasestorage")) {
 
-                }
-                else
-                {
-                    photo_url=mAuth.getCurrentUser().getPhotoUrl();
-                    drawerLogic(name,email);
+                        String name = snapshot.child("userName").getValue().toString();
+                        String email = snapshot.child("userEmail").getValue().toString();
 
+                        photo_url = Uri.parse(url);
+                        Log.d(TAG, "Photo Url Exists " + photo_url);
+
+                        drawerLogic(name, email);
+
+                    } else {
+                        String name = snapshot.child("userName").getValue().toString();
+                        String email = snapshot.child("userEmail").getValue().toString();
+
+                        photo_url = mAuth.getCurrentUser().getPhotoUrl();
+                        drawerLogic(name, email);
+
+
+                    }
+
+                    }
 
                 }
             }
@@ -226,7 +270,7 @@ public class MainActivity extends AppCompatActivity {
 
 
     }
-    public void drawerLogic(String name,String email)
+    public void drawerLogic(String name, final String email)
     {
         //initialize and create the image loader logic
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
@@ -329,7 +373,9 @@ public class MainActivity extends AppCompatActivity {
                                 startActivity(new Intent(MainActivity.this,MyRunActivity.class));
                                 break;
                             case "Profile":
-                                startActivity(new Intent(MainActivity.this,ProfileActivity.class));
+                                Intent intent=new Intent(MainActivity.this,ProfileActivity.class);
+                                intent.putExtra("userEmail",email);
+                                startActivity(intent);
                                 break;
                             case "AddAward":
                                 startActivity(new Intent(MainActivity.this,AddAwardsActivity.class));
@@ -374,10 +420,8 @@ public class MainActivity extends AppCompatActivity {
             }
         }
 
-        else
-        {
             FirebaseAuth.getInstance().signOut();
-        }
+
     }
 
 

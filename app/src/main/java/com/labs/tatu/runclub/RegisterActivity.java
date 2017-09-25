@@ -33,7 +33,7 @@ public class RegisterActivity extends AppCompatActivity {
     private static final String TAG = "RegisterActivity";
 
     Button btnRegister;
-    EditText txtEmail,txtPass,txtConfirmPass,txtUserName;
+    EditText txtEmail,txtPass,txtConfirmPass,txtUserName,txtPhoneNo;
 
     FirebaseAuth mAuth;
 
@@ -67,6 +67,7 @@ public class RegisterActivity extends AppCompatActivity {
         String password=txtPass.getText().toString().trim();
         final String userName=txtUserName.getText().toString().trim();
         String confirmPass=txtConfirmPass.getText().toString().trim();
+        final String phoneNo=txtPhoneNo.getText().toString().trim();
 
         if(!TextUtils.isEmpty(email) && !TextUtils.isEmpty(password) && !TextUtils.isEmpty(userName) && !TextUtils.isEmpty(confirmPass))
         {
@@ -99,17 +100,19 @@ public class RegisterActivity extends AppCompatActivity {
                                     ref.child("userPhotoUrl").setValue("");
                                     ref.child("userLevel").setValue("Tera");
                                     ref.child("userBio").setValue("");
-                                    ref.child("userPhoneNo").setValue("");
+                                    ref.child("userPhoneNo").setValue(phoneNo);
                                     ref.child("userPoints").setValue("0");
 
 
 
-                                    StyleableToast st=new StyleableToast(getApplicationContext(),"Good! Now Log In!",Toast.LENGTH_SHORT);
+                                    StyleableToast st=new StyleableToast(getApplicationContext(),"Good! Now Setup your Profile!",Toast.LENGTH_SHORT);
                                     st.setBackgroundColor(getResources().getColor(R.color.colorPrimaryDark));
                                     st.setTextColor(Color.WHITE);
                                     st.setIcon(R.drawable.ic_account_box_black_24dp);
                                     st.show();
-                                    startActivity(new Intent(RegisterActivity.this,MainActivity.class));
+                                    Intent intent=new Intent(RegisterActivity.this,SetupUserActivity.class);
+                                    intent.putExtra("userName",userName);
+                                    startActivity(intent);
 
                                 }
 
@@ -144,5 +147,6 @@ public class RegisterActivity extends AppCompatActivity {
         txtUserName=(EditText) findViewById(R.id.txt_userName);
         txtPass=(EditText) findViewById(R.id.txt_pass);
         txtConfirmPass=(EditText) findViewById(R.id.txt_confirm_pass);
+        txtPhoneNo=(EditText)findViewById(R.id.txt_phoneNo);
     }
 }

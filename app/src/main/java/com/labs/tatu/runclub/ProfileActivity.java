@@ -42,14 +42,14 @@ public class ProfileActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     private Uri mImageUri=null;
-    private static final int GALLERY_REQUEST=1;
+
 
     private FirebaseAuth mAuth;
     private ProgressDialog mProgress;
 
-    private StorageReference mStorage;
 
-    String phoneNo="";
+
+    String email;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,6 +63,8 @@ public class ProfileActivity extends AppCompatActivity {
 
         initViews();
 
+        email=getIntent().getExtras().get("userEmail").toString();
+
         mProgress=new ProgressDialog(this);
 
         this.getWindow().setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_ALWAYS_HIDDEN);
@@ -70,83 +72,90 @@ public class ProfileActivity extends AppCompatActivity {
         mAuth=FirebaseAuth.getInstance();
 
 
-        user_image.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-//                Intent galleryIntent=new Intent(Intent.ACTION_GET_CONTENT);
-//                galleryIntent.setType("image/*");
-//                startActivityForResult(galleryIntent,GALLERY_REQUEST);
-            }
-        });
+
 
         mProgress.setMessage("Loading Profile");
         mProgress.setCancelable(false);
         mProgress.show();
-        final String user_id=mAuth.getCurrentUser().getUid();
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+
+
+
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users");
+        Log.d(TAG, "Email "+email);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-               if(dataSnapshot.child("userName").exists() && dataSnapshot.child("userPhotoUrl").exists())
-               {
-                   Log.d(TAG, "Details Available!");
-                   txtName.setText(dataSnapshot.child("userName").getValue().toString());
-                   final Uri photoUrl=Uri.parse(dataSnapshot.child("userPhotoUrl").getValue().toString());
-                   if(dataSnapshot.child("userPhone").exists())
-                   {
-                       Log.d(TAG, "User Phone No "+dataSnapshot.child("userPhoneNo").getValue().toString());
-                       txtPhoneNo.setText(dataSnapshot.child("userPhoneNo").getValue().toString());
-                   }
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    Log.d(TAG, "Snap "+snapshot.child("userEmail").getValue());
+                    if (snapshot.child("userEmail").getValue().equals(email))
+                    {
+                        if(!FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com") && !FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("google.com"))
+                        {
+                            Log.d(TAG, "Details Available!");
+                            Log.d(TAG, "DataSnapshot "+dataSnapshot.getValue());
+                            txtName.setText(snapshot.child("userName").getValue().toString());
+                            txtBio.setText(snapshot.child("userBio").getValue().toString());
+                            final Uri photoUrl=Uri.parse(snapshot.child("userPhotoUrl").getValue().toString());
+                            if(snapshot.child("userPhoneNo").exists())
+                            {
+                                Log.d(TAG, "User Phone No "+snapshot.child("userPhoneNo").getValue().toString());
+                                txtPhoneNo.setText(snapshot.child("userPhoneNo").getValue().toString());
+                            }
 
 
 
 
-                   Picasso
-                           .with(ProfileActivity.this)
-                           .load(photoUrl)
-                           .networkPolicy(NetworkPolicy.OFFLINE)
-                           .into(user_image, new Callback() {
-                               @Override
-                               public void onSuccess() {
+                            Picasso
+                                    .with(ProfileActivity.this)
+                                    .load(photoUrl)
+                                    .networkPolicy(NetworkPolicy.OFFLINE)
+                                    .into(user_image, new Callback() {
+                                        @Override
+                                        public void onSuccess() {
 
-                               }
+                                        }
 
-                               @Override
-                               public void onError() {
-                                   Picasso.with(ProfileActivity.this).load(photoUrl).into(user_image);
-                               }
-                           });
-                    mProgress.dismiss();
+                                        @Override
+                                        public void onError() {
+                                            Picasso.with(ProfileActivity.this).load(photoUrl).into(user_image);
+                                        }
+                                    });
+                            mProgress.dismiss();
 
-               }
-               else
-               {
-                   txtName.setText(mAuth.getCurrentUser().getDisplayName());
-                   Picasso
-                           .with(ProfileActivity.this)
-                           .load(mAuth.getCurrentUser().getPhotoUrl())
-                           .networkPolicy(NetworkPolicy.OFFLINE)
-                           .into(user_image, new Callback() {
-                               @Override
-                               public void onSuccess() {
+                        }
+                        else
+                        {
+                            txtName.setText(mAuth.getCurrentUser().getDisplayName());
+                            txtName.setEnabled(false);
+                            txtBio.setText(snapshot.child("userBio").getValue().toString());
+                            Picasso
+                                    .with(ProfileActivity.this)
+                                    .load(mAuth.getCurrentUser().getPhotoUrl())
+                                    .networkPolicy(NetworkPolicy.OFFLINE)
+                                    .into(user_image, new Callback() {
+                                        @Override
+                                        public void onSuccess() {
 
-                               }
+                                        }
 
-                               @Override
-                               public void onError() {
-                                   Picasso.with(ProfileActivity.this).load(mAuth.getCurrentUser().getPhotoUrl()).into(user_image);
-                               }
-                           });
-                   if(dataSnapshot.child("userPhone").exists())
-                   {
-                       txtPhoneNo.setText(dataSnapshot.child("userPhoneNo").getValue().toString());
-                   }
-
-
-                   mProgress.dismiss();
+                                        @Override
+                                        public void onError() {
+                                            Picasso.with(ProfileActivity.this).load(mAuth.getCurrentUser().getPhotoUrl()).into(user_image);
+                                        }
+                                    });
+                            if(dataSnapshot.child("userPhoneNo").exists())
+                            {
+                                txtPhoneNo.setText(snapshot.child("userPhoneNo").getValue().toString());
+                            }
 
 
-               }
+                            mProgress.dismiss();
+
+
+                        }
+                    }
+                }
+
             }
 
             @Override
@@ -169,18 +178,42 @@ public class ProfileActivity extends AppCompatActivity {
                 final String phoneNo=txtPhoneNo.getText().toString().trim();
 
 
-                if(mImageUri!=null) {
+                if(!FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com") && !FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("google.com")) {
                     Log.d(TAG, "onClick: Image URI not Null");
 
+                    final DatabaseReference refUser = FirebaseDatabase.getInstance().getReference().child("Users");
+                    refUser.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(DataSnapshot dataSnapshot) {
+                            for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                                if (snapshot.child("userEmail").getValue().equals(email)) {
+                                    Log.d(TAG, "onDataChange: User Found!");
+                                    String userID = snapshot.getKey();
+                                    Log.d(TAG, "Key: " + userID);
 
-//                                        Log.d(TAG, "onSuccess: "+downloadUrl);
-                    String user_id = mAuth.getCurrentUser().getUid();
-                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(user_id);
-                    ref.child("userName").setValue(name);
-                    //  ref.child("userPhotoUrl").setValue(downloadUrl.toString());
-                    ref.child("userBio").setValue(bio);
-                    ref.child("userPhoneNo").setValue(phoneNo);
-                    Toast.makeText(ProfileActivity.this, "Details Saved", Toast.LENGTH_SHORT).show();
+
+                                    DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(userID);
+                                    ref.child("userName").setValue(name);
+                                    ref.child("userBio").setValue(bio);
+                                    ref.child("userPhoneNo").setValue(phoneNo);
+
+                                    Toast.makeText(ProfileActivity.this, "Details Saved", Toast.LENGTH_SHORT).show();
+
+
+
+
+                                }
+
+                            }
+
+                        }
+
+                        @Override
+                        public void onCancelled(DatabaseError databaseError) {
+
+                        }
+                    });
+
 
 
 
@@ -217,7 +250,7 @@ public class ProfileActivity extends AppCompatActivity {
         btnSave=(Button)findViewById(R.id.btnSave);
         user_image=(CircleImageView)findViewById(R.id.txtUserImage);
 
-        mStorage= FirebaseStorage.getInstance().getReference();
+
         mProgress=new ProgressDialog(this);
     }
 

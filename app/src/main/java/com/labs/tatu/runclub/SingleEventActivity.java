@@ -306,10 +306,7 @@ public class SingleEventActivity extends AppCompatActivity {
 
                         break;
 
-                    case R.id.ic_inbox:
-                        startActivity(new Intent(SingleEventActivity.this,InboxActivity.class));
 
-                        break;
 
                     case R.id.ic_stats:
                         startActivity(new Intent(SingleEventActivity.this,StatsActivity.class));

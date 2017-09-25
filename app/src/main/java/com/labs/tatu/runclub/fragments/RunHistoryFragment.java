@@ -487,13 +487,20 @@ public class RunHistoryFragment extends Fragment {
     private void count_no() {
         //        Count No of Children in Nodes
         //        Points
-        String user_id=FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference pointsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userPoints");
+
+        DatabaseReference pointsRef=FirebaseDatabase.getInstance().getReference().child("Users");
         pointsRef.keepSynced(true);
         pointsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                txtPoints.setText(dataSnapshot.getValue().toString());
+                String user_id=FirebaseAuth.getInstance().getCurrentUser().getUid();
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.child("userEmail").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+
+                        txtPoints.setText(snapshot.child("userPoints").getValue().toString());
+                    }
+                }
+
             }
 
             @Override
@@ -506,14 +513,36 @@ public class RunHistoryFragment extends Fragment {
 
 //        Awards
 
-        DatabaseReference awardsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userAwards");
+        DatabaseReference awardsRef=FirebaseDatabase.getInstance().getReference().child("Users");
         awardsRef.keepSynced(true);
         awardsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int size =(int)dataSnapshot.getChildrenCount();
-                Log.d(TAG, "Child Size "+size);
-                txtAwards.setText(String.valueOf(size));
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.child("userEmail").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+
+                        String userID = snapshot.getKey();
+
+                        DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("Users").child(userID).child("userAwards");
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int size =(int)dataSnapshot.getChildrenCount();
+                                Log.d(TAG, "Child Size "+size);
+                                txtAwards.setText(String.valueOf(size));
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+
+                    }
+                }
+
             }
 
             @Override
@@ -523,16 +552,36 @@ public class RunHistoryFragment extends Fragment {
         });
 
 //        Locations
-
-
-        DatabaseReference locationsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userLocations");
-        locationsRef.keepSynced(true);
-        locationsRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference locRef=FirebaseDatabase.getInstance().getReference().child("Users");
+        locRef.keepSynced(true);
+        locRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int size =(int)dataSnapshot.getChildrenCount();
-                Log.d(TAG, "Child Size "+size);
-                txtLocations.setText(String.valueOf(size));
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.child("userEmail").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+
+                        String userID = snapshot.getKey();
+
+                        DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("Users").child(userID).child("userLocations");
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int size =(int)dataSnapshot.getChildrenCount();
+                                Log.d(TAG, "Child Size "+size);
+                                txtLocations.setText(String.valueOf(size));
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                        txtPoints.setText(snapshot.child("userPoints").getValue().toString());
+                    }
+                }
+
             }
 
             @Override
@@ -540,18 +589,40 @@ public class RunHistoryFragment extends Fragment {
 
             }
         });
+
 
         //        Events
 
 
-        DatabaseReference eventsRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userEvents");
+        DatabaseReference eventsRef=FirebaseDatabase.getInstance().getReference().child("Users");
         eventsRef.keepSynced(true);
         eventsRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int size =(int)dataSnapshot.getChildrenCount();
-                Log.d(TAG, "Child Size "+size);
-                txtEvents.setText(String.valueOf(size));
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.child("userEmail").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+
+                        String userID = snapshot.getKey();
+
+                        DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("Users").child(userID).child("userEvents");
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int size =(int)dataSnapshot.getChildrenCount();
+                                Log.d(TAG, "Child Size "+size);
+                                txtEvents.setText(String.valueOf(size));
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                }
+
             }
 
             @Override
@@ -559,18 +630,38 @@ public class RunHistoryFragment extends Fragment {
 
             }
         });
+
 
         //        Challenges
-
-
-        DatabaseReference challengesRef=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id).child("userChallenges");
-        challengesRef.keepSynced(true);
-        challengesRef.addListenerForSingleValueEvent(new ValueEventListener() {
+        DatabaseReference challengeRef=FirebaseDatabase.getInstance().getReference().child("Users");
+        challengeRef.keepSynced(true);
+        challengeRef.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int size =(int)dataSnapshot.getChildrenCount();
-                Log.d(TAG, "Child Size "+size);
-                txtChallenges.setText(String.valueOf(size));
+
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.child("userEmail").getValue().equals(FirebaseAuth.getInstance().getCurrentUser().getEmail())) {
+
+                        String userID = snapshot.getKey();
+
+                        DatabaseReference ref=FirebaseDatabase.getInstance().getReference().child("Users").child(userID).child("userChallenges");
+                        ref.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                int size =(int)dataSnapshot.getChildrenCount();
+                                Log.d(TAG, "Child Size "+size);
+                                txtChallenges.setText(String.valueOf(size));
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+
+                    }
+                }
+
             }
 
             @Override
@@ -578,6 +669,7 @@ public class RunHistoryFragment extends Fragment {
 
             }
         });
+
 
 
 

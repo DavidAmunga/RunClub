@@ -25,10 +25,5 @@
         android:title="Events"
 
         />
-    <item
-        android:id="@+id/ic_inbox"
-        android:icon="@drawable/ic_inbox_black_24dp"
-        android:title="Inbox"
 
-        />
 </menu>

@@ -157,10 +157,7 @@ public class FriendsActivity extends AppCompatActivity {
 
                         break;
 
-                    case R.id.ic_inbox:
-                        startActivity(new Intent(FriendsActivity.this, InboxActivity.class));
 
-                        break;
 
                     case R.id.ic_stats:
                         startActivity(new Intent(FriendsActivity.this, StatsActivity.class));
@@ -359,27 +356,44 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     public void drawer() {
-        final String name = mAuth.getCurrentUser().getDisplayName();
-        final String email = mAuth.getCurrentUser().getEmail();
-        String user_id = mAuth.getCurrentUser().getUid();
+        final String name=mAuth.getCurrentUser().getDisplayName();
+        final String email=mAuth.getCurrentUser().getEmail();
+
+        String user_id=mAuth.getCurrentUser().getUid();
 
 
-        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users").child(user_id);
+        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users");
+        ref.keepSynced(true);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                if (dataSnapshot.child("userPhotoUrl").exists()) {
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.child("userEmail").getValue().equals(email)) {
 
-                    String url = dataSnapshot.child("userPhotoUrl").getValue().toString();
-                    photo_url = Uri.parse(url);
-                    Log.d(TAG, "Photo Url Exists " + photo_url);
+                        String url = snapshot.child("userPhotoUrl").getValue().toString();
+                        Log.d(TAG, "URL " + url);
 
-                    drawerLogic(name, email);
+                        if (url.contains("firebasestorage")) {
 
-                } else {
-                    photo_url = mAuth.getCurrentUser().getPhotoUrl();
-                    drawerLogic(name, email);
+                            String name = snapshot.child("userName").getValue().toString();
+                            String email = snapshot.child("userEmail").getValue().toString();
 
+                            photo_url = Uri.parse(url);
+                            Log.d(TAG, "Photo Url Exists " + photo_url);
+
+                            drawerLogic(name, email);
+
+                        } else {
+                            String name = snapshot.child("userName").getValue().toString();
+                            String email = snapshot.child("userEmail").getValue().toString();
+
+                            photo_url = mAuth.getCurrentUser().getPhotoUrl();
+                            drawerLogic(name, email);
+
+
+                        }
+
+                    }
 
                 }
             }
@@ -391,9 +405,12 @@ public class FriendsActivity extends AppCompatActivity {
         });
 
 
-    }
 
-    public void drawerLogic(String name, String email) {
+
+
+    }
+    public void drawerLogic(String name, final String email)
+    {
         //initialize and create the image loader logic
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
             @Override
@@ -426,7 +443,7 @@ public class FriendsActivity extends AppCompatActivity {
         });
 
 
-        Log.d(TAG, "Foto Url " + photo_url);
+        Log.d(TAG, "Foto Url "+photo_url);
 
         // Create a few sample profile
         final IProfile profile = new ProfileDrawerItem().withName(name)
@@ -470,6 +487,7 @@ public class FriendsActivity extends AppCompatActivity {
                         item6.withIcon(R.drawable.ic_directions_run_black_24dp),
 
 
+
                         new DividerDrawerItem(),
                         item7.withIcon(R.drawable.ic_log_out_black_24dp)
 
@@ -491,13 +509,15 @@ public class FriendsActivity extends AppCompatActivity {
                                 logOut();
                                 break;
                             case "RunActivity":
-                                startActivity(new Intent(FriendsActivity.this, MyRunActivity.class));
+                                startActivity(new Intent(FriendsActivity.this,MyRunActivity.class));
                                 break;
                             case "Profile":
-                                startActivity(new Intent(FriendsActivity.this, ProfileActivity.class));
+                                Intent intent=new Intent(FriendsActivity.this,ProfileActivity.class);
+                                intent.putExtra("userEmail",email);
+                                startActivity(intent);
                                 break;
                             case "AddAward":
-                                startActivity(new Intent(FriendsActivity.this, AddAwardsActivity.class));
+                                startActivity(new Intent(FriendsActivity.this,AddAwardsActivity.class));
                                 break;
 
                         }
@@ -515,7 +535,6 @@ public class FriendsActivity extends AppCompatActivity {
         result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
 
     }
-
     private void logOut() {
         Log.d(TAG, "logOut: Is Logging out");
         if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com")) {

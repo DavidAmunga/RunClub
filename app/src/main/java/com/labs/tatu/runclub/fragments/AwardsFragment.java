@@ -61,7 +61,7 @@ public class AwardsFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_awards_layout,container,false);
+        final View view=inflater.inflate(R.layout.fragment_awards_layout,container,false);
 
         mDatabase= FirebaseDatabase.getInstance().getReference().child("Awards");
         mDatabase.keepSynced(true);
@@ -90,36 +90,42 @@ public class AwardsFragment extends Fragment {
         //mLocationsList.setHasFixedSize(true);
         mAwardsList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        String user_id= FirebaseAuth.getInstance().getCurrentUser().getUid();
-        DatabaseReference refUserLevel=FirebaseDatabase.getInstance().getReference().child("Users").child(user_id);
+        final String email= FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        DatabaseReference refUserLevel=FirebaseDatabase.getInstance().getReference().child("Users");
         refUserLevel.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-
-                final String userLevel=dataSnapshot.child("userLevel").getValue().toString();
-                final String userPoints=dataSnapshot.child("userPoints").getValue().toString();
-
-                DatabaseReference refMaxLevel=FirebaseDatabase.getInstance().getReference("UserLevel").child(userLevel);
-                refMaxLevel.addListenerForSingleValueEvent(new ValueEventListener() {
-                    @Override
-                    public void onDataChange(DataSnapshot dataSnapshot) {
-                        String maxPoints=dataSnapshot.getValue().toString();
-
-                        txtUserLevel.setText(userLevel+" Level");
-                        arcUserLevel.setBottomText(userPoints+"/"+maxPoints+" Points");
-                        arcUserLevel.setMax(Integer.parseInt(maxPoints));
-                        arcUserLevel.setProgress(Integer.parseInt(userPoints));
-
-                        setUserBadgeLevel(userLevel);
+                for (DataSnapshot snapshot : dataSnapshot.getChildren()) {
+                    if (snapshot.child("userEmail").getValue().equals(email)) {
 
 
+                        final String userLevel = snapshot.child("userLevel").getValue().toString();
+                        final String userPoints = snapshot.child("userPoints").getValue().toString();
+
+                        DatabaseReference refMaxLevel = FirebaseDatabase.getInstance().getReference("UserLevel").child(userLevel);
+                        refMaxLevel.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+                                String maxPoints = dataSnapshot.getValue().toString();
+
+                                txtUserLevel.setText(userLevel + " Level");
+                                arcUserLevel.setBottomText(userPoints + "/" + maxPoints + " Points");
+                                arcUserLevel.setMax(Integer.parseInt(maxPoints));
+                                arcUserLevel.setProgress(Integer.parseInt(userPoints));
+
+                                setUserBadgeLevel(userLevel);
+
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+
+                        });
                     }
-
-                    @Override
-                    public void onCancelled(DatabaseError databaseError) {
-
-                    }
-                });
+                }
             }
 
             @Override
