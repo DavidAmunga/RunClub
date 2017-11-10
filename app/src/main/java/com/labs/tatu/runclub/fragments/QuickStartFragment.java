@@ -33,7 +33,7 @@ import com.labs.tatu.runclub.WorkoutActivity;
  * Created by amush on 10-Sep-17.
  */
 
-public class QuickStartFragment extends Fragment implements OnMapReadyCallback,GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
+public class QuickStartFragment extends Fragment implements OnMapReadyCallback, GoogleApiClient.ConnectionCallbacks, GoogleApiClient.OnConnectionFailedListener {
 
     private static final String TAG = "QuickStartFragment";
 
@@ -56,20 +56,18 @@ public class QuickStartFragment extends Fragment implements OnMapReadyCallback,G
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_quick_start_layout,container,false);
+        View view = inflater.inflate(R.layout.fragment_quick_start_layout, container, false);
         //toolBarTitle.setText("Quick Start");
-        btnStart=(CuboidButton) view.findViewById(R.id.buttonStart);
+        btnStart = (CuboidButton) view.findViewById(R.id.buttonStart);
 
         btnStart.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              //Go to Workout activity
+                //Go to Workout activity
 
                 startActivity(new Intent(getContext(), WorkoutActivity.class));
             }
         });
-
-
 
 
         //Initializing googleapi client
@@ -80,7 +78,6 @@ public class QuickStartFragment extends Fragment implements OnMapReadyCallback,G
                 .addOnConnectionFailedListener(this)
                 .addApi(LocationServices.API)
                 .build();
-
 
 
         SupportMapFragment mapFragment = (SupportMapFragment) getChildFragmentManager()
@@ -111,7 +108,7 @@ public class QuickStartFragment extends Fragment implements OnMapReadyCallback,G
         if (ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED && ActivityCompat.checkSelfPermission(getActivity(), android.Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
             ActivityCompat.requestPermissions(getActivity(),
-                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION,Manifest.permission.ACCESS_COARSE_LOCATION},
+                    new String[]{Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION},
                     LOCATION_REQUEST);
 
             return;
@@ -138,7 +135,7 @@ public class QuickStartFragment extends Fragment implements OnMapReadyCallback,G
                 .position(latLng) //setting position
                 .draggable(true) //Making the marker draggable
                 .title("Me")
-                
+
         ); //Adding a title
 
         //Moving the camera

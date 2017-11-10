@@ -52,7 +52,7 @@ public class ChallengesFragment extends Fragment {
 
 
         mChallengeList=(RecyclerView)view.findViewById(R.id.challenge_list);
-        //mChallengeList.setHasFixedSize(true);
+        mChallengeList.setHasFixedSize(true);
         mChallengeList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
         return view;

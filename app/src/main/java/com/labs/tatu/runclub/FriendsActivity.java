@@ -44,6 +44,7 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.FirebaseAuth;
+import com.google.firebase.auth.FirebaseUser;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
@@ -78,11 +79,11 @@ public class FriendsActivity extends AppCompatActivity {
     private Toolbar toolbar;
 
     FirebaseAuth mAuth;
+    FirebaseAuth.AuthStateListener mAuthListener;
+
     private boolean isLoggingOut = false;
     private Uri photo_url = null;
     private GoogleApiClient mGoogleApiClient;
-
-
 
 
     private RecyclerView mUserList;
@@ -90,6 +91,7 @@ public class FriendsActivity extends AppCompatActivity {
     private DatabaseReference mDatabase;
 
     String id = "";
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,19 +107,36 @@ public class FriendsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("");
 
-        mDatabase = FirebaseDatabase.getInstance().getReference().child("Users");
 
-
+        mDatabase = FirebaseDatabase.getInstance().getReference("Users");
         mUserList = (RecyclerView) findViewById(R.id.user_lists);
-        //mChallengeList.setHasFixedSize(true);
+        mUserList.setHasFixedSize(true);
         mUserList.setLayoutManager(new LinearLayoutManager(this));
 
-//        Set No Status Bar
+
+        //        Set No Status Bar
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 //
 
         mAuth = FirebaseAuth.getInstance();
+
+        mAuthListener = new FirebaseAuth.AuthStateListener() {
+            @Override
+            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+                FirebaseUser user = firebaseAuth.getCurrentUser();
+                if (user != null) {
+                    // User is signed in
+                    Log.d(TAG, "onAuthStateChanged:signed_in:" + user.getUid());
+                } else {
+                    // User is signed out
+                    Log.d(TAG, "onAuthStateChanged:signed_out");
+                    startActivity(new Intent(FriendsActivity.this, LoginActivity.class));
+                    finish();
+                }
+                // ...
+            }
+        };
         //        Set Google Log In
 
         //Google Sign In
@@ -158,7 +177,6 @@ public class FriendsActivity extends AppCompatActivity {
                         break;
 
 
-
                     case R.id.ic_stats:
                         startActivity(new Intent(FriendsActivity.this, StatsActivity.class));
 
@@ -174,8 +192,26 @@ public class FriendsActivity extends AppCompatActivity {
             }
         });
 
+
         drawer();
     }
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        View decorView = getWindow().getDecorView();
+        if (hasFocus) {
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+
+    }
+
 
     public boolean isFbLoggedIn() {
 
@@ -200,7 +236,7 @@ public class FriendsActivity extends AppCompatActivity {
                 mDatabase
         ) {
             @Override
-            protected void populateViewHolder(final UserViewHolder viewHolder, final User model, final int position) {
+            protected void populateViewHolder(UserViewHolder viewHolder, final User model, final int position) {
                 viewHolder.setUserName(model.getUserName());
                 viewHolder.setUserImage(FriendsActivity.this, model.getUserPhotoUrl());
 
@@ -260,6 +296,8 @@ public class FriendsActivity extends AppCompatActivity {
                                     newChallenge.child("challengeName").setValue(name);
                                     newChallenge.child("challengePoints").setValue("10");
                                     newChallenge.child("challengeImage").setValue("R.drawable.challengeHeader");
+
+
                                     newChallenge.child("challenger").setValue(mAuth.getCurrentUser().getDisplayName());
 
                                     Toast.makeText(FriendsActivity.this, model.getUserName() + " challenged", Toast.LENGTH_SHORT).show();
@@ -286,7 +324,7 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     public static class UserViewHolder extends RecyclerView.ViewHolder {
-        View mView;
+
 
         Button btnChallenge;
 
@@ -356,13 +394,13 @@ public class FriendsActivity extends AppCompatActivity {
     }
 
     public void drawer() {
-        final String name=mAuth.getCurrentUser().getDisplayName();
-        final String email=mAuth.getCurrentUser().getEmail();
+        final String name = mAuth.getCurrentUser().getDisplayName();
+        final String email = mAuth.getCurrentUser().getEmail();
 
-        String user_id=mAuth.getCurrentUser().getUid();
+        String user_id = mAuth.getCurrentUser().getUid();
 
 
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         ref.keepSynced(true);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -405,12 +443,9 @@ public class FriendsActivity extends AppCompatActivity {
         });
 
 
-
-
-
     }
-    public void drawerLogic(String name, final String email)
-    {
+
+    public void drawerLogic(String name, final String email) {
         //initialize and create the image loader logic
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
             @Override
@@ -443,7 +478,7 @@ public class FriendsActivity extends AppCompatActivity {
         });
 
 
-        Log.d(TAG, "Foto Url "+photo_url);
+        Log.d(TAG, "Foto Url " + photo_url);
 
         // Create a few sample profile
         final IProfile profile = new ProfileDrawerItem().withName(name)
@@ -487,7 +522,6 @@ public class FriendsActivity extends AppCompatActivity {
                         item6.withIcon(R.drawable.ic_directions_run_black_24dp),
 
 
-
                         new DividerDrawerItem(),
                         item7.withIcon(R.drawable.ic_log_out_black_24dp)
 
@@ -509,15 +543,15 @@ public class FriendsActivity extends AppCompatActivity {
                                 logOut();
                                 break;
                             case "RunActivity":
-                                startActivity(new Intent(FriendsActivity.this,MyRunActivity.class));
+                                startActivity(new Intent(FriendsActivity.this, MyRunActivity.class));
                                 break;
                             case "Profile":
-                                Intent intent=new Intent(FriendsActivity.this,ProfileActivity.class);
-                                intent.putExtra("userEmail",email);
+                                Intent intent = new Intent(FriendsActivity.this, ProfileActivity.class);
+                                intent.putExtra("userEmail", email);
                                 startActivity(intent);
                                 break;
                             case "AddAward":
-                                startActivity(new Intent(FriendsActivity.this,AddAwardsActivity.class));
+                                startActivity(new Intent(FriendsActivity.this, AddAwardsActivity.class));
                                 break;
 
                         }
@@ -535,27 +569,31 @@ public class FriendsActivity extends AppCompatActivity {
         result.getActionBarDrawerToggle().setDrawerIndicatorEnabled(true);
 
     }
+
     private void logOut() {
         Log.d(TAG, "logOut: Is Logging out");
-        if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com")) {
-            isLoggingOut = true;
-            Log.d(TAG, "logOut: Facebook");
-            FirebaseAuth.getInstance().signOut();
-            LoginManager.getInstance().logOut();
-            startActivity(new Intent(FriendsActivity.this, LoginActivity.class));
-            finish();
+        if (FirebaseAuth.getInstance().getCurrentUser().getProviders() != null) {
+            if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("facebook.com")) {
+                isLoggingOut = true;
+                Log.d(TAG, "logOut: Facebook");
+                FirebaseAuth.getInstance().signOut();
+                LoginManager.getInstance().logOut();
+                startActivity(new Intent(FriendsActivity.this, LoginActivity.class));
+                finish();
 
 
-        } else if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("google.com")) {
-            Log.d(TAG, "logOut: Google");
-            FirebaseAuth.getInstance().signOut();
-            Auth.GoogleSignInApi.signOut(mGoogleApiClient);
-            startActivity(new Intent(FriendsActivity.this, LoginActivity.class));
-            finish();
+            } else if (FirebaseAuth.getInstance().getCurrentUser().getProviders().get(0).equals("google.com")) {
+                Log.d(TAG, "logOut: Google");
+                FirebaseAuth.getInstance().signOut();
+                Auth.GoogleSignInApi.signOut(mGoogleApiClient);
+                startActivity(new Intent(FriendsActivity.this, LoginActivity.class));
+                finish();
 
-        } else {
-            FirebaseAuth.getInstance().signOut();
+            }
         }
+
+        FirebaseAuth.getInstance().signOut();
+
     }
 
 
@@ -593,6 +631,14 @@ public class FriendsActivity extends AppCompatActivity {
                         AppInviteDialog.show(FriendsActivity.this, content);
                     }
                 } else {
+
+                    Intent sharingIntent = new Intent(android.content.Intent.ACTION_SEND);
+                    sharingIntent.setType("text/plain");
+                    String shareBodyText = "Check out RunForce now!";
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_SUBJECT, "RunForce : The Best Running application");
+                    sharingIntent.putExtra(android.content.Intent.EXTRA_TEXT, shareBodyText);
+                    startActivity(Intent.createChooser(sharingIntent, "Sharing Option"));
+                    return true;
 
                 }
                 break;

@@ -86,7 +86,7 @@ public class LoginActivity extends AppCompatActivity {
 
         try {
             PackageInfo info = getPackageManager().getPackageInfo(
-                    "com.labs.tatu.runclub",
+                    "com.amunga.david.diabeat",
                     PackageManager.GET_SIGNATURES);
             for (Signature signature : info.signatures) {
                 MessageDigest md = MessageDigest.getInstance("SHA");
@@ -105,109 +105,110 @@ public class LoginActivity extends AppCompatActivity {
 
         initViews();
 
-        mAuth=FirebaseAuth.getInstance();
-        mFirebaseUser = mAuth.getCurrentUser();
-        mAuthStateListener=new FirebaseAuth.AuthStateListener() {
-            @Override
-            public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
-                if(firebaseAuth.getCurrentUser()!=null)
-                {
-                    //Go to MainActivity
-                    startActivity(new Intent(LoginActivity.this,MainActivity.class));
-                }
+    mAuth=FirebaseAuth.getInstance();
+    mFirebaseUser = mAuth.getCurrentUser();
+    mAuthStateListener=new FirebaseAuth.AuthStateListener() {
+        @Override
+        public void onAuthStateChanged(@NonNull FirebaseAuth firebaseAuth) {
+            if(firebaseAuth.getCurrentUser()!=null)
+            {
+                //Go to MainActivity
+                startActivity(new Intent(LoginActivity.this,MainActivity.class));
             }
-        };
+        }
+    };
 
-        getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
-                WindowManager.LayoutParams.FLAG_FULLSCREEN);
+    getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
+                         WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
 
 
-        //Google Sign In
-        GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
-                .requestIdToken(getString(R.string.default_web_client_id))
-                .requestEmail()
-                .build();
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
-                    @Override
-                    public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
-                        Toast.makeText(LoginActivity.this, "Something went wrong....", Toast.LENGTH_SHORT).show();
-                    }
-                })
-                .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
+    //Google Sign In
+    GoogleSignInOptions gso = new GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
+            .requestIdToken(getString(R.string.default_web_client_id))
+            .requestEmail()
+            .build();
+    mGoogleApiClient = new GoogleApiClient.Builder(this)
+            .enableAutoManage(this, new GoogleApiClient.OnConnectionFailedListener() {
+        @Override
+        public void onConnectionFailed(@NonNull ConnectionResult connectionResult) {
+            Toast.makeText(LoginActivity.this, "Something went wrong....", Toast.LENGTH_SHORT).show();
+        }
+    })
+            .addApi(Auth.GOOGLE_SIGN_IN_API, gso)
                 .build();
 
 
         btnGG.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                signIn();
-            }
-        });
+        @Override
+        public void onClick(View v) {
+            signIn();
+        }
+    });
 
 
-        //        Facebook Sign In
-        mCallbackManager = CallbackManager.Factory.create();
+    //        Facebook Sign In
+    mCallbackManager = CallbackManager.Factory.create();
+
 
         btnFB.setReadPermissions("email", "public_profile");
         btnFB.registerCallback(mCallbackManager, new FacebookCallback<LoginResult>() {
-            @Override
-            public void onSuccess(LoginResult loginResult) {
-                Log.d(TAG, "facebook:onSuccess:" + loginResult);
-                handleFacebookAccessToken(loginResult.getAccessToken());
+        @Override
+        public void onSuccess(LoginResult loginResult) {
+            Log.d(TAG, "facebook:onSuccess:" + loginResult);
+            handleFacebookAccessToken(loginResult.getAccessToken());
 
-            }
+        }
 
-            @Override
-            public void onCancel() {
-                Log.d(TAG, "facebook:onCancel");
-                // ...
-            }
+        @Override
+        public void onCancel() {
+            Log.d(TAG, "facebook:onCancel");
+            // ...
+        }
 
-            @Override
-            public void onError(FacebookException error) {
-                Log.d(TAG, "facebook:onError", error);
-                // ...
-            }
-        });
+        @Override
+        public void onError(FacebookException error) {
+            Log.d(TAG, "facebook:onError", error);
+            // ...
+        }
+    });
 
 
         btnLogin.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String email=txtEmail.getText().toString().trim();
-                String password=txtPassword.getText().toString().trim();
+        @Override
+        public void onClick(View v) {
+            String email=txtEmail.getText().toString().trim();
+            String password=txtPassword.getText().toString().trim();
 
-                mAuth.signInWithEmailAndPassword(email, password)
-                        .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
-                            @Override
-                            public void onComplete(@NonNull Task<AuthResult> task) {
-                                Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
+            mAuth.signInWithEmailAndPassword(email, password)
+                    .addOnCompleteListener(LoginActivity.this, new OnCompleteListener<AuthResult>() {
+                        @Override
+                        public void onComplete(@NonNull Task<AuthResult> task) {
+                            Log.d(TAG, "createUserWithEmail:onComplete:" + task.isSuccessful());
 
-                                if (!task.isSuccessful()) {
-                                    Toast.makeText(LoginActivity.this, R.string.auth_failed,
-                                            Toast.LENGTH_SHORT).show();
-                                }
-                                else
-                                {
-                                    Log.d(TAG, "onComplete: Sign Up Success");
-                                    normalSignIn();
-                                }
-
-                                // ...
+                            if (!task.isSuccessful()) {
+                                Toast.makeText(LoginActivity.this, R.string.auth_failed,
+                                        Toast.LENGTH_SHORT).show();
                             }
-                        });
-            }
-        });
+                            else
+                            {
+                                Log.d(TAG, "onComplete: Sign Up Success");
+                                normalSignIn();
+                            }
+
+                            // ...
+                        }
+                    });
+        }
+    });
 
         txtRegister.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
-            }
-        });
-    }
+        @Override
+        public void onClick(View v) {
+            startActivity(new Intent(LoginActivity.this,RegisterActivity.class));
+        }
+    });
+}
 
 
     private void normalSignIn()
@@ -315,6 +316,21 @@ public class LoginActivity extends AppCompatActivity {
 
 
 
+
+    }
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        View decorView = getWindow().getDecorView();
+        if (hasFocus) {
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
 
     }
 

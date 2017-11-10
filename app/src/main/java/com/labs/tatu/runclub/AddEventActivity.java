@@ -28,19 +28,35 @@ import java.util.Calendar;
 public class AddEventActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener, TimePickerDialog.OnTimeSetListener {
 
 
-    private EditText add_event_name,add_event_details,add_event_type,add_event_fee,add_event_attending;
-    private Button search_loc,btn_add_event,btn_event_date,btn_event_time;
-    private TextView add_event_loc_name,add_event_date,add_event_time;
+    private EditText add_event_name, add_event_details, add_event_type, add_event_fee, add_event_attending;
+    private Button search_loc, btn_add_event, btn_event_date, btn_event_time;
+    private TextView add_event_loc_name, add_event_date, add_event_time;
 
     private ImageButton event_image;
     private StorageReference mStorage;
     private DatabaseReference mDatabase;
-    private Uri mImageUri=null;
+    private Uri mImageUri = null;
     private ProgressDialog mProgress;
 
     private static final String TAG = "AddEventActivity";
 
-    private static final int GALLERY_REQUEST=1;
+    private static final int GALLERY_REQUEST = 1;
+
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        View decorView = getWindow().getDecorView();
+        if (hasFocus) {
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
+
+    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -64,7 +80,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
                         .setLocationNameListener(new PlaceSearchDialog.LocationNameListener() {
                             @Override
                             public void locationName(String locationName) {
-                              add_event_loc_name.setText(locationName);
+                                add_event_loc_name.setText(locationName);
                             }
                         })
                         .build();
@@ -72,7 +88,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
             }
         });
 
-        mProgress=new ProgressDialog(this);
+        mProgress = new ProgressDialog(this);
 
         btn_add_event.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -85,29 +101,29 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         btn_event_date.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar now=Calendar.getInstance();
-                com.wdullaer.materialdatetimepicker.date.DatePickerDialog datePickerDialog= com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(
+                Calendar now = Calendar.getInstance();
+                com.wdullaer.materialdatetimepicker.date.DatePickerDialog datePickerDialog = com.wdullaer.materialdatetimepicker.date.DatePickerDialog.newInstance(
                         AddEventActivity.this,
                         now.get(Calendar.YEAR),
                         now.get(Calendar.MONTH),
                         now.get(Calendar.DAY_OF_MONTH)
                 );
                 datePickerDialog.setTitle("Pick a Date");
-                datePickerDialog.show(getFragmentManager(),"DatePicker");
+                datePickerDialog.show(getFragmentManager(), "DatePicker");
             }
         });
         btn_event_time.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Calendar now=Calendar.getInstance();
-                TimePickerDialog timePickerDialog=new TimePickerDialog().newInstance(
+                Calendar now = Calendar.getInstance();
+                TimePickerDialog timePickerDialog = new TimePickerDialog().newInstance(
                         AddEventActivity.this,
                         now.get(Calendar.HOUR_OF_DAY),
                         now.get(Calendar.MINUTE),
                         false
                 ); //True is 24 Hrs , False is 12 hours
                 timePickerDialog.setTitle("Pick a time");
-                timePickerDialog.show(getFragmentManager(),"Time Picker");
+                timePickerDialog.show(getFragmentManager(), "Time Picker");
             }
         });
     }
@@ -116,26 +132,25 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
         mProgress.setMessage("Adding Event");
         mProgress.setCancelable(false);
         mProgress.show();
-        final String add_name=add_event_name.getText().toString().trim();
-        final String add_details=add_event_details.getText().toString().trim();
-        final String add_type=add_event_type.getText().toString().trim();
-        final String add_fee=add_event_fee.getText().toString().trim();
-        final String add_attending=add_event_attending.getText().toString().trim();
-        final String add_loc=add_event_loc_name.getText().toString().trim();
-        final String add_date=add_event_date.getText().toString().trim();
-        final String add_time=add_event_time.getText().toString().trim();
+        final String add_name = add_event_name.getText().toString().trim();
+        final String add_details = add_event_details.getText().toString().trim();
+        final String add_type = add_event_type.getText().toString().trim();
+        final String add_fee = add_event_fee.getText().toString().trim();
+        final String add_attending = add_event_attending.getText().toString().trim();
+        final String add_loc = add_event_loc_name.getText().toString().trim();
+        final String add_date = add_event_date.getText().toString().trim();
+        final String add_time = add_event_time.getText().toString().trim();
 
-            if(!TextUtils.isEmpty(add_name) &&  !TextUtils.isEmpty(add_details) &&  !TextUtils.isEmpty(add_type) &&  !TextUtils.isEmpty(add_fee) &&  !TextUtils.isEmpty(add_attending) &&  !TextUtils.isEmpty(add_loc))
-            {
-                StorageReference filepath=mStorage.child("Event_Images").child(mImageUri.getLastPathSegment());
+        if (!TextUtils.isEmpty(add_name) && !TextUtils.isEmpty(add_details) && !TextUtils.isEmpty(add_type) && !TextUtils.isEmpty(add_fee) && !TextUtils.isEmpty(add_attending) && !TextUtils.isEmpty(add_loc)) {
+            StorageReference filepath = mStorage.child("Event_Images").child(mImageUri.getLastPathSegment());
 
-                filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
-                    @Override
-                    public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
+            filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
+                @Override
+                public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
-                        @SuppressWarnings("VisibleForTesting") Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                        Log.d(TAG, "onSuccess: "+downloadUrl);
-                        DatabaseReference newEvent=mDatabase.push();
+                    @SuppressWarnings("VisibleForTesting") Uri downloadUrl = taskSnapshot.getDownloadUrl();
+                    Log.d(TAG, "onSuccess: " + downloadUrl);
+                    DatabaseReference newEvent = mDatabase.push();
                     newEvent.child("eventName").setValue(add_name);
                     newEvent.child("eventFee").setValue(add_fee);
                     newEvent.child("eventDesc").setValue(add_details);
@@ -148,7 +163,7 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
 
                     mProgress.dismiss();
 
-                    startActivity(new Intent(AddEventActivity.this,EventsActivity.class));
+                    startActivity(new Intent(AddEventActivity.this, EventsActivity.class));
                 }
             });
         }
@@ -157,61 +172,59 @@ public class AddEventActivity extends AppCompatActivity implements DatePickerDia
     private void initViews() {
 
 
-        add_event_name=(EditText)findViewById(R.id.add_event_name);
-        add_event_details=(EditText)findViewById(R.id.add_event_details);
-        add_event_type=(EditText)findViewById(R.id.add_event_type);
-        add_event_fee=(EditText)findViewById(R.id.add_event_fee);
-        add_event_attending=(EditText)findViewById(R.id.add_event_attending);
+        add_event_name = (EditText) findViewById(R.id.add_event_name);
+        add_event_details = (EditText) findViewById(R.id.add_event_details);
+        add_event_type = (EditText) findViewById(R.id.add_event_type);
+        add_event_fee = (EditText) findViewById(R.id.add_event_fee);
+        add_event_attending = (EditText) findViewById(R.id.add_event_attending);
 
-        add_event_loc_name=(TextView)findViewById(R.id.add_event_loc_name);
-        add_event_date=(TextView)findViewById(R.id.add_event_date);
-        add_event_time=(TextView)findViewById(R.id.add_event_time);
+        add_event_loc_name = (TextView) findViewById(R.id.add_event_loc_name);
+        add_event_date = (TextView) findViewById(R.id.add_event_date);
+        add_event_time = (TextView) findViewById(R.id.add_event_time);
 
-        search_loc=(Button)findViewById(R.id.search_loc);
-        btn_add_event=(Button)findViewById(R.id.btn_add_event);
-        btn_event_date=(Button)findViewById(R.id.btn_event_date);
-        btn_event_time=(Button)findViewById(R.id.btn_event_time);
+        search_loc = (Button) findViewById(R.id.search_loc);
+        btn_add_event = (Button) findViewById(R.id.btn_add_event);
+        btn_event_date = (Button) findViewById(R.id.btn_event_date);
+        btn_event_time = (Button) findViewById(R.id.btn_event_time);
 
-        event_image=(ImageButton)findViewById(R.id.add_event_image);
+        event_image = (ImageButton) findViewById(R.id.add_event_image);
 
-        mStorage= FirebaseStorage.getInstance().getReference();
-        mDatabase= FirebaseDatabase.getInstance().getReference().child("Events");
+        mStorage = FirebaseStorage.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Events");
 
         event_image.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent=new Intent(Intent.ACTION_GET_CONTENT);
+                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent,GALLERY_REQUEST);
+                startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
-
-
 
 
     }
 
     @Override
     public void onDateSet(DatePickerDialog view, int year, int monthOfYear, int dayOfMonth) {
-        String date=dayOfMonth+"-"+monthOfYear+"-"+year;
-        Log.d(TAG, "onDateSet: "+date);
+        String date = dayOfMonth + "-" + monthOfYear + "-" + year;
+        Log.d(TAG, "onDateSet: " + date);
         add_event_date.setText(date);
     }
 
 
     @Override
     public void onTimeSet(TimePickerDialog view, int hourOfDay, int minute, int second) {
-        String time=hourOfDay+":"+minute;
-        Log.d(TAG, "onTimeSet: "+time);
+        String time = hourOfDay + ":" + minute;
+        Log.d(TAG, "onTimeSet: " + time);
         add_event_time.setText(time);
     }
+
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode==GALLERY_REQUEST && resultCode==RESULT_OK)
-        {
-            mImageUri=data.getData();
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+            mImageUri = data.getData();
             event_image.setImageURI(mImageUri);
         }
     }

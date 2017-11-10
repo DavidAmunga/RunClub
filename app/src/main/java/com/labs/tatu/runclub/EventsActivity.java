@@ -65,7 +65,7 @@ public class EventsActivity extends AppCompatActivity {
     private boolean isLoggingOut = false;
     private GoogleApiClient mGoogleApiClient;
 
-    private Uri photo_url=null;
+    private Uri photo_url = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -78,7 +78,7 @@ public class EventsActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowHomeEnabled(true);
         getSupportActionBar().setTitle("");
 
-        mAuth=FirebaseAuth.getInstance();
+        mAuth = FirebaseAuth.getInstance();
         //        Set Google Log In
 
         //Google Sign In
@@ -101,44 +101,41 @@ public class EventsActivity extends AppCompatActivity {
         getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN,
                 WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
-        mDatabase= FirebaseDatabase.getInstance().getReference().child("Events");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Events");
         mDatabase.keepSynced(true);
 
-        mEventList=(RecyclerView)findViewById(R.id.events_list);
+        mEventList = (RecyclerView) findViewById(R.id.events_list);
         mEventList.setHasFixedSize(true);
         mEventList.setLayoutManager(new LinearLayoutManager(this));
-
 
 
         BottomNavigationView bottomNavigationView = (BottomNavigationView) findViewById(R.id.bottomNavView_Bar);
         BottomNavigationViewHelper.disableShiftMode(bottomNavigationView);
 
-        Menu menu=bottomNavigationView.getMenu();
-        MenuItem menuItem=menu.getItem(3);
+        Menu menu = bottomNavigationView.getMenu();
+        MenuItem menuItem = menu.getItem(3);
         menuItem.setChecked(true);
 
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
-                switch(item.getItemId())
-                {
+                switch (item.getItemId()) {
                     case R.id.ic_events:
-                        startActivity(new Intent(EventsActivity.this,EventsActivity.class));
+                        startActivity(new Intent(EventsActivity.this, EventsActivity.class));
                         break;
 
                     case R.id.ic_friends:
-                        startActivity(new Intent(EventsActivity.this,FriendsActivity.class));
+                        startActivity(new Intent(EventsActivity.this, FriendsActivity.class));
 
                         break;
-
 
 
                     case R.id.ic_stats:
-                        startActivity(new Intent(EventsActivity.this,StatsActivity.class));
+                        startActivity(new Intent(EventsActivity.this, StatsActivity.class));
 
                         break;
                     case R.id.ic_run:
-                        startActivity(new Intent(EventsActivity.this,MainActivity.class));
+                        startActivity(new Intent(EventsActivity.this, MainActivity.class));
 
                         break;
 
@@ -149,29 +146,29 @@ public class EventsActivity extends AppCompatActivity {
 
         drawer();
     }
-    public static class EventsViewHolder extends RecyclerView.ViewHolder
-    {
+
+    public static class EventsViewHolder extends RecyclerView.ViewHolder {
         View mView;
 
         public EventsViewHolder(View itemView) {
             super(itemView);
 
-            mView=itemView;
+            mView = itemView;
         }
-        public void setEventsName(String name)
-        {
-            TextView eventsName=(TextView)mView.findViewById(R.id.event_name);
+
+        public void setEventsName(String name) {
+            TextView eventsName = (TextView) mView.findViewById(R.id.event_name);
             eventsName.setText(name);
         }
-        public void setEventsDate(String date)
-        {
+
+        public void setEventsDate(String date) {
             SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
             try {
                 Date firstDate = sdf.parse(date);
                 SimpleDateFormat parseFormat = new SimpleDateFormat("E MMMM dd,yyyy");
-                String eventDate=parseFormat.format(firstDate);
+                String eventDate = parseFormat.format(firstDate);
 
-                TextView eventsDate=(TextView)mView.findViewById(R.id.event_date);
+                TextView eventsDate = (TextView) mView.findViewById(R.id.event_date);
                 eventsDate.setText(eventDate);
 
             } catch (ParseException e) {
@@ -180,29 +177,28 @@ public class EventsActivity extends AppCompatActivity {
 
 
         }
-        public void setEventsTime(String time)
-        {
+
+        public void setEventsTime(String time) {
             SimpleDateFormat sdf = new SimpleDateFormat("hh:mm");
 
             try {
-                Date firstTime=sdf.parse(time);
-                String eventTime=sdf.format(firstTime);
+                Date firstTime = sdf.parse(time);
+                String eventTime = sdf.format(firstTime);
 
-                TextView eventsTime=(TextView)mView.findViewById(R.id.event_time);
+                TextView eventsTime = (TextView) mView.findViewById(R.id.event_time);
                 eventsTime.setText(eventTime);
             } catch (ParseException e) {
                 e.printStackTrace();
             }
         }
-        public void setEventsAttending(String att)
-        {
-            TextView eventAtt=(TextView)mView.findViewById(R.id.event_attending);
-            eventAtt.setText(String.valueOf(att)+" ATTENDING");
+
+        public void setEventsAttending(String att) {
+            TextView eventAtt = (TextView) mView.findViewById(R.id.event_attending);
+            eventAtt.setText(String.valueOf(att) + " ATTENDING");
         }
 
-        public void setEventsImage(final Context ctx,final String image)
-        {
-            final ImageView events_image=(ImageView)itemView.findViewById(R.id.event_image);
+        public void setEventsImage(final Context ctx, final String image) {
+            final ImageView events_image = (ImageView) itemView.findViewById(R.id.event_image);
             Picasso
                     .with(ctx)
                     .load(image)
@@ -225,7 +221,7 @@ public class EventsActivity extends AppCompatActivity {
     protected void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<Event,EventsViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Event, EventsViewHolder>(
+        FirebaseRecyclerAdapter<Event, EventsViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Event, EventsViewHolder>(
                 Event.class,
                 R.layout.event_row,
                 EventsViewHolder.class,
@@ -234,19 +230,19 @@ public class EventsActivity extends AppCompatActivity {
             @Override
             protected void populateViewHolder(EventsViewHolder viewHolder, final Event model, final int position) {
                 viewHolder.setEventsName(model.getEventName());
-                Log.d(TAG, "populateViewHolder: "+model.getEventName());
-                viewHolder.setEventsAttending (model.getEventAttending());
+                Log.d(TAG, "populateViewHolder: " + model.getEventName());
+                viewHolder.setEventsAttending(model.getEventAttending());
                 viewHolder.setEventsDate(model.getEventDate());
                 viewHolder.setEventsTime(model.getEventTime());
-                viewHolder.setEventsImage(EventsActivity.this,model.getEventImage());
+                viewHolder.setEventsImage(EventsActivity.this, model.getEventImage());
 
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.d(TAG, "onClick: You clicked on "+position);
-                        Intent intent=new Intent(EventsActivity.this,SingleEventActivity.class);
-                        intent.putExtra("eventName",model.getEventName());
+                        Log.d(TAG, "onClick: You clicked on " + position);
+                        Intent intent = new Intent(EventsActivity.this, SingleEventActivity.class);
+                        intent.putExtra("eventName", model.getEventName());
                         startActivity(intent);
                     }
                 });
@@ -256,7 +252,21 @@ public class EventsActivity extends AppCompatActivity {
         mEventList.setAdapter(firebaseRecyclerAdapter);
 
 
+    }
 
+    @Override
+    public void onWindowFocusChanged(boolean hasFocus) {
+        super.onWindowFocusChanged(hasFocus);
+        View decorView = getWindow().getDecorView();
+        if (hasFocus) {
+            decorView.setSystemUiVisibility(
+                    View.SYSTEM_UI_FLAG_LAYOUT_STABLE
+                            | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_HIDE_NAVIGATION
+                            | View.SYSTEM_UI_FLAG_FULLSCREEN
+                            | View.SYSTEM_UI_FLAG_IMMERSIVE_STICKY);
+        }
 
     }
 
@@ -267,13 +277,13 @@ public class EventsActivity extends AppCompatActivity {
     }
 
     public void drawer() {
-        final String name=mAuth.getCurrentUser().getDisplayName();
-        final String email=mAuth.getCurrentUser().getEmail();
+        final String name = mAuth.getCurrentUser().getDisplayName();
+        final String email = mAuth.getCurrentUser().getEmail();
 
-        String user_id=mAuth.getCurrentUser().getUid();
+        String user_id = mAuth.getCurrentUser().getUid();
 
 
-        DatabaseReference ref=FirebaseDatabase.getInstance().getReference("Users");
+        DatabaseReference ref = FirebaseDatabase.getInstance().getReference("Users");
         ref.keepSynced(true);
         ref.addListenerForSingleValueEvent(new ValueEventListener() {
             @Override
@@ -316,12 +326,9 @@ public class EventsActivity extends AppCompatActivity {
         });
 
 
-
-
-
     }
-    public void drawerLogic(String name, final String email)
-    {
+
+    public void drawerLogic(String name, final String email) {
         //initialize and create the image loader logic
         DrawerImageLoader.init(new DrawerImageLoader.IDrawerImageLoader() {
             @Override
@@ -354,7 +361,7 @@ public class EventsActivity extends AppCompatActivity {
         });
 
 
-        Log.d(TAG, "Foto Url "+photo_url);
+        Log.d(TAG, "Foto Url " + photo_url);
 
         // Create a few sample profile
         final IProfile profile = new ProfileDrawerItem().withName(name)
@@ -398,7 +405,6 @@ public class EventsActivity extends AppCompatActivity {
                         item6.withIcon(R.drawable.ic_directions_run_black_24dp),
 
 
-
                         new DividerDrawerItem(),
                         item7.withIcon(R.drawable.ic_log_out_black_24dp)
 
@@ -420,15 +426,15 @@ public class EventsActivity extends AppCompatActivity {
                                 logOut();
                                 break;
                             case "RunActivity":
-                                startActivity(new Intent(EventsActivity.this,MyRunActivity.class));
+                                startActivity(new Intent(EventsActivity.this, MyRunActivity.class));
                                 break;
                             case "Profile":
-                                Intent intent=new Intent(EventsActivity.this,ProfileActivity.class);
-                                intent.putExtra("userEmail",email);
+                                Intent intent = new Intent(EventsActivity.this, ProfileActivity.class);
+                                intent.putExtra("userEmail", email);
                                 startActivity(intent);
                                 break;
                             case "AddAward":
-                                startActivity(new Intent(EventsActivity.this,AddAwardsActivity.class));
+                                startActivity(new Intent(EventsActivity.this, AddAwardsActivity.class));
                                 break;
 
                         }
@@ -466,9 +472,7 @@ public class EventsActivity extends AppCompatActivity {
             finish();
 
 
-        }
-        else
-        {
+        } else {
             FirebaseAuth.getInstance().signOut();
         }
     }

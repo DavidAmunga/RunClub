@@ -49,26 +49,24 @@ public class AwardsFragment extends Fragment {
     private ArcProgress arcUserLevel;
     private RecyclerView mAwardsList;
 
-    TextView txtUserLevel,txtUserPoints;
+    TextView txtUserLevel, txtUserPoints;
 
 
     private DatabaseReference mDatabase;
-    FirebaseRecyclerAdapter<Award,AwardsViewHolder> firebaseRecyclerAdapter;
-
-
+    FirebaseRecyclerAdapter<Award, AwardsViewHolder> firebaseRecyclerAdapter;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        final View view=inflater.inflate(R.layout.fragment_awards_layout,container,false);
+        final View view = inflater.inflate(R.layout.fragment_awards_layout, container, false);
 
-        mDatabase= FirebaseDatabase.getInstance().getReference().child("Awards");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Awards");
         mDatabase.keepSynced(true);
         mDatabase.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                if(mutableData.getValue() == null) {
+                if (mutableData.getValue() == null) {
                     mutableData.setValue(1);
                 } else {
                     mutableData.setValue((Long) mutableData.getValue() + 1);
@@ -82,16 +80,16 @@ public class AwardsFragment extends Fragment {
             }
         });
 
-        arcUserLevel=(ArcProgress)view.findViewById(R.id.user_level);
-        txtUserLevel=(TextView)view.findViewById(R.id.txtRunLevel);
-        userBadgeImage=(CircleImageView)view.findViewById(R.id.imgUserLevel);
+        arcUserLevel = (ArcProgress) view.findViewById(R.id.user_level);
+        txtUserLevel = (TextView) view.findViewById(R.id.txtRunLevel);
+        userBadgeImage = (CircleImageView) view.findViewById(R.id.imgUserLevel);
 
-        mAwardsList=(RecyclerView)view.findViewById(R.id.awards_list);
+        mAwardsList = (RecyclerView) view.findViewById(R.id.awards_list);
         //mLocationsList.setHasFixedSize(true);
         mAwardsList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
-        final String email= FirebaseAuth.getInstance().getCurrentUser().getEmail();
-        DatabaseReference refUserLevel=FirebaseDatabase.getInstance().getReference().child("Users");
+        final String email = FirebaseAuth.getInstance().getCurrentUser().getEmail();
+        DatabaseReference refUserLevel = FirebaseDatabase.getInstance().getReference().child("Users");
         refUserLevel.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
@@ -135,16 +133,11 @@ public class AwardsFragment extends Fragment {
         });
 
 
-
-
-
-
         return view;
     }
 
     private void setUserBadgeLevel(String userLevel) {
-        switch(userLevel)
-        {
+        switch (userLevel) {
             case "Tera":
                 userBadgeImage.setImageDrawable(getResources().getDrawable(R.drawable.tera));
                 break;
@@ -159,7 +152,7 @@ public class AwardsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        FirebaseRecyclerAdapter<Award,AwardsViewHolder> firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Award, AwardsViewHolder>(
+        FirebaseRecyclerAdapter<Award, AwardsViewHolder> firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Award, AwardsViewHolder>(
                 Award.class,
                 R.layout.award_row,
                 AwardsViewHolder.class,
@@ -167,12 +160,12 @@ public class AwardsFragment extends Fragment {
         ) {
             @Override
             protected void populateViewHolder(AwardsViewHolder viewHolder, Award model, int position) {
-                    viewHolder.setAwardName(model.getAwardName());
-                    viewHolder.setAwardDesc(model.getAwardDescription());
-                    viewHolder.setAwardImage(getActivity(),model.getAwardImage());
+                viewHolder.setAwardName(model.getAwardName());
+                viewHolder.setAwardDesc(model.getAwardDescription());
+                viewHolder.setAwardImage(getActivity(), model.getAwardImage());
 
-                Log.d(TAG, "AwardImage"+model.getAwardImage());
-                Log.d(TAG, "AwardName"+model.getAwardName());
+                Log.d(TAG, "AwardImage" + model.getAwardImage());
+                Log.d(TAG, "AwardName" + model.getAwardName());
             }
         };
 
@@ -181,30 +174,29 @@ public class AwardsFragment extends Fragment {
 
     }
 
-    public static class AwardsViewHolder extends RecyclerView.ViewHolder
-    {
+    public static class AwardsViewHolder extends RecyclerView.ViewHolder {
         View mView;
 
 
         public AwardsViewHolder(View itemView) {
             super(itemView);
 
-            mView=itemView;
+            mView = itemView;
         }
-        public void setAwardName(String name)
-        {
-            TextView awardName=(TextView)mView.findViewById(R.id.txtAwardName);
+
+        public void setAwardName(String name) {
+            TextView awardName = (TextView) mView.findViewById(R.id.txtAwardName);
             awardName.setText(name);
         }
-        public void setAwardDesc(String desc)
-        {
-            TextView awardDesc=(TextView)mView.findViewById(R.id.txtAwardDesc);
+
+        public void setAwardDesc(String desc) {
+            TextView awardDesc = (TextView) mView.findViewById(R.id.txtAwardDesc);
             awardDesc.setText(desc);
 
         }
-        public void setAwardImage(final Context ctx, final String image)
-        {
-            final ImageView award_image=(ImageView)mView.findViewById(R.id.awardImage);
+
+        public void setAwardImage(final Context ctx, final String image) {
+            final ImageView award_image = (ImageView) mView.findViewById(R.id.awardImage);
 
 
             Picasso
@@ -224,10 +216,6 @@ public class AwardsFragment extends Fragment {
                     });
         }
     }
-
-
-
-
 
 
 }

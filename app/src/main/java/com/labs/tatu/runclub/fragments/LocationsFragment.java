@@ -41,25 +41,22 @@ public class LocationsFragment extends Fragment {
 
     private RecyclerView mLocationsList;
     private DatabaseReference mDatabase;
-    FirebaseRecyclerAdapter<Location,LocationViewHolder> firebaseRecyclerAdapter;
-
-
-
+    FirebaseRecyclerAdapter<Location, LocationViewHolder> firebaseRecyclerAdapter;
 
 
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view=inflater.inflate(R.layout.fragment_locations_layout,container,false);
+        View view = inflater.inflate(R.layout.fragment_locations_layout, container, false);
 
         //toolBarTitle.setText("Locations");
 
-        mDatabase= FirebaseDatabase.getInstance().getReference().child("Locations");
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Locations");
         mDatabase.keepSynced(true);
         mDatabase.runTransaction(new Transaction.Handler() {
             @Override
             public Transaction.Result doTransaction(MutableData mutableData) {
-                if(mutableData.getValue() == null) {
+                if (mutableData.getValue() == null) {
                     mutableData.setValue(1);
                 } else {
                     mutableData.setValue((Long) mutableData.getValue() + 1);
@@ -73,7 +70,7 @@ public class LocationsFragment extends Fragment {
             }
         });
 
-        mLocationsList=(RecyclerView)view.findViewById(R.id.location_list);
+        mLocationsList = (RecyclerView) view.findViewById(R.id.location_list);
         //mLocationsList.setHasFixedSize(true);
         mLocationsList.setLayoutManager(new LinearLayoutManager(getActivity()));
 
@@ -85,7 +82,7 @@ public class LocationsFragment extends Fragment {
     public void onStart() {
         super.onStart();
 
-        firebaseRecyclerAdapter=new FirebaseRecyclerAdapter<Location, LocationViewHolder>(
+        firebaseRecyclerAdapter = new FirebaseRecyclerAdapter<Location, LocationViewHolder>(
                 Location.class,
                 R.layout.location_row,
                 LocationViewHolder.class,
@@ -95,25 +92,25 @@ public class LocationsFragment extends Fragment {
             protected void populateViewHolder(LocationViewHolder viewHolder, final Location model, final int position) {
 
                 viewHolder.setLocationName(model.getLocationName());
-                viewHolder.setLocationImage(getContext(),model.getLocationPhotoUrl());
+                viewHolder.setLocationImage(getContext(), model.getLocationPhotoUrl());
                 viewHolder.setLocationDistance(model.getLocationDistance());
-                Log.d(TAG, "Photo Url: "+model.getLocationPhotoUrl());
-                Log.d(TAG, "Location Name: "+model.getLocationName());
-                Log.d(TAG, "Location Distance: "+model.getLocationDistance());
+                Log.d(TAG, "Photo Url: " + model.getLocationPhotoUrl());
+                Log.d(TAG, "Location Name: " + model.getLocationName());
+                Log.d(TAG, "Location Distance: " + model.getLocationDistance());
 
                 viewHolder.mView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        Log.w(TAG, "You clicked on "+position);
-                        Intent intent=new Intent(getContext(),LocationRunActivity.class);
-                        intent.putExtra("locName",model.getLocationName());
-                        intent.putExtra("locDistance",model.getLocationDistance());
-                        intent.putExtra("fromLat",model.getFromLat());
-                        intent.putExtra("fromLong",model.getFromLong());
-                        intent.putExtra("locGoal",model.getLocationGoal());
-                        intent.putExtra("toLat",model.getToLat());
-                        intent.putExtra("toLong",model.getToLong());
-                        Log.d(TAG, "fromLat: "+model.getFromLat());
+                        Log.w(TAG, "You clicked on " + position);
+                        Intent intent = new Intent(getContext(), LocationRunActivity.class);
+                        intent.putExtra("locName", model.getLocationName());
+                        intent.putExtra("locDistance", model.getLocationDistance());
+                        intent.putExtra("fromLat", model.getFromLat());
+                        intent.putExtra("fromLong", model.getFromLong());
+                        intent.putExtra("locGoal", model.getLocationGoal());
+                        intent.putExtra("toLat", model.getToLat());
+                        intent.putExtra("toLong", model.getToLong());
+                        Log.d(TAG, "fromLat: " + model.getFromLat());
                         startActivity(intent);
 
                     }
@@ -124,41 +121,35 @@ public class LocationsFragment extends Fragment {
         mLocationsList.setAdapter(firebaseRecyclerAdapter);
     }
 
-    public static class LocationViewHolder extends RecyclerView.ViewHolder
-    {
+    public static class LocationViewHolder extends RecyclerView.ViewHolder {
         View mView;
 
         public LocationViewHolder(View itemView) {
             super(itemView);
 
-            mView=itemView;
+            mView = itemView;
         }
-        public void setLocationName(String title)
-        {
-            TextView location_name=(TextView)mView.findViewById(R.id.loc_title);
+
+        public void setLocationName(String title) {
+            TextView location_name = (TextView) mView.findViewById(R.id.loc_title);
             location_name.setText(title);
 
         }
-        public void setLocationDistance(long distance)
-        {
-            TextView locationDistance=(TextView)mView.findViewById(R.id.loc_distance);
-            if(distance>1000)
-            {
-                locationDistance.setText(String.valueOf(distance/1000)+" km");
-            }
-            else
-            {
-                locationDistance.setText(String.valueOf(distance)+" m");
+
+        public void setLocationDistance(long distance) {
+            TextView locationDistance = (TextView) mView.findViewById(R.id.loc_distance);
+            if (distance > 1000) {
+                locationDistance.setText(String.valueOf(distance / 1000) + " km");
+            } else {
+                locationDistance.setText(String.valueOf(distance) + " m");
 
             }
 
 
         }
-        public void setLocationImage(final Context ctx,final String image)
-        {
-            final ImageView loc_image=(ImageView)mView.findViewById(R.id.loc_image);
 
-
+        public void setLocationImage(final Context ctx, final String image) {
+            final ImageView loc_image = (ImageView) mView.findViewById(R.id.loc_image);
 
 
             Picasso
@@ -180,7 +171,6 @@ public class LocationsFragment extends Fragment {
 
         }
     }
-
 
 
 }

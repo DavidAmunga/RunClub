@@ -28,14 +28,15 @@ public class AddAwardsActivity extends AppCompatActivity {
     private CircleImageView btnAddAwardImage;
     private Button btnAddAward;
 
-    private TextView txtAwardTitle,txtAwardDetails;
-    private Uri mImageUri=null;
+    private TextView txtAwardTitle, txtAwardDetails;
+    private Uri mImageUri = null;
 
-    private static final int GALLERY_REQUEST=1;
+    private static final int GALLERY_REQUEST = 1;
 
     private DatabaseReference mDatabase;
     private StorageReference mStorage;
     private ProgressDialog mProgress;
+
 
 
     @Override
@@ -43,19 +44,19 @@ public class AddAwardsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_awards);
         initViews();
-        mProgress=new ProgressDialog(this);
+        mProgress = new ProgressDialog(this);
 
-        btnAddAwardImage=(CircleImageView)findViewById(R.id.add_awardImage);
+        btnAddAwardImage = (CircleImageView) findViewById(R.id.add_awardImage);
         btnAddAwardImage.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent galleryIntent=new Intent(Intent.ACTION_GET_CONTENT);
+                Intent galleryIntent = new Intent(Intent.ACTION_GET_CONTENT);
                 galleryIntent.setType("image/*");
-                startActivityForResult(galleryIntent,GALLERY_REQUEST);
+                startActivityForResult(galleryIntent, GALLERY_REQUEST);
             }
         });
-        mStorage= FirebaseStorage.getInstance().getReference();
-        mDatabase=FirebaseDatabase.getInstance().getReference().child("Awards");
+        mStorage = FirebaseStorage.getInstance().getReference();
+        mDatabase = FirebaseDatabase.getInstance().getReference().child("Awards");
 
         btnAddAward.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -65,21 +66,20 @@ public class AddAwardsActivity extends AppCompatActivity {
                 mProgress.setCancelable(false);
                 mProgress.show();
 
-               final String awardName = txtAwardTitle.getText().toString().trim();
-               final String awardDetail=txtAwardDetails.getText().toString().trim();
+                final String awardName = txtAwardTitle.getText().toString().trim();
+                final String awardDetail = txtAwardDetails.getText().toString().trim();
 
-                if(!TextUtils.isEmpty(awardName) &&  !TextUtils.isEmpty(awardDetail))
-                {
+                if (!TextUtils.isEmpty(awardName) && !TextUtils.isEmpty(awardDetail)) {
                     Log.d(TAG, "Uploading Image ");
-                    StorageReference filepath=mStorage.child("Award_Images").child(mImageUri.getLastPathSegment());
+                    StorageReference filepath = mStorage.child("Award_Images").child(mImageUri.getLastPathSegment());
 
                     filepath.putFile(mImageUri).addOnSuccessListener(new OnSuccessListener<UploadTask.TaskSnapshot>() {
                         @Override
                         public void onSuccess(UploadTask.TaskSnapshot taskSnapshot) {
 
                             @SuppressWarnings("VisibleForTesting") Uri downloadUrl = taskSnapshot.getDownloadUrl();
-                            Log.d(TAG, "onSuccess: "+downloadUrl);
-                            DatabaseReference newLoc=mDatabase.push();
+                            Log.d(TAG, "onSuccess: " + downloadUrl);
+                            DatabaseReference newLoc = mDatabase.push();
                             newLoc.child("awardImage").setValue(downloadUrl.toString());
                             newLoc.child("awardName").setValue(awardName);
                             newLoc.child("awardDescription").setValue(awardDetail);
@@ -93,9 +93,7 @@ public class AddAwardsActivity extends AppCompatActivity {
                     });
 
 
-
                 }
-
 
 
             }
@@ -105,18 +103,17 @@ public class AddAwardsActivity extends AppCompatActivity {
     }
 
     private void initViews() {
-        txtAwardTitle=(TextView)findViewById(R.id.add_award_name);
-        txtAwardDetails=(TextView)findViewById(R.id.add_award_details);
-        btnAddAward=(Button)findViewById(R.id.btn_add_award);
+        txtAwardTitle = (TextView) findViewById(R.id.add_award_name);
+        txtAwardDetails = (TextView) findViewById(R.id.add_award_details);
+        btnAddAward = (Button) findViewById(R.id.btn_add_award);
     }
 
     @Override
     public void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
 
-        if(requestCode==GALLERY_REQUEST && resultCode==RESULT_OK)
-        {
-            mImageUri=data.getData();
+        if (requestCode == GALLERY_REQUEST && resultCode == RESULT_OK) {
+            mImageUri = data.getData();
             btnAddAwardImage.setImageURI(mImageUri);
         }
     }
