@@ -2,6 +2,7 @@ package com.labs.tatu.runclub;
 
 import android.content.Intent;
 import android.graphics.Color;
+import android.net.Uri;
 import android.support.annotation.NonNull;
 import android.support.design.widget.BottomNavigationView;
 import android.support.v7.app.AppCompatActivity;
@@ -25,6 +26,9 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 import com.irozon.sneaker.Sneaker;
 import com.labs.tatu.runclub.helpers.BottomNavigationViewHelper;
+import com.squareup.picasso.Callback;
+import com.squareup.picasso.NetworkPolicy;
+import com.squareup.picasso.Picasso;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -259,6 +263,27 @@ public class SingleEventActivity extends AppCompatActivity {
                         txt_event_loc.setText(snapshot.child("eventLocation").getValue().toString());
                         txt_event_time.setText(snapshot.child("eventTime").getValue().toString());
                         txt_event_type.setText(snapshot.child("eventType").getValue().toString());
+
+
+                        final Uri image=Uri.parse(snapshot.child("eventImage").getValue().toString());
+
+
+                        Picasso
+                                .with(SingleEventActivity.this)
+                                .load(image)
+                                .networkPolicy(NetworkPolicy.OFFLINE)
+                                .into(eventImage, new Callback() {
+                                    @Override
+                                    public void onSuccess() {
+
+                                    }
+
+                                    @Override
+                                    public void onError() {
+                                        Picasso.with(SingleEventActivity.this).load(image).into(eventImage);
+                                    }
+                                });
+
 
                     }
 

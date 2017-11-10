@@ -4,7 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.labs.tatu.runclub.SingleEventActivity">
+    tools:context="com.labs.tatu.runclub.SingleEventActivity"
+
+    >
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/toolbar"
@@ -32,12 +34,20 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:scaleType="fitXY"
-        android:backgroundTint="#000"
-        android:background="#000"
-        android:backgroundTintMode="src_over"
+        android:alpha="0.5"
+        android:background="@drawable/coke_studio"
         android:id="@+id/bgEventImage"
         android:layout_below="@id/toolbar"
         />
+    <View
+        android:id="@+id/overlay_image"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#000"
+        android:layout_below="@id/toolbar"
+        android:alpha="0.8"
+        android:backgroundTintMode="src_over"
+    />
 
     <ScrollView
         android:layout_width="match_parent"
