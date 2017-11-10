@@ -64,7 +64,6 @@ public class MainActivity extends AppCompatActivity {
     private SectionsPagerAdapter sectionsPagerAdapter;
     private ViewPager mViewPager;
     private Toolbar toolbar;
-    public static TextView toolBarTitle;
 
     private boolean isLoggingOut = false;
     private Uri photo_url=null;
@@ -224,14 +223,14 @@ public class MainActivity extends AppCompatActivity {
         overridePendingTransition(0, 0);
     }
 
-    private void setupViewPager(ViewPager viewPager) {
-        SectionsPagerAdapter mAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
-        mAdapter.addFragment(new LocationsFragment());
-        mAdapter.addFragment(new QuickStartFragment());
-        mAdapter.addFragment(new ChallengesFragment());
+        private void setupViewPager(ViewPager viewPager) {
+            SectionsPagerAdapter mAdapter = new SectionsPagerAdapter(getSupportFragmentManager());
+            mAdapter.addFragment(new LocationsFragment());
+            mAdapter.addFragment(new QuickStartFragment());
+            mAdapter.addFragment(new ChallengesFragment());
 
-        viewPager.setAdapter(mAdapter);
-    }
+            viewPager.setAdapter(mAdapter);
+        }
 
 
     public void drawer() {

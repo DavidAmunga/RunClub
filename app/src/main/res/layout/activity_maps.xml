@@ -22,27 +22,31 @@
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:background="#fff"
+            android:background="@color/colorPrimaryDark"
             android:orientation="horizontal">
 
             <Button
                 android:id="@+id/buttonSetFrom"
-                android:text="Set From"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+
+                android:text="Set From" />
 
             <Button
                 android:id="@+id/buttonSetTo"
-                android:text="Set To"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="Set To" />
 
 
             <Button
                 android:id="@+id/buttonCalcDistance"
-                android:text="Calc Route"
+                style="@style/Widget.AppCompat.Button.Colored"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content" />
+                android:layout_height="wrap_content"
+                android:text="Calc Route" />
 
 
         </LinearLayout>

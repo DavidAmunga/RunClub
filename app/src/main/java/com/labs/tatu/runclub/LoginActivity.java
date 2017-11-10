@@ -232,7 +232,9 @@ public class LoginActivity extends AppCompatActivity {
                         else
                         {
                             Log.d(TAG, "onComplete: Sign In Success!");
+
                             startActivity(new Intent(LoginActivity.this,MainActivity.class));
+
                         }
 
                         // ...
@@ -341,7 +343,7 @@ public class LoginActivity extends AppCompatActivity {
     }
     //Google Firebase Auth
     private void firebaseAuthWithGoogle(GoogleSignInAccount account) {
-        mProgress.setTitle("Loggin you In");
+        mProgress.setTitle("Signing in");
         mProgress.setCancelable(false);
         mProgress.show();
         Log.d(TAG, "firebaseAuthWithGoogle:" + account.getId());
