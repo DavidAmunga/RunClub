@@ -4,145 +4,147 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.labs.tatu.runclub.LoginActivity">
+    android:background="@drawable/themebg"
+    tools:context="com.labs.tatu.runforce.LoginActivity">
 
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="140dp"
-        android:src="@drawable/bg1"
-        android:scaleType="fitXY"
-        android:id="@+id/login_image"
-        />
-    <ScrollView
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/login_image"
-        >
+        android:layout_margin="20dp"
+        app:cardCornerRadius="5dp"
+        app:cardElevation="2dp">
+
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-
             android:layout_below="@+id/login_image">
 
-            <com.facebook.login.widget.LoginButton
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:id="@+id/lbl_title"
+                android:layout_height="?attr/actionBarSize"
+                android:orientation="vertical"
+                android:background="#ffffee">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:text="Login"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="40dp"
+
+                    />
+            </LinearLayout>
+
+
+            <com.facebook.login.widget.LoginButton android:id="@+id/btnFb"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:id="@+id/btnFb"
-                android:textSize="20dp"
+                android:layout_below="@id/lbl_title"
                 android:layout_marginTop="20dp"
-                android:layout_alignParentTop="true"
-                android:text="Login with Facebook"
+                android:text="Sign in with Facebook"
+                xmlns:facebook="http://schemas.android.com/apk/res-auto"
+                facebook:com_facebook_login_text="Sign in with Facebook"
 
 
                 />
 
-            <com.google.android.gms.common.SignInButton
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
+
+            <com.shaishavgandhi.loginbuttons.GooglePlusButton
                 android:id="@+id/btnGG"
-                android:textColor="#ffffff"
-                android:textSize="20dp"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/btnFb"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
                 android:layout_marginTop="20dp"
-                android:text="Login with Gmail"
+                android:text="Sign in with Google"
+                android:textAlignment="center"
+                app:iconSize="30dp" />
 
 
-                />
             <EditText
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:layout_below="@id/btnGG"
-                android:layout_marginTop="130dp"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:hint="Email or Username ......"
                 android:id="@+id/txt_email"
-                android:layout_alignParentTop="true"
-                android:layout_centerHorizontal="true" />
-            <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:inputType="textPassword"
-                android:layout_marginTop="10dp"
+                android:layout_alignParentTop="true"
+                android:layout_below="@id/btnGG"
+                android:layout_centerHorizontal="true"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:hint="Password ......"
+                android:layout_marginTop="130dp"
+                android:hint="Enter Email"
+                android:padding="20dp" />
+
+            <EditText
                 android:id="@+id/txt_pass"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_below="@id/txt_email"
-                />
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="10dp"
+                android:hint="Password ......"
+                android:inputType="textPassword"
+                android:padding="20dp" />
 
             <Button
+                android:id="@+id/btnLogin"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="30dp"
-                android:layout_marginTop="20dp"
-                android:layout_marginRight="30dp"
-                android:id="@+id/btnLogin"
                 android:layout_below="@+id/txt_pass"
+                android:layout_marginLeft="30dp"
+                android:layout_marginRight="30dp"
+                android:layout_marginTop="20dp"
                 android:background="@drawable/btn_green"
+                android:text="Login"
                 android:textColor="#ffffff"
                 android:textSize="20dp"
-                android:text="Login"
 
 
                 />
 
             <RelativeLayout
+                android:id="@+id/linearSignUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:id="@+id/linearSignUp"
                 android:layout_below="@+id/btnLogin"
-                android:layout_gravity="bottom"
                 android:layout_centerHorizontal="true"
-                android:layout_marginTop="20dp">
+                android:layout_gravity="bottom"
+                android:layout_marginTop="20dp"
+                android:orientation="horizontal">
+
                 <TextView
+                    android:id="@+id/textView1"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="Dont have an account?"
-
-                    android:textColor="#000"
 
                     android:layout_marginTop="35dp"
-                    android:id="@+id/textView1" />
+
+                    android:text="New to RunForce?"
+                    android:textColor="#000" />
 
                 <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:text="Sign Up"
-                    android:textSize="15dp"
                     android:id="@+id/txt_signUp"
-                    android:textColor="@color/colorPrimary"
-                    android:layout_alignBaseline="@+id/textView1"
-                    android:layout_alignBottom="@+id/textView1"
-                    android:layout_toEndOf="@+id/textView1"
-                    android:layout_marginStart="7dp" />
-
-                <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="today"
-                    android:textColor="#000"
-                    android:id="@+id/textView2"
-                    android:layout_alignBaseline="@+id/txt_signUp"
-                    android:layout_alignBottom="@+id/txt_signUp"
-                    android:layout_toEndOf="@+id/txt_signUp"
-                    android:layout_marginStart="7dp" />
+                    android:layout_below="@+id/textView1"
+                    android:layout_centerHorizontal="true"
+                    android:text="Sign Up"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="30sp" />
 
             </RelativeLayout>
-
 
 
         </RelativeLayout>
 
 
+    </android.support.v7.widget.CardView>
 
-    </ScrollView>
 
 </RelativeLayout>

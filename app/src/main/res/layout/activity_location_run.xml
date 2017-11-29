@@ -111,7 +111,7 @@
                     android:layout_alignParentStart="true"
                     android:layout_below="@+id/toolbar"
                     android:layout_marginTop="30dp"
-                    tools:context="com.labs.tatu.runclub.LocationRunActivity" />
+                    tools:context="com.labs.tatu.runforce.LocationRunActivity" />
 
 
                 <TextView

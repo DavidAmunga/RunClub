@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.labs.tatu.runclub">
+    package="com.labs.tatu.runforce">
 
     <!--
          The ACCESS_COARSE/FINE_LOCATION permissions are not required to use
@@ -17,22 +17,22 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name=".MainActivity"
+            android:name="com.labs.tatu.runforce.MainActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".EventsActivity"
+            android:name="com.labs.tatu.runforce.EventsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".InboxActivity"
+            android:name="com.labs.tatu.runforce.InboxActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".FriendsActivity"
+            android:name="com.labs.tatu.runforce.FriendsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".StatsActivity"
+            android:name="com.labs.tatu.runforce.StatsActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".AddLocationActivity"
+            android:name="com.labs.tatu.runforce.AddLocationActivity"
             android:screenOrientation="portrait" />
         <!--
              The API key for Google Maps-based APIs is defined as a string resource.
@@ -55,14 +55,14 @@
             android:label="@string/app_name"
             android:theme="@android:style/Theme.Translucent.NoTitleBar" />
         <activity
-            android:name=".MapsActivity"
+            android:name="com.labs.tatu.runforce.MapsActivity"
             android:label="@string/title_activity_maps"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".LocationRunActivity"
+            android:name="com.labs.tatu.runforce.LocationRunActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SplashScreenActivity"
+            android:name="com.labs.tatu.runforce.SplashScreenActivity"
             android:screenOrientation="portrait">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -71,32 +71,32 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".AddEventActivity"
+            android:name="com.labs.tatu.runforce.AddEventActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SingleEventActivity"
-            android:parentActivityName=".EventsActivity">
+            android:name="com.labs.tatu.runforce.SingleEventActivity"
+            android:parentActivityName="com.labs.tatu.runforce.EventsActivity">
             >
         </activity>
         <activity
-            android:name=".WorkoutActivity"
-            android:parentActivityName=".MainActivity"
+            android:name="com.labs.tatu.runforce.WorkoutActivity"
+            android:parentActivityName="com.labs.tatu.runforce.MainActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".LoginActivity" />
+        <activity android:name="com.labs.tatu.runforce.LoginActivity" />
         <activity
-            android:name=".ProfileActivity"
-            android:parentActivityName=".MainActivity" />
+            android:name="com.labs.tatu.runforce.ProfileActivity"
+            android:parentActivityName="com.labs.tatu.runforce.MainActivity" />
         <activity
-            android:name=".MyRunActivity"
-            android:screenOrientation="portrait" />
-        <activity
-            android:name=".AddAwardsActivity"
+            android:name="com.labs.tatu.runforce.MyRunActivity"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".RegisterActivity"
+            android:name="com.labs.tatu.runforce.AddAwardsActivity"
             android:screenOrientation="portrait" />
-        <activity android:name=".AddChallengeActivity" />
-        <activity android:name=".SetupUserActivity"></activity>
+        <activity
+            android:name="com.labs.tatu.runforce.RegisterActivity"
+            android:screenOrientation="portrait" />
+        <activity android:name="com.labs.tatu.runforce.AddChallengeActivity" />
+        <activity android:name="com.labs.tatu.runforce.SetupUserActivity"></activity>
     </application>
 
 </manifest>

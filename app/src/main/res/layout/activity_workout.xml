@@ -160,7 +160,7 @@
         android:layout_height="match_parent"
         android:layout_below="@id/timerText"
         android:layout_above="@id/bottomNavView_Bar"
-        tools:context="com.labs.tatu.runclub.fragments.QuickStartFragment" />
+        tools:context="com.labs.tatu.runforce.fragments.QuickStartFragment" />
 
 
 

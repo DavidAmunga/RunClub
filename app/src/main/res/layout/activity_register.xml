@@ -4,30 +4,37 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.labs.tatu.runclub.RegisterActivity">
+    tools:context="com.labs.tatu.runforce.RegisterActivity"
+    android:background="@drawable/themebg">
 
-
-    <ImageView
-        android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:src="@drawable/bg1"
-        android:scaleType="fitXY"
-        android:id="@+id/login_image"
-        />
-    <ScrollView
+    <android.support.v7.widget.CardView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_below="@+id/login_image"
-        android:layout_above="@+id/btnRegister"
-        >
+        android:layout_margin="20dp"
+        app:cardCornerRadius="7dp"
+        app:cardElevation="2dp">
+
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Sign Up"
+                android:textSize="32sp"
+                android:layout_centerHorizontal="true"
+                android:id="@+id/lbl_title"
+                android:textColor="@color/colorPrimary"
+                android:layout_marginTop="10dp"
+
+                />
 
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:padding="20dp"
+                android:layout_below="@+id/lbl_title"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
                 android:hint="Username......"
@@ -51,6 +58,7 @@
                 android:id="@+id/txt_email"
                 android:layout_below="@+id/txt_userName"
                 android:layout_centerHorizontal="true" />
+
             <EditText
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -64,19 +72,18 @@
                 android:layout_below="@+id/txt_email"
                 android:layout_centerHorizontal="true"
                 android:layout_marginTop="14dp" />
+
             <EditText
+                android:id="@+id/txt_pass"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:padding="20dp"
-                android:inputType="textPassword"
-                android:background="@drawable/input"
-                android:layout_marginLeft="30dp"
-                android:layout_marginRight="30dp"
-                android:hint="Password ......"
-                android:id="@+id/txt_pass"
+                android:layout_alignStart="@+id/txt_confirm_pass"
                 android:layout_below="@+id/txt_phoneNo"
-                android:layout_centerHorizontal="true"
-                android:layout_marginTop="14dp" />
+                android:layout_marginTop="18dp"
+                android:background="@drawable/input"
+                android:hint="Password ......"
+                android:inputType="textPassword"
+                android:padding="20dp" />
 
             <EditText
                 android:layout_width="match_parent"
@@ -96,19 +103,20 @@
         </RelativeLayout>
 
 
-    </ScrollView>
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:id="@+id/btnRegister"
+            android:background="@color/colorPrimary"
+            android:textColor="#ffffff"
+            android:textSize="20dp"
+            android:padding="12dp"
+            android:text="SIGN UP"
+            android:layout_gravity="bottom"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentStart="true" />
 
-    <Button
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:id="@+id/btnRegister"
-        android:background="@color/colorPrimary"
-        android:textColor="#ffffff"
-        android:textSize="20dp"
+    </android.support.v7.widget.CardView>
 
-        android:text="SIGN UP"
-        android:layout_gravity="bottom"
-        android:layout_alignParentBottom="true"
-        android:layout_alignParentStart="true" />
 
 </RelativeLayout>
